@@ -57,6 +57,12 @@ public interface IStanleyParserVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitDefineStatement([NotNull] StanleyParser.DefineStatementContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="StanleyParser.defineSubject"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitDefineSubject([NotNull] StanleyParser.DefineSubjectContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="StanleyParser.commandStatement"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -152,6 +158,12 @@ public interface IStanleyParserVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitSelectionAdjective([NotNull] StanleyParser.SelectionAdjectiveContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="StanleyParser.relativeSelectionAdjective"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitRelativeSelectionAdjective([NotNull] StanleyParser.RelativeSelectionAdjectiveContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="StanleyParser.assertAdjective"/>.
 	/// </summary>

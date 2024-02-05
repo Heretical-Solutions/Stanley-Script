@@ -9,7 +9,21 @@ namespace HereticalSolutions.StanleyScript
 	{
 		private IRuntimeEnvironment runtimeEnvironment;
 
+		//Walking runtime
+
 		private List<string> instructions;
+
+		private bool pushingRuntimeVariablesAllowed = true;
+
+		/*
+		private string commandOpcode = string.Empty;
+
+		private string commandTarget = string.Empty;
+
+		private int commandArgumentsCount = 0;
+
+		private List<string> commandArguments = new List<string>();
+		*/
 
 		public StanleyASTWalker(
 			IRuntimeEnvironment runtimeEnvironment,
@@ -60,10 +74,59 @@ namespace HereticalSolutions.StanleyScript
 			//	UnityEngine.Debug.Log($"-- {context.children[i].GetText()}");
 			//}
 
+			pushingRuntimeVariablesAllowed = false;
+
 			base.VisitStoryHeader(context);
+
+			pushingRuntimeVariablesAllowed = true;
 
 			instructions.Add(
 				$"OP_READ_STORY");
+
+			return null;
+        }
+
+        public override object VisitDefineStatement([NotNull] StanleyParser.DefineStatementContext context)
+        {
+            base.VisitDefineStatement(context);
+
+			instructions.Add(
+				$"OP_ALLOC_RTM");
+
+			return null;
+        }
+
+        public override object VisitRelatablePluralSubjectsExpression([NotNull] StanleyParser.RelatablePluralSubjectsExpressionContext context)
+        {
+            base.VisitRelatablePluralSubjectsExpression(context);
+
+			var subjects = context.relatableSingleSubjectExpression();
+
+			var subjectsAmount = subjects.Length;
+
+			instructions.Add(
+				$"OP_CONCAT {subjectsAmount}");
+
+			return null;
+        }
+
+        public override object VisitImportVariableLiteral([NotNull] StanleyParser.ImportVariableLiteralContext context)
+        {
+            base.VisitImportVariableLiteral(context);
+
+			instructions.Add(
+				$"OP_PUSH_IMP");
+
+			return null;
+        }
+
+        public override object VisitDefineSubject([NotNull] StanleyParser.DefineSubjectContext context)
+        {
+			pushingRuntimeVariablesAllowed = false;
+
+			base.VisitDefineSubject(context);
+
+			pushingRuntimeVariablesAllowed = true;
 
 			return null;
         }
@@ -74,8 +137,20 @@ namespace HereticalSolutions.StanleyScript
 
 			base.VisitSubject(context);
 
-			instructions.Add(
-				$"OP_PUSH_STR {context.GetText()}");
+			var text = context.GetText();
+
+			instructions.Add($"OP_PUSH_STR {text}");
+
+			//I think it's better to leave reserved symbols in the variable names
+
+			//instructions.Add(
+			//	$"OP_PUSH_STR {text.Substring(1, text.Length - 2)}");
+
+			if (pushingRuntimeVariablesAllowed)
+			{
+				instructions.Add(
+					$"OP_PUSH_RTM");
+			}
 
             return null;
         }
@@ -86,8 +161,41 @@ namespace HereticalSolutions.StanleyScript
 
 			base.VisitObject(context);
 
+			var text = context.GetText();
+
+			instructions.Add($"OP_PUSH_STR {text}");
+
+			//I think it's better to leave reserved symbols in the variable names
+
+			//instructions.Add(
+			//	$"OP_PUSH_STR {text.Substring(1, text.Length - 2)}");
+
+			if (pushingRuntimeVariablesAllowed)
+			{
+				instructions.Add(
+					$"OP_PUSH_RTM");
+			}
+
+			return null;
+        }
+
+        public override object VisitAction([NotNull] StanleyParser.ActionContext context)
+        {
+            base.VisitAction(context);
+
+
+
+			return null;
+        }
+
+        public override object VisitIdLiteral([NotNull] StanleyParser.IdLiteralContext context)
+        {
+            base.VisitIdLiteral(context);
+
+			var text = context.GetText();
+
 			instructions.Add(
-				$"OP_PUSH_STR {context.GetText()}");
+				$"OP_PUSH_STR {text}");
 
 			return null;
         }

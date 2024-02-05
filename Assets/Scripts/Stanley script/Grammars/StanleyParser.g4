@@ -25,7 +25,11 @@ statement
 // Define statements
 
 defineStatement
-	: REFER_TO relatableSubjectExpression AS subject
+	: REFER_TO relatableSubjectExpression AS defineSubject
+	;
+
+defineSubject
+	: subject
 	;
 
 // Command statements
@@ -117,6 +121,7 @@ subjectExpression
 
 selectedSubject
 	: A selectionAdjective assertAdjective* OF subject
+	| THE relativeSelectionAdjective TO subjectExpression subject
 	;
 
 // Object expressions
@@ -133,16 +138,20 @@ objectExpression
 
 selectedObject
 	: A selectionAdjective assertAdjective* OF object
+	| THE relativeSelectionAdjective TO objectExpression object
 	;
 
 // Selection adjectives
 
 selectionAdjective
-	: CLOSIEST
-	| FURTHEST
-	| RANDOM
+	: RANDOM
 	| WEAKEST
 	| STRONGEST
+	;
+
+relativeSelectionAdjective
+	: CLOSIEST
+	| FURTHEST
 	;
 
 assertAdjective

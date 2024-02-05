@@ -28,6 +28,7 @@ SHOULD_BE: 'SHOULD BE';
 // Keywords: articles
 
 A: 'A';
+THE: 'THE';
 
 // Keywords: conjunctions
 

@@ -7,11 +7,13 @@ namespace HereticalSolutions.StanleyScript
 	{
 		string Opcode { get; }
 
+		string[] Aliases { get; }
+
 		bool WillHandle(
 			string[] instructionTokens,
 			StanleyEnvironment environment);
 
-		Task Handle(
+		Task<bool> Handle(
 			string[] instructionTokens,
 			StanleyEnvironment environment,
 			CancellationToken token);

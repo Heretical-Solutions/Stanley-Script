@@ -10,14 +10,16 @@ namespace HereticalSolutions.StanleyScript
 
 		public string Opcode => "OP_PUSH_STR";
 
+		public string[] Aliases => null;
+
 		public virtual bool WillHandle(
 			string[] instructionTokens,
 			StanleyEnvironment environment)
 		{
-			if (instructionTokens.Length < 2)
+			if (instructionTokens[0] != Opcode)
 				return false;
 
-			if (instructionTokens[0] != Opcode)
+			if (instructionTokens.Length < 2)
 				return false;
 
 			if (string.IsNullOrEmpty(instructionTokens[1]))
@@ -26,7 +28,7 @@ namespace HereticalSolutions.StanleyScript
 			return true;
 		}
 
-		public virtual async Task Handle(
+		public virtual async Task<bool> Handle(
 			string[] instructionTokens,
 			StanleyEnvironment environment,
 			CancellationToken token)
@@ -38,6 +40,8 @@ namespace HereticalSolutions.StanleyScript
 					"TEMPVAR",
 					typeof(string),
 					instructionTokens[1]));
+
+			return true;
 		}
 
 		#endregion

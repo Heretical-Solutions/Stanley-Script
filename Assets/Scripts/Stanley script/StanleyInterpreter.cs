@@ -33,10 +33,10 @@ namespace HereticalSolutions.StanleyScript
 
             var instructions = walker.GetInstructions();
 
-            //foreach (var instruction in instructions)
-            //{
-            //    UnityEngine.Debug.Log(instruction);
-            //}
+            foreach (var instruction in instructions)
+            {
+                UnityEngine.Debug.Log(instruction);
+            }
         }
     }
 }

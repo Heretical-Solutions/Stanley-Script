@@ -38,41 +38,41 @@ public partial class StanleyParser : Parser {
 	protected static PredictionContextCache sharedContextCache = new PredictionContextCache();
 	public const int
 		SPACE=1, COMMENT=2, COMMENT_INPUT=3, LINE_COMMENT=4, REFER_TO=5, STORY=6, 
-		SHOULD_BE=7, A=8, AND=9, AT=10, AS=11, OF=12, TO=13, HAD=14, HAS=15, HAVE=16, 
-		PASSED=17, WAS=18, WERE=19, CLOSIEST=20, FURTHEST=21, RANDOM=22, STRONGEST=23, 
-		UNIQUE=24, WEAKEST=25, MINUTES=26, SECONDS=27, STAR=28, DIVIDE=29, MODULE=30, 
-		PLUS=31, MINUS=32, EQUAL_SYMBOL=33, GREATER_SYMBOL=34, LESS_SYMBOL=35, 
-		EXCLAMATION_SYMBOL=36, DOT=37, LR_BRACKET=38, RR_BRACKET=39, COMMA=40, 
-		SEMI=41, AT_SIGN=42, ZERO_DECIMAL=43, ONE_DECIMAL=44, TWO_DECIMAL=45, 
-		SINGLE_QUOTE_SYMB=46, DOUBLE_QUOTE_SYMB=47, REVERSE_QUOTE_SYMB=48, COLON_SYMB=49, 
-		DOLLAR_SYMB=50, STRING_LITERAL=51, DECIMAL_LITERAL=52, REAL_LITERAL=53, 
-		ID=54, REVERSE_QUOTE_ID=55, ERROR_RECONGNIGION=56;
+		SHOULD_BE=7, A=8, THE=9, AND=10, AT=11, AS=12, OF=13, TO=14, HAD=15, HAS=16, 
+		HAVE=17, PASSED=18, WAS=19, WERE=20, CLOSIEST=21, FURTHEST=22, RANDOM=23, 
+		STRONGEST=24, UNIQUE=25, WEAKEST=26, MINUTES=27, SECONDS=28, STAR=29, 
+		DIVIDE=30, MODULE=31, PLUS=32, MINUS=33, EQUAL_SYMBOL=34, GREATER_SYMBOL=35, 
+		LESS_SYMBOL=36, EXCLAMATION_SYMBOL=37, DOT=38, LR_BRACKET=39, RR_BRACKET=40, 
+		COMMA=41, SEMI=42, AT_SIGN=43, ZERO_DECIMAL=44, ONE_DECIMAL=45, TWO_DECIMAL=46, 
+		SINGLE_QUOTE_SYMB=47, DOUBLE_QUOTE_SYMB=48, REVERSE_QUOTE_SYMB=49, COLON_SYMB=50, 
+		DOLLAR_SYMB=51, STRING_LITERAL=52, DECIMAL_LITERAL=53, REAL_LITERAL=54, 
+		ID=55, REVERSE_QUOTE_ID=56, ERROR_RECONGNIGION=57;
 	public const int
 		RULE_script = 0, RULE_storyHeader = 1, RULE_statement = 2, RULE_defineStatement = 3, 
-		RULE_commandStatement = 4, RULE_timeStatement = 5, RULE_actionStatement = 6, 
-		RULE_actionWithSubject = 7, RULE_actionWithArguments = 8, RULE_objectArgument = 9, 
-		RULE_pluralSubjectsExpression = 10, RULE_relatableSubjectExpression = 11, 
-		RULE_relatablePluralSubjectsExpression = 12, RULE_relatableSingleSubjectExpression = 13, 
-		RULE_subjectExpression = 14, RULE_selectedSubject = 15, RULE_pluralObjectsExpression = 16, 
-		RULE_objectExpression = 17, RULE_selectedObject = 18, RULE_selectionAdjective = 19, 
-		RULE_assertAdjective = 20, RULE_timeExpression = 21, RULE_timeStep = 22, 
-		RULE_subject = 23, RULE_object = 24, RULE_action = 25, RULE_importVariableLiteral = 26, 
-		RULE_integer = 27, RULE_float = 28, RULE_idLiteral = 29;
+		RULE_defineSubject = 4, RULE_commandStatement = 5, RULE_timeStatement = 6, 
+		RULE_actionStatement = 7, RULE_actionWithSubject = 8, RULE_actionWithArguments = 9, 
+		RULE_objectArgument = 10, RULE_pluralSubjectsExpression = 11, RULE_relatableSubjectExpression = 12, 
+		RULE_relatablePluralSubjectsExpression = 13, RULE_relatableSingleSubjectExpression = 14, 
+		RULE_subjectExpression = 15, RULE_selectedSubject = 16, RULE_pluralObjectsExpression = 17, 
+		RULE_objectExpression = 18, RULE_selectedObject = 19, RULE_selectionAdjective = 20, 
+		RULE_relativeSelectionAdjective = 21, RULE_assertAdjective = 22, RULE_timeExpression = 23, 
+		RULE_timeStep = 24, RULE_subject = 25, RULE_object = 26, RULE_action = 27, 
+		RULE_importVariableLiteral = 28, RULE_integer = 29, RULE_float = 30, RULE_idLiteral = 31;
 	public static readonly string[] ruleNames = {
-		"script", "storyHeader", "statement", "defineStatement", "commandStatement", 
-		"timeStatement", "actionStatement", "actionWithSubject", "actionWithArguments", 
-		"objectArgument", "pluralSubjectsExpression", "relatableSubjectExpression", 
+		"script", "storyHeader", "statement", "defineStatement", "defineSubject", 
+		"commandStatement", "timeStatement", "actionStatement", "actionWithSubject", 
+		"actionWithArguments", "objectArgument", "pluralSubjectsExpression", "relatableSubjectExpression", 
 		"relatablePluralSubjectsExpression", "relatableSingleSubjectExpression", 
 		"subjectExpression", "selectedSubject", "pluralObjectsExpression", "objectExpression", 
-		"selectedObject", "selectionAdjective", "assertAdjective", "timeExpression", 
-		"timeStep", "subject", "object", "action", "importVariableLiteral", "integer", 
-		"float", "idLiteral"
+		"selectedObject", "selectionAdjective", "relativeSelectionAdjective", 
+		"assertAdjective", "timeExpression", "timeStep", "subject", "object", 
+		"action", "importVariableLiteral", "integer", "float", "idLiteral"
 	};
 
 	private static readonly string[] _LiteralNames = {
 		null, null, null, null, null, "'REFER TO'", "'STORY ABOUT'", "'SHOULD BE'", 
-		"'A'", "'AND'", "'AT'", "'AS'", "'OF'", "'TO'", "'HAD'", "'HAS'", "'HAVE'", 
-		"'PASSED'", "'WAS'", "'WERE'", "'CLOSIEST'", "'FURTHEST'", "'RANDOM'", 
+		"'A'", "'THE'", "'AND'", "'AT'", "'AS'", "'OF'", "'TO'", "'HAD'", "'HAS'", 
+		"'HAVE'", "'PASSED'", "'WAS'", "'WERE'", "'CLOSIEST'", "'FURTHEST'", "'RANDOM'", 
 		"'STRONGEST'", "'UNIQUE'", "'WEAKEST'", "'MINUTES'", "'SECONDS'", "'*'", 
 		"'/'", "'%'", "'+'", "'-'", "'='", "'>'", "'<'", "'!'", "'.'", "'('", 
 		"')'", "','", "';'", "'@'", "'0'", "'1'", "'2'", "'''", "'\"'", "'`'", 
@@ -80,14 +80,15 @@ public partial class StanleyParser : Parser {
 	};
 	private static readonly string[] _SymbolicNames = {
 		null, "SPACE", "COMMENT", "COMMENT_INPUT", "LINE_COMMENT", "REFER_TO", 
-		"STORY", "SHOULD_BE", "A", "AND", "AT", "AS", "OF", "TO", "HAD", "HAS", 
-		"HAVE", "PASSED", "WAS", "WERE", "CLOSIEST", "FURTHEST", "RANDOM", "STRONGEST", 
-		"UNIQUE", "WEAKEST", "MINUTES", "SECONDS", "STAR", "DIVIDE", "MODULE", 
-		"PLUS", "MINUS", "EQUAL_SYMBOL", "GREATER_SYMBOL", "LESS_SYMBOL", "EXCLAMATION_SYMBOL", 
-		"DOT", "LR_BRACKET", "RR_BRACKET", "COMMA", "SEMI", "AT_SIGN", "ZERO_DECIMAL", 
-		"ONE_DECIMAL", "TWO_DECIMAL", "SINGLE_QUOTE_SYMB", "DOUBLE_QUOTE_SYMB", 
-		"REVERSE_QUOTE_SYMB", "COLON_SYMB", "DOLLAR_SYMB", "STRING_LITERAL", "DECIMAL_LITERAL", 
-		"REAL_LITERAL", "ID", "REVERSE_QUOTE_ID", "ERROR_RECONGNIGION"
+		"STORY", "SHOULD_BE", "A", "THE", "AND", "AT", "AS", "OF", "TO", "HAD", 
+		"HAS", "HAVE", "PASSED", "WAS", "WERE", "CLOSIEST", "FURTHEST", "RANDOM", 
+		"STRONGEST", "UNIQUE", "WEAKEST", "MINUTES", "SECONDS", "STAR", "DIVIDE", 
+		"MODULE", "PLUS", "MINUS", "EQUAL_SYMBOL", "GREATER_SYMBOL", "LESS_SYMBOL", 
+		"EXCLAMATION_SYMBOL", "DOT", "LR_BRACKET", "RR_BRACKET", "COMMA", "SEMI", 
+		"AT_SIGN", "ZERO_DECIMAL", "ONE_DECIMAL", "TWO_DECIMAL", "SINGLE_QUOTE_SYMB", 
+		"DOUBLE_QUOTE_SYMB", "REVERSE_QUOTE_SYMB", "COLON_SYMB", "DOLLAR_SYMB", 
+		"STRING_LITERAL", "DECIMAL_LITERAL", "REAL_LITERAL", "ID", "REVERSE_QUOTE_ID", 
+		"ERROR_RECONGNIGION"
 	};
 	public static readonly IVocabulary DefaultVocabulary = new Vocabulary(_LiteralNames, _SymbolicNames);
 
@@ -152,22 +153,22 @@ public partial class StanleyParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 60;
+			State = 64;
 			storyHeader();
-			State = 62;
+			State = 66;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
 			do {
 				{
 				{
-				State = 61;
+				State = 65;
 				statement();
 				}
 				}
-				State = 64;
+				State = 68;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
-			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & 33776997205279008L) != 0) );
+			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & 67553994410558240L) != 0) );
 			}
 		}
 		catch (RecognitionException re) {
@@ -206,9 +207,9 @@ public partial class StanleyParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 66;
+			State = 70;
 			Match(STORY);
-			State = 67;
+			State = 71;
 			subject();
 			}
 		}
@@ -248,24 +249,25 @@ public partial class StanleyParser : Parser {
 		StatementContext _localctx = new StatementContext(Context, State);
 		EnterRule(_localctx, 4, RULE_statement);
 		try {
-			State = 71;
+			State = 75;
 			ErrorHandler.Sync(this);
 			switch (TokenStream.LA(1)) {
 			case REFER_TO:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 69;
+				State = 73;
 				defineStatement();
 				}
 				break;
 			case A:
+			case THE:
 			case STRING_LITERAL:
 			case DECIMAL_LITERAL:
 			case REAL_LITERAL:
 			case ID:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 70;
+				State = 74;
 				commandStatement();
 				}
 				break;
@@ -290,8 +292,8 @@ public partial class StanleyParser : Parser {
 			return GetRuleContext<RelatableSubjectExpressionContext>(0);
 		}
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode AS() { return GetToken(StanleyParser.AS, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public SubjectContext subject() {
-			return GetRuleContext<SubjectContext>(0);
+		[System.Diagnostics.DebuggerNonUserCode] public DefineSubjectContext defineSubject() {
+			return GetRuleContext<DefineSubjectContext>(0);
 		}
 		public DefineStatementContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -313,13 +315,52 @@ public partial class StanleyParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 73;
+			State = 77;
 			Match(REFER_TO);
-			State = 74;
+			State = 78;
 			relatableSubjectExpression();
-			State = 75;
+			State = 79;
 			Match(AS);
-			State = 76;
+			State = 80;
+			defineSubject();
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class DefineSubjectContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public SubjectContext subject() {
+			return GetRuleContext<SubjectContext>(0);
+		}
+		public DefineSubjectContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_defineSubject; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IStanleyParserVisitor<TResult> typedVisitor = visitor as IStanleyParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitDefineSubject(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public DefineSubjectContext defineSubject() {
+		DefineSubjectContext _localctx = new DefineSubjectContext(Context, State);
+		EnterRule(_localctx, 8, RULE_defineSubject);
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 82;
 			subject();
 			}
 		}
@@ -357,22 +398,22 @@ public partial class StanleyParser : Parser {
 	[RuleVersion(0)]
 	public CommandStatementContext commandStatement() {
 		CommandStatementContext _localctx = new CommandStatementContext(Context, State);
-		EnterRule(_localctx, 8, RULE_commandStatement);
+		EnterRule(_localctx, 10, RULE_commandStatement);
 		try {
-			State = 80;
+			State = 86;
 			ErrorHandler.Sync(this);
 			switch ( Interpreter.AdaptivePredict(TokenStream,2,Context) ) {
 			case 1:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 78;
+				State = 84;
 				actionStatement();
 				}
 				break;
 			case 2:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 79;
+				State = 85;
 				timeStatement();
 				}
 				break;
@@ -417,30 +458,30 @@ public partial class StanleyParser : Parser {
 	[RuleVersion(0)]
 	public TimeStatementContext timeStatement() {
 		TimeStatementContext _localctx = new TimeStatementContext(Context, State);
-		EnterRule(_localctx, 10, RULE_timeStatement);
+		EnterRule(_localctx, 12, RULE_timeStatement);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 82;
+			State = 88;
 			timeExpression();
-			State = 87;
+			State = 93;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
 			while (_la==AND) {
 				{
 				{
-				State = 83;
+				State = 89;
 				Match(AND);
-				State = 84;
+				State = 90;
 				timeExpression();
 				}
 				}
-				State = 89;
+				State = 95;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
 			}
-			State = 90;
+			State = 96;
 			Match(PASSED);
 			}
 		}
@@ -478,24 +519,25 @@ public partial class StanleyParser : Parser {
 	[RuleVersion(0)]
 	public ActionStatementContext actionStatement() {
 		ActionStatementContext _localctx = new ActionStatementContext(Context, State);
-		EnterRule(_localctx, 12, RULE_actionStatement);
+		EnterRule(_localctx, 14, RULE_actionStatement);
 		try {
-			State = 94;
+			State = 100;
 			ErrorHandler.Sync(this);
 			switch (TokenStream.LA(1)) {
 			case A:
+			case THE:
 			case STRING_LITERAL:
 			case DECIMAL_LITERAL:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 92;
+				State = 98;
 				actionWithSubject();
 				}
 				break;
 			case ID:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 93;
+				State = 99;
 				actionWithArguments();
 				}
 				break;
@@ -544,51 +586,51 @@ public partial class StanleyParser : Parser {
 	[RuleVersion(0)]
 	public ActionWithSubjectContext actionWithSubject() {
 		ActionWithSubjectContext _localctx = new ActionWithSubjectContext(Context, State);
-		EnterRule(_localctx, 14, RULE_actionWithSubject);
+		EnterRule(_localctx, 16, RULE_actionWithSubject);
 		int _la;
 		try {
-			State = 112;
+			State = 118;
 			ErrorHandler.Sync(this);
 			switch ( Interpreter.AdaptivePredict(TokenStream,5,Context) ) {
 			case 1:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 96;
+				State = 102;
 				pluralSubjectsExpression();
-				State = 97;
+				State = 103;
 				Match(WERE);
-				State = 98;
+				State = 104;
 				actionWithArguments();
 				}
 				break;
 			case 2:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 100;
+				State = 106;
 				subjectExpression();
-				State = 101;
+				State = 107;
 				Match(WAS);
-				State = 102;
+				State = 108;
 				actionWithArguments();
 				}
 				break;
 			case 3:
 				EnterOuterAlt(_localctx, 3);
 				{
-				State = 104;
+				State = 110;
 				pluralSubjectsExpression();
-				State = 105;
+				State = 111;
 				Match(HAVE);
-				State = 106;
+				State = 112;
 				actionWithArguments();
 				}
 				break;
 			case 4:
 				EnterOuterAlt(_localctx, 4);
 				{
-				State = 108;
+				State = 114;
 				subjectExpression();
-				State = 109;
+				State = 115;
 				_la = TokenStream.LA(1);
 				if ( !(_la==HAS || _la==HAVE) ) {
 				ErrorHandler.RecoverInline(this);
@@ -597,7 +639,7 @@ public partial class StanleyParser : Parser {
 					ErrorHandler.ReportMatch(this);
 				    Consume();
 				}
-				State = 110;
+				State = 116;
 				actionWithArguments();
 				}
 				break;
@@ -637,24 +679,24 @@ public partial class StanleyParser : Parser {
 	[RuleVersion(0)]
 	public ActionWithArgumentsContext actionWithArguments() {
 		ActionWithArgumentsContext _localctx = new ActionWithArgumentsContext(Context, State);
-		EnterRule(_localctx, 16, RULE_actionWithArguments);
+		EnterRule(_localctx, 18, RULE_actionWithArguments);
 		try {
-			State = 118;
+			State = 124;
 			ErrorHandler.Sync(this);
 			switch ( Interpreter.AdaptivePredict(TokenStream,6,Context) ) {
 			case 1:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 114;
+				State = 120;
 				action();
-				State = 115;
+				State = 121;
 				objectArgument();
 				}
 				break;
 			case 2:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 117;
+				State = 123;
 				action();
 				}
 				break;
@@ -696,21 +738,21 @@ public partial class StanleyParser : Parser {
 	[RuleVersion(0)]
 	public ObjectArgumentContext objectArgument() {
 		ObjectArgumentContext _localctx = new ObjectArgumentContext(Context, State);
-		EnterRule(_localctx, 18, RULE_objectArgument);
+		EnterRule(_localctx, 20, RULE_objectArgument);
 		int _la;
 		try {
-			State = 128;
+			State = 134;
 			ErrorHandler.Sync(this);
 			switch ( Interpreter.AdaptivePredict(TokenStream,9,Context) ) {
 			case 1:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 121;
+				State = 127;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
 				if (_la==AT || _la==TO) {
 					{
-					State = 120;
+					State = 126;
 					_la = TokenStream.LA(1);
 					if ( !(_la==AT || _la==TO) ) {
 					ErrorHandler.RecoverInline(this);
@@ -722,19 +764,19 @@ public partial class StanleyParser : Parser {
 					}
 				}
 
-				State = 123;
+				State = 129;
 				pluralObjectsExpression();
 				}
 				break;
 			case 2:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 125;
+				State = 131;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
 				if (_la==AT || _la==TO) {
 					{
-					State = 124;
+					State = 130;
 					_la = TokenStream.LA(1);
 					if ( !(_la==AT || _la==TO) ) {
 					ErrorHandler.RecoverInline(this);
@@ -746,7 +788,7 @@ public partial class StanleyParser : Parser {
 					}
 				}
 
-				State = 127;
+				State = 133;
 				objectExpression();
 				}
 				break;
@@ -786,24 +828,24 @@ public partial class StanleyParser : Parser {
 	[RuleVersion(0)]
 	public PluralSubjectsExpressionContext pluralSubjectsExpression() {
 		PluralSubjectsExpressionContext _localctx = new PluralSubjectsExpressionContext(Context, State);
-		EnterRule(_localctx, 20, RULE_pluralSubjectsExpression);
+		EnterRule(_localctx, 22, RULE_pluralSubjectsExpression);
 		try {
-			State = 134;
+			State = 140;
 			ErrorHandler.Sync(this);
 			switch (TokenStream.LA(1)) {
 			case DECIMAL_LITERAL:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 130;
+				State = 136;
 				integer();
-				State = 131;
+				State = 137;
 				subject();
 				}
 				break;
 			case STRING_LITERAL:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 133;
+				State = 139;
 				subject();
 				}
 				break;
@@ -845,22 +887,22 @@ public partial class StanleyParser : Parser {
 	[RuleVersion(0)]
 	public RelatableSubjectExpressionContext relatableSubjectExpression() {
 		RelatableSubjectExpressionContext _localctx = new RelatableSubjectExpressionContext(Context, State);
-		EnterRule(_localctx, 22, RULE_relatableSubjectExpression);
+		EnterRule(_localctx, 24, RULE_relatableSubjectExpression);
 		try {
-			State = 138;
+			State = 144;
 			ErrorHandler.Sync(this);
 			switch ( Interpreter.AdaptivePredict(TokenStream,11,Context) ) {
 			case 1:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 136;
+				State = 142;
 				relatablePluralSubjectsExpression();
 				}
 				break;
 			case 2:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 137;
+				State = 143;
 				relatableSingleSubjectExpression();
 				}
 				break;
@@ -904,26 +946,26 @@ public partial class StanleyParser : Parser {
 	[RuleVersion(0)]
 	public RelatablePluralSubjectsExpressionContext relatablePluralSubjectsExpression() {
 		RelatablePluralSubjectsExpressionContext _localctx = new RelatablePluralSubjectsExpressionContext(Context, State);
-		EnterRule(_localctx, 24, RULE_relatablePluralSubjectsExpression);
+		EnterRule(_localctx, 26, RULE_relatablePluralSubjectsExpression);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 140;
+			State = 146;
 			relatableSingleSubjectExpression();
-			State = 143;
+			State = 149;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
 			do {
 				{
 				{
-				State = 141;
+				State = 147;
 				Match(AND);
-				State = 142;
+				State = 148;
 				relatableSingleSubjectExpression();
 				}
 				}
-				State = 145;
+				State = 151;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
 			} while ( _la==AND );
@@ -963,22 +1005,22 @@ public partial class StanleyParser : Parser {
 	[RuleVersion(0)]
 	public RelatableSingleSubjectExpressionContext relatableSingleSubjectExpression() {
 		RelatableSingleSubjectExpressionContext _localctx = new RelatableSingleSubjectExpressionContext(Context, State);
-		EnterRule(_localctx, 26, RULE_relatableSingleSubjectExpression);
+		EnterRule(_localctx, 28, RULE_relatableSingleSubjectExpression);
 		try {
-			State = 149;
+			State = 155;
 			ErrorHandler.Sync(this);
 			switch (TokenStream.LA(1)) {
 			case DOLLAR_SYMB:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 147;
+				State = 153;
 				importVariableLiteral();
 				}
 				break;
 			case STRING_LITERAL:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 148;
+				State = 154;
 				subject();
 				}
 				break;
@@ -1020,22 +1062,23 @@ public partial class StanleyParser : Parser {
 	[RuleVersion(0)]
 	public SubjectExpressionContext subjectExpression() {
 		SubjectExpressionContext _localctx = new SubjectExpressionContext(Context, State);
-		EnterRule(_localctx, 28, RULE_subjectExpression);
+		EnterRule(_localctx, 30, RULE_subjectExpression);
 		try {
-			State = 153;
+			State = 159;
 			ErrorHandler.Sync(this);
 			switch (TokenStream.LA(1)) {
 			case A:
+			case THE:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 151;
+				State = 157;
 				selectedSubject();
 				}
 				break;
 			case STRING_LITERAL:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 152;
+				State = 158;
 				subject();
 				}
 				break;
@@ -1069,6 +1112,14 @@ public partial class StanleyParser : Parser {
 		[System.Diagnostics.DebuggerNonUserCode] public AssertAdjectiveContext assertAdjective(int i) {
 			return GetRuleContext<AssertAdjectiveContext>(i);
 		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode THE() { return GetToken(StanleyParser.THE, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public RelativeSelectionAdjectiveContext relativeSelectionAdjective() {
+			return GetRuleContext<RelativeSelectionAdjectiveContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TO() { return GetToken(StanleyParser.TO, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public SubjectExpressionContext subjectExpression() {
+			return GetRuleContext<SubjectExpressionContext>(0);
+		}
 		public SelectedSubjectContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -1085,33 +1136,56 @@ public partial class StanleyParser : Parser {
 	[RuleVersion(0)]
 	public SelectedSubjectContext selectedSubject() {
 		SelectedSubjectContext _localctx = new SelectedSubjectContext(Context, State);
-		EnterRule(_localctx, 30, RULE_selectedSubject);
+		EnterRule(_localctx, 32, RULE_selectedSubject);
 		int _la;
 		try {
-			EnterOuterAlt(_localctx, 1);
-			{
-			State = 155;
-			Match(A);
-			State = 156;
-			selectionAdjective();
-			State = 160;
+			State = 178;
 			ErrorHandler.Sync(this);
-			_la = TokenStream.LA(1);
-			while (_la==UNIQUE) {
+			switch (TokenStream.LA(1)) {
+			case A:
+				EnterOuterAlt(_localctx, 1);
 				{
-				{
-				State = 157;
-				assertAdjective();
-				}
-				}
+				State = 161;
+				Match(A);
 				State = 162;
+				selectionAdjective();
+				State = 166;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
-			}
-			State = 163;
-			Match(OF);
-			State = 164;
-			subject();
+				while (_la==UNIQUE) {
+					{
+					{
+					State = 163;
+					assertAdjective();
+					}
+					}
+					State = 168;
+					ErrorHandler.Sync(this);
+					_la = TokenStream.LA(1);
+				}
+				State = 169;
+				Match(OF);
+				State = 170;
+				subject();
+				}
+				break;
+			case THE:
+				EnterOuterAlt(_localctx, 2);
+				{
+				State = 172;
+				Match(THE);
+				State = 173;
+				relativeSelectionAdjective();
+				State = 174;
+				Match(TO);
+				State = 175;
+				subjectExpression();
+				State = 176;
+				subject();
+				}
+				break;
+			default:
+				throw new NoViableAltException(this);
 			}
 		}
 		catch (RecognitionException re) {
@@ -1151,26 +1225,26 @@ public partial class StanleyParser : Parser {
 	[RuleVersion(0)]
 	public PluralObjectsExpressionContext pluralObjectsExpression() {
 		PluralObjectsExpressionContext _localctx = new PluralObjectsExpressionContext(Context, State);
-		EnterRule(_localctx, 32, RULE_pluralObjectsExpression);
+		EnterRule(_localctx, 34, RULE_pluralObjectsExpression);
 		try {
-			State = 172;
+			State = 186;
 			ErrorHandler.Sync(this);
 			switch (TokenStream.LA(1)) {
 			case DECIMAL_LITERAL:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 166;
+				State = 180;
 				integer();
-				State = 167;
+				State = 181;
 				@object();
 				}
 				break;
 			case REAL_LITERAL:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 169;
+				State = 183;
 				@float();
-				State = 170;
+				State = 184;
 				@object();
 				}
 				break;
@@ -1212,22 +1286,23 @@ public partial class StanleyParser : Parser {
 	[RuleVersion(0)]
 	public ObjectExpressionContext objectExpression() {
 		ObjectExpressionContext _localctx = new ObjectExpressionContext(Context, State);
-		EnterRule(_localctx, 34, RULE_objectExpression);
+		EnterRule(_localctx, 36, RULE_objectExpression);
 		try {
-			State = 176;
+			State = 190;
 			ErrorHandler.Sync(this);
 			switch (TokenStream.LA(1)) {
 			case A:
+			case THE:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 174;
+				State = 188;
 				selectedObject();
 				}
 				break;
 			case STRING_LITERAL:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 175;
+				State = 189;
 				@object();
 				}
 				break;
@@ -1261,6 +1336,14 @@ public partial class StanleyParser : Parser {
 		[System.Diagnostics.DebuggerNonUserCode] public AssertAdjectiveContext assertAdjective(int i) {
 			return GetRuleContext<AssertAdjectiveContext>(i);
 		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode THE() { return GetToken(StanleyParser.THE, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public RelativeSelectionAdjectiveContext relativeSelectionAdjective() {
+			return GetRuleContext<RelativeSelectionAdjectiveContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TO() { return GetToken(StanleyParser.TO, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ObjectExpressionContext objectExpression() {
+			return GetRuleContext<ObjectExpressionContext>(0);
+		}
 		public SelectedObjectContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -1277,33 +1360,56 @@ public partial class StanleyParser : Parser {
 	[RuleVersion(0)]
 	public SelectedObjectContext selectedObject() {
 		SelectedObjectContext _localctx = new SelectedObjectContext(Context, State);
-		EnterRule(_localctx, 36, RULE_selectedObject);
+		EnterRule(_localctx, 38, RULE_selectedObject);
 		int _la;
 		try {
-			EnterOuterAlt(_localctx, 1);
-			{
-			State = 178;
-			Match(A);
-			State = 179;
-			selectionAdjective();
-			State = 183;
+			State = 209;
 			ErrorHandler.Sync(this);
-			_la = TokenStream.LA(1);
-			while (_la==UNIQUE) {
+			switch (TokenStream.LA(1)) {
+			case A:
+				EnterOuterAlt(_localctx, 1);
 				{
-				{
-				State = 180;
-				assertAdjective();
-				}
-				}
-				State = 185;
+				State = 192;
+				Match(A);
+				State = 193;
+				selectionAdjective();
+				State = 197;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
-			}
-			State = 186;
-			Match(OF);
-			State = 187;
-			@object();
+				while (_la==UNIQUE) {
+					{
+					{
+					State = 194;
+					assertAdjective();
+					}
+					}
+					State = 199;
+					ErrorHandler.Sync(this);
+					_la = TokenStream.LA(1);
+				}
+				State = 200;
+				Match(OF);
+				State = 201;
+				@object();
+				}
+				break;
+			case THE:
+				EnterOuterAlt(_localctx, 2);
+				{
+				State = 203;
+				Match(THE);
+				State = 204;
+				relativeSelectionAdjective();
+				State = 205;
+				Match(TO);
+				State = 206;
+				objectExpression();
+				State = 207;
+				@object();
+				}
+				break;
+			default:
+				throw new NoViableAltException(this);
 			}
 		}
 		catch (RecognitionException re) {
@@ -1318,8 +1424,6 @@ public partial class StanleyParser : Parser {
 	}
 
 	public partial class SelectionAdjectiveContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CLOSIEST() { return GetToken(StanleyParser.CLOSIEST, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode FURTHEST() { return GetToken(StanleyParser.FURTHEST, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode RANDOM() { return GetToken(StanleyParser.RANDOM, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode WEAKEST() { return GetToken(StanleyParser.WEAKEST, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode STRONGEST() { return GetToken(StanleyParser.STRONGEST, 0); }
@@ -1339,14 +1443,60 @@ public partial class StanleyParser : Parser {
 	[RuleVersion(0)]
 	public SelectionAdjectiveContext selectionAdjective() {
 		SelectionAdjectiveContext _localctx = new SelectionAdjectiveContext(Context, State);
-		EnterRule(_localctx, 38, RULE_selectionAdjective);
+		EnterRule(_localctx, 40, RULE_selectionAdjective);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 189;
+			State = 211;
 			_la = TokenStream.LA(1);
-			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 49283072L) != 0)) ) {
+			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 92274688L) != 0)) ) {
+			ErrorHandler.RecoverInline(this);
+			}
+			else {
+				ErrorHandler.ReportMatch(this);
+			    Consume();
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class RelativeSelectionAdjectiveContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CLOSIEST() { return GetToken(StanleyParser.CLOSIEST, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode FURTHEST() { return GetToken(StanleyParser.FURTHEST, 0); }
+		public RelativeSelectionAdjectiveContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_relativeSelectionAdjective; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IStanleyParserVisitor<TResult> typedVisitor = visitor as IStanleyParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitRelativeSelectionAdjective(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public RelativeSelectionAdjectiveContext relativeSelectionAdjective() {
+		RelativeSelectionAdjectiveContext _localctx = new RelativeSelectionAdjectiveContext(Context, State);
+		EnterRule(_localctx, 42, RULE_relativeSelectionAdjective);
+		int _la;
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 213;
+			_la = TokenStream.LA(1);
+			if ( !(_la==CLOSIEST || _la==FURTHEST) ) {
 			ErrorHandler.RecoverInline(this);
 			}
 			else {
@@ -1384,11 +1534,11 @@ public partial class StanleyParser : Parser {
 	[RuleVersion(0)]
 	public AssertAdjectiveContext assertAdjective() {
 		AssertAdjectiveContext _localctx = new AssertAdjectiveContext(Context, State);
-		EnterRule(_localctx, 40, RULE_assertAdjective);
+		EnterRule(_localctx, 44, RULE_assertAdjective);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 191;
+			State = 215;
 			Match(UNIQUE);
 			}
 		}
@@ -1429,26 +1579,26 @@ public partial class StanleyParser : Parser {
 	[RuleVersion(0)]
 	public TimeExpressionContext timeExpression() {
 		TimeExpressionContext _localctx = new TimeExpressionContext(Context, State);
-		EnterRule(_localctx, 42, RULE_timeExpression);
+		EnterRule(_localctx, 46, RULE_timeExpression);
 		try {
-			State = 199;
+			State = 223;
 			ErrorHandler.Sync(this);
 			switch (TokenStream.LA(1)) {
 			case DECIMAL_LITERAL:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 193;
+				State = 217;
 				integer();
-				State = 194;
+				State = 218;
 				timeStep();
 				}
 				break;
 			case REAL_LITERAL:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 196;
+				State = 220;
 				@float();
-				State = 197;
+				State = 221;
 				timeStep();
 				}
 				break;
@@ -1486,12 +1636,12 @@ public partial class StanleyParser : Parser {
 	[RuleVersion(0)]
 	public TimeStepContext timeStep() {
 		TimeStepContext _localctx = new TimeStepContext(Context, State);
-		EnterRule(_localctx, 44, RULE_timeStep);
+		EnterRule(_localctx, 48, RULE_timeStep);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 201;
+			State = 225;
 			_la = TokenStream.LA(1);
 			if ( !(_la==MINUTES || _la==SECONDS) ) {
 			ErrorHandler.RecoverInline(this);
@@ -1531,11 +1681,11 @@ public partial class StanleyParser : Parser {
 	[RuleVersion(0)]
 	public SubjectContext subject() {
 		SubjectContext _localctx = new SubjectContext(Context, State);
-		EnterRule(_localctx, 46, RULE_subject);
+		EnterRule(_localctx, 50, RULE_subject);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 203;
+			State = 227;
 			Match(STRING_LITERAL);
 			}
 		}
@@ -1568,11 +1718,11 @@ public partial class StanleyParser : Parser {
 	[RuleVersion(0)]
 	public ObjectContext @object() {
 		ObjectContext _localctx = new ObjectContext(Context, State);
-		EnterRule(_localctx, 48, RULE_object);
+		EnterRule(_localctx, 52, RULE_object);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 205;
+			State = 229;
 			Match(STRING_LITERAL);
 			}
 		}
@@ -1607,11 +1757,11 @@ public partial class StanleyParser : Parser {
 	[RuleVersion(0)]
 	public ActionContext action() {
 		ActionContext _localctx = new ActionContext(Context, State);
-		EnterRule(_localctx, 50, RULE_action);
+		EnterRule(_localctx, 54, RULE_action);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 207;
+			State = 231;
 			idLiteral();
 			}
 		}
@@ -1647,13 +1797,13 @@ public partial class StanleyParser : Parser {
 	[RuleVersion(0)]
 	public ImportVariableLiteralContext importVariableLiteral() {
 		ImportVariableLiteralContext _localctx = new ImportVariableLiteralContext(Context, State);
-		EnterRule(_localctx, 52, RULE_importVariableLiteral);
+		EnterRule(_localctx, 56, RULE_importVariableLiteral);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 209;
+			State = 233;
 			Match(DOLLAR_SYMB);
-			State = 210;
+			State = 234;
 			idLiteral();
 			}
 		}
@@ -1686,11 +1836,11 @@ public partial class StanleyParser : Parser {
 	[RuleVersion(0)]
 	public IntegerContext integer() {
 		IntegerContext _localctx = new IntegerContext(Context, State);
-		EnterRule(_localctx, 54, RULE_integer);
+		EnterRule(_localctx, 58, RULE_integer);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 212;
+			State = 236;
 			Match(DECIMAL_LITERAL);
 			}
 		}
@@ -1723,11 +1873,11 @@ public partial class StanleyParser : Parser {
 	[RuleVersion(0)]
 	public FloatContext @float() {
 		FloatContext _localctx = new FloatContext(Context, State);
-		EnterRule(_localctx, 56, RULE_float);
+		EnterRule(_localctx, 60, RULE_float);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 214;
+			State = 238;
 			Match(REAL_LITERAL);
 			}
 		}
@@ -1760,11 +1910,11 @@ public partial class StanleyParser : Parser {
 	[RuleVersion(0)]
 	public IdLiteralContext idLiteral() {
 		IdLiteralContext _localctx = new IdLiteralContext(Context, State);
-		EnterRule(_localctx, 58, RULE_idLiteral);
+		EnterRule(_localctx, 62, RULE_idLiteral);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 216;
+			State = 240;
 			Match(ID);
 			}
 		}
@@ -1780,72 +1930,80 @@ public partial class StanleyParser : Parser {
 	}
 
 	private static int[] _serializedATN = {
-		4,1,56,219,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,6,2,7,
+		4,1,57,243,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,6,2,7,
 		7,7,2,8,7,8,2,9,7,9,2,10,7,10,2,11,7,11,2,12,7,12,2,13,7,13,2,14,7,14,
 		2,15,7,15,2,16,7,16,2,17,7,17,2,18,7,18,2,19,7,19,2,20,7,20,2,21,7,21,
 		2,22,7,22,2,23,7,23,2,24,7,24,2,25,7,25,2,26,7,26,2,27,7,27,2,28,7,28,
-		2,29,7,29,1,0,1,0,4,0,63,8,0,11,0,12,0,64,1,1,1,1,1,1,1,2,1,2,3,2,72,8,
-		2,1,3,1,3,1,3,1,3,1,3,1,4,1,4,3,4,81,8,4,1,5,1,5,1,5,5,5,86,8,5,10,5,12,
-		5,89,9,5,1,5,1,5,1,6,1,6,3,6,95,8,6,1,7,1,7,1,7,1,7,1,7,1,7,1,7,1,7,1,
-		7,1,7,1,7,1,7,1,7,1,7,1,7,1,7,3,7,113,8,7,1,8,1,8,1,8,1,8,3,8,119,8,8,
-		1,9,3,9,122,8,9,1,9,1,9,3,9,126,8,9,1,9,3,9,129,8,9,1,10,1,10,1,10,1,10,
-		3,10,135,8,10,1,11,1,11,3,11,139,8,11,1,12,1,12,1,12,4,12,144,8,12,11,
-		12,12,12,145,1,13,1,13,3,13,150,8,13,1,14,1,14,3,14,154,8,14,1,15,1,15,
-		1,15,5,15,159,8,15,10,15,12,15,162,9,15,1,15,1,15,1,15,1,16,1,16,1,16,
-		1,16,1,16,1,16,3,16,173,8,16,1,17,1,17,3,17,177,8,17,1,18,1,18,1,18,5,
-		18,182,8,18,10,18,12,18,185,9,18,1,18,1,18,1,18,1,19,1,19,1,20,1,20,1,
-		21,1,21,1,21,1,21,1,21,1,21,3,21,200,8,21,1,22,1,22,1,23,1,23,1,24,1,24,
-		1,25,1,25,1,26,1,26,1,26,1,27,1,27,1,28,1,28,1,29,1,29,1,29,0,0,30,0,2,
-		4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,44,46,48,50,52,
-		54,56,58,0,4,1,0,15,16,2,0,10,10,13,13,2,0,20,23,25,25,1,0,26,27,210,0,
-		60,1,0,0,0,2,66,1,0,0,0,4,71,1,0,0,0,6,73,1,0,0,0,8,80,1,0,0,0,10,82,1,
-		0,0,0,12,94,1,0,0,0,14,112,1,0,0,0,16,118,1,0,0,0,18,128,1,0,0,0,20,134,
-		1,0,0,0,22,138,1,0,0,0,24,140,1,0,0,0,26,149,1,0,0,0,28,153,1,0,0,0,30,
-		155,1,0,0,0,32,172,1,0,0,0,34,176,1,0,0,0,36,178,1,0,0,0,38,189,1,0,0,
-		0,40,191,1,0,0,0,42,199,1,0,0,0,44,201,1,0,0,0,46,203,1,0,0,0,48,205,1,
-		0,0,0,50,207,1,0,0,0,52,209,1,0,0,0,54,212,1,0,0,0,56,214,1,0,0,0,58,216,
-		1,0,0,0,60,62,3,2,1,0,61,63,3,4,2,0,62,61,1,0,0,0,63,64,1,0,0,0,64,62,
-		1,0,0,0,64,65,1,0,0,0,65,1,1,0,0,0,66,67,5,6,0,0,67,68,3,46,23,0,68,3,
-		1,0,0,0,69,72,3,6,3,0,70,72,3,8,4,0,71,69,1,0,0,0,71,70,1,0,0,0,72,5,1,
-		0,0,0,73,74,5,5,0,0,74,75,3,22,11,0,75,76,5,11,0,0,76,77,3,46,23,0,77,
-		7,1,0,0,0,78,81,3,12,6,0,79,81,3,10,5,0,80,78,1,0,0,0,80,79,1,0,0,0,81,
-		9,1,0,0,0,82,87,3,42,21,0,83,84,5,9,0,0,84,86,3,42,21,0,85,83,1,0,0,0,
-		86,89,1,0,0,0,87,85,1,0,0,0,87,88,1,0,0,0,88,90,1,0,0,0,89,87,1,0,0,0,
-		90,91,5,17,0,0,91,11,1,0,0,0,92,95,3,14,7,0,93,95,3,16,8,0,94,92,1,0,0,
-		0,94,93,1,0,0,0,95,13,1,0,0,0,96,97,3,20,10,0,97,98,5,19,0,0,98,99,3,16,
-		8,0,99,113,1,0,0,0,100,101,3,28,14,0,101,102,5,18,0,0,102,103,3,16,8,0,
-		103,113,1,0,0,0,104,105,3,20,10,0,105,106,5,16,0,0,106,107,3,16,8,0,107,
-		113,1,0,0,0,108,109,3,28,14,0,109,110,7,0,0,0,110,111,3,16,8,0,111,113,
-		1,0,0,0,112,96,1,0,0,0,112,100,1,0,0,0,112,104,1,0,0,0,112,108,1,0,0,0,
-		113,15,1,0,0,0,114,115,3,50,25,0,115,116,3,18,9,0,116,119,1,0,0,0,117,
-		119,3,50,25,0,118,114,1,0,0,0,118,117,1,0,0,0,119,17,1,0,0,0,120,122,7,
-		1,0,0,121,120,1,0,0,0,121,122,1,0,0,0,122,123,1,0,0,0,123,129,3,32,16,
-		0,124,126,7,1,0,0,125,124,1,0,0,0,125,126,1,0,0,0,126,127,1,0,0,0,127,
-		129,3,34,17,0,128,121,1,0,0,0,128,125,1,0,0,0,129,19,1,0,0,0,130,131,3,
-		54,27,0,131,132,3,46,23,0,132,135,1,0,0,0,133,135,3,46,23,0,134,130,1,
-		0,0,0,134,133,1,0,0,0,135,21,1,0,0,0,136,139,3,24,12,0,137,139,3,26,13,
-		0,138,136,1,0,0,0,138,137,1,0,0,0,139,23,1,0,0,0,140,143,3,26,13,0,141,
-		142,5,9,0,0,142,144,3,26,13,0,143,141,1,0,0,0,144,145,1,0,0,0,145,143,
-		1,0,0,0,145,146,1,0,0,0,146,25,1,0,0,0,147,150,3,52,26,0,148,150,3,46,
-		23,0,149,147,1,0,0,0,149,148,1,0,0,0,150,27,1,0,0,0,151,154,3,30,15,0,
-		152,154,3,46,23,0,153,151,1,0,0,0,153,152,1,0,0,0,154,29,1,0,0,0,155,156,
-		5,8,0,0,156,160,3,38,19,0,157,159,3,40,20,0,158,157,1,0,0,0,159,162,1,
-		0,0,0,160,158,1,0,0,0,160,161,1,0,0,0,161,163,1,0,0,0,162,160,1,0,0,0,
-		163,164,5,12,0,0,164,165,3,46,23,0,165,31,1,0,0,0,166,167,3,54,27,0,167,
-		168,3,48,24,0,168,173,1,0,0,0,169,170,3,56,28,0,170,171,3,48,24,0,171,
-		173,1,0,0,0,172,166,1,0,0,0,172,169,1,0,0,0,173,33,1,0,0,0,174,177,3,36,
-		18,0,175,177,3,48,24,0,176,174,1,0,0,0,176,175,1,0,0,0,177,35,1,0,0,0,
-		178,179,5,8,0,0,179,183,3,38,19,0,180,182,3,40,20,0,181,180,1,0,0,0,182,
-		185,1,0,0,0,183,181,1,0,0,0,183,184,1,0,0,0,184,186,1,0,0,0,185,183,1,
-		0,0,0,186,187,5,12,0,0,187,188,3,48,24,0,188,37,1,0,0,0,189,190,7,2,0,
-		0,190,39,1,0,0,0,191,192,5,24,0,0,192,41,1,0,0,0,193,194,3,54,27,0,194,
-		195,3,44,22,0,195,200,1,0,0,0,196,197,3,56,28,0,197,198,3,44,22,0,198,
-		200,1,0,0,0,199,193,1,0,0,0,199,196,1,0,0,0,200,43,1,0,0,0,201,202,7,3,
-		0,0,202,45,1,0,0,0,203,204,5,51,0,0,204,47,1,0,0,0,205,206,5,51,0,0,206,
-		49,1,0,0,0,207,208,3,58,29,0,208,51,1,0,0,0,209,210,5,50,0,0,210,211,3,
-		58,29,0,211,53,1,0,0,0,212,213,5,52,0,0,213,55,1,0,0,0,214,215,5,53,0,
-		0,215,57,1,0,0,0,216,217,5,54,0,0,217,59,1,0,0,0,20,64,71,80,87,94,112,
-		118,121,125,128,134,138,145,149,153,160,172,176,183,199
+		2,29,7,29,2,30,7,30,2,31,7,31,1,0,1,0,4,0,67,8,0,11,0,12,0,68,1,1,1,1,
+		1,1,1,2,1,2,3,2,76,8,2,1,3,1,3,1,3,1,3,1,3,1,4,1,4,1,5,1,5,3,5,87,8,5,
+		1,6,1,6,1,6,5,6,92,8,6,10,6,12,6,95,9,6,1,6,1,6,1,7,1,7,3,7,101,8,7,1,
+		8,1,8,1,8,1,8,1,8,1,8,1,8,1,8,1,8,1,8,1,8,1,8,1,8,1,8,1,8,1,8,3,8,119,
+		8,8,1,9,1,9,1,9,1,9,3,9,125,8,9,1,10,3,10,128,8,10,1,10,1,10,3,10,132,
+		8,10,1,10,3,10,135,8,10,1,11,1,11,1,11,1,11,3,11,141,8,11,1,12,1,12,3,
+		12,145,8,12,1,13,1,13,1,13,4,13,150,8,13,11,13,12,13,151,1,14,1,14,3,14,
+		156,8,14,1,15,1,15,3,15,160,8,15,1,16,1,16,1,16,5,16,165,8,16,10,16,12,
+		16,168,9,16,1,16,1,16,1,16,1,16,1,16,1,16,1,16,1,16,1,16,3,16,179,8,16,
+		1,17,1,17,1,17,1,17,1,17,1,17,3,17,187,8,17,1,18,1,18,3,18,191,8,18,1,
+		19,1,19,1,19,5,19,196,8,19,10,19,12,19,199,9,19,1,19,1,19,1,19,1,19,1,
+		19,1,19,1,19,1,19,1,19,3,19,210,8,19,1,20,1,20,1,21,1,21,1,22,1,22,1,23,
+		1,23,1,23,1,23,1,23,1,23,3,23,224,8,23,1,24,1,24,1,25,1,25,1,26,1,26,1,
+		27,1,27,1,28,1,28,1,28,1,29,1,29,1,30,1,30,1,31,1,31,1,31,0,0,32,0,2,4,
+		6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,44,46,48,50,52,
+		54,56,58,60,62,0,5,1,0,16,17,2,0,11,11,14,14,2,0,23,24,26,26,1,0,21,22,
+		1,0,27,28,234,0,64,1,0,0,0,2,70,1,0,0,0,4,75,1,0,0,0,6,77,1,0,0,0,8,82,
+		1,0,0,0,10,86,1,0,0,0,12,88,1,0,0,0,14,100,1,0,0,0,16,118,1,0,0,0,18,124,
+		1,0,0,0,20,134,1,0,0,0,22,140,1,0,0,0,24,144,1,0,0,0,26,146,1,0,0,0,28,
+		155,1,0,0,0,30,159,1,0,0,0,32,178,1,0,0,0,34,186,1,0,0,0,36,190,1,0,0,
+		0,38,209,1,0,0,0,40,211,1,0,0,0,42,213,1,0,0,0,44,215,1,0,0,0,46,223,1,
+		0,0,0,48,225,1,0,0,0,50,227,1,0,0,0,52,229,1,0,0,0,54,231,1,0,0,0,56,233,
+		1,0,0,0,58,236,1,0,0,0,60,238,1,0,0,0,62,240,1,0,0,0,64,66,3,2,1,0,65,
+		67,3,4,2,0,66,65,1,0,0,0,67,68,1,0,0,0,68,66,1,0,0,0,68,69,1,0,0,0,69,
+		1,1,0,0,0,70,71,5,6,0,0,71,72,3,50,25,0,72,3,1,0,0,0,73,76,3,6,3,0,74,
+		76,3,10,5,0,75,73,1,0,0,0,75,74,1,0,0,0,76,5,1,0,0,0,77,78,5,5,0,0,78,
+		79,3,24,12,0,79,80,5,12,0,0,80,81,3,8,4,0,81,7,1,0,0,0,82,83,3,50,25,0,
+		83,9,1,0,0,0,84,87,3,14,7,0,85,87,3,12,6,0,86,84,1,0,0,0,86,85,1,0,0,0,
+		87,11,1,0,0,0,88,93,3,46,23,0,89,90,5,10,0,0,90,92,3,46,23,0,91,89,1,0,
+		0,0,92,95,1,0,0,0,93,91,1,0,0,0,93,94,1,0,0,0,94,96,1,0,0,0,95,93,1,0,
+		0,0,96,97,5,18,0,0,97,13,1,0,0,0,98,101,3,16,8,0,99,101,3,18,9,0,100,98,
+		1,0,0,0,100,99,1,0,0,0,101,15,1,0,0,0,102,103,3,22,11,0,103,104,5,20,0,
+		0,104,105,3,18,9,0,105,119,1,0,0,0,106,107,3,30,15,0,107,108,5,19,0,0,
+		108,109,3,18,9,0,109,119,1,0,0,0,110,111,3,22,11,0,111,112,5,17,0,0,112,
+		113,3,18,9,0,113,119,1,0,0,0,114,115,3,30,15,0,115,116,7,0,0,0,116,117,
+		3,18,9,0,117,119,1,0,0,0,118,102,1,0,0,0,118,106,1,0,0,0,118,110,1,0,0,
+		0,118,114,1,0,0,0,119,17,1,0,0,0,120,121,3,54,27,0,121,122,3,20,10,0,122,
+		125,1,0,0,0,123,125,3,54,27,0,124,120,1,0,0,0,124,123,1,0,0,0,125,19,1,
+		0,0,0,126,128,7,1,0,0,127,126,1,0,0,0,127,128,1,0,0,0,128,129,1,0,0,0,
+		129,135,3,34,17,0,130,132,7,1,0,0,131,130,1,0,0,0,131,132,1,0,0,0,132,
+		133,1,0,0,0,133,135,3,36,18,0,134,127,1,0,0,0,134,131,1,0,0,0,135,21,1,
+		0,0,0,136,137,3,58,29,0,137,138,3,50,25,0,138,141,1,0,0,0,139,141,3,50,
+		25,0,140,136,1,0,0,0,140,139,1,0,0,0,141,23,1,0,0,0,142,145,3,26,13,0,
+		143,145,3,28,14,0,144,142,1,0,0,0,144,143,1,0,0,0,145,25,1,0,0,0,146,149,
+		3,28,14,0,147,148,5,10,0,0,148,150,3,28,14,0,149,147,1,0,0,0,150,151,1,
+		0,0,0,151,149,1,0,0,0,151,152,1,0,0,0,152,27,1,0,0,0,153,156,3,56,28,0,
+		154,156,3,50,25,0,155,153,1,0,0,0,155,154,1,0,0,0,156,29,1,0,0,0,157,160,
+		3,32,16,0,158,160,3,50,25,0,159,157,1,0,0,0,159,158,1,0,0,0,160,31,1,0,
+		0,0,161,162,5,8,0,0,162,166,3,40,20,0,163,165,3,44,22,0,164,163,1,0,0,
+		0,165,168,1,0,0,0,166,164,1,0,0,0,166,167,1,0,0,0,167,169,1,0,0,0,168,
+		166,1,0,0,0,169,170,5,13,0,0,170,171,3,50,25,0,171,179,1,0,0,0,172,173,
+		5,9,0,0,173,174,3,42,21,0,174,175,5,14,0,0,175,176,3,30,15,0,176,177,3,
+		50,25,0,177,179,1,0,0,0,178,161,1,0,0,0,178,172,1,0,0,0,179,33,1,0,0,0,
+		180,181,3,58,29,0,181,182,3,52,26,0,182,187,1,0,0,0,183,184,3,60,30,0,
+		184,185,3,52,26,0,185,187,1,0,0,0,186,180,1,0,0,0,186,183,1,0,0,0,187,
+		35,1,0,0,0,188,191,3,38,19,0,189,191,3,52,26,0,190,188,1,0,0,0,190,189,
+		1,0,0,0,191,37,1,0,0,0,192,193,5,8,0,0,193,197,3,40,20,0,194,196,3,44,
+		22,0,195,194,1,0,0,0,196,199,1,0,0,0,197,195,1,0,0,0,197,198,1,0,0,0,198,
+		200,1,0,0,0,199,197,1,0,0,0,200,201,5,13,0,0,201,202,3,52,26,0,202,210,
+		1,0,0,0,203,204,5,9,0,0,204,205,3,42,21,0,205,206,5,14,0,0,206,207,3,36,
+		18,0,207,208,3,52,26,0,208,210,1,0,0,0,209,192,1,0,0,0,209,203,1,0,0,0,
+		210,39,1,0,0,0,211,212,7,2,0,0,212,41,1,0,0,0,213,214,7,3,0,0,214,43,1,
+		0,0,0,215,216,5,25,0,0,216,45,1,0,0,0,217,218,3,58,29,0,218,219,3,48,24,
+		0,219,224,1,0,0,0,220,221,3,60,30,0,221,222,3,48,24,0,222,224,1,0,0,0,
+		223,217,1,0,0,0,223,220,1,0,0,0,224,47,1,0,0,0,225,226,7,4,0,0,226,49,
+		1,0,0,0,227,228,5,52,0,0,228,51,1,0,0,0,229,230,5,52,0,0,230,53,1,0,0,
+		0,231,232,3,62,31,0,232,55,1,0,0,0,233,234,5,51,0,0,234,235,3,62,31,0,
+		235,57,1,0,0,0,236,237,5,53,0,0,237,59,1,0,0,0,238,239,5,54,0,0,239,61,
+		1,0,0,0,240,241,5,55,0,0,241,63,1,0,0,0,22,68,75,86,93,100,118,124,127,
+		131,134,140,144,151,155,159,166,178,186,190,197,209,223
 	};
 
 	public static readonly ATN _ATN =

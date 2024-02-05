@@ -10,6 +10,8 @@ namespace HereticalSolutions.StanleyScript
 
 		public string Opcode => "OP_READ_STORY";
 
+		public string[] Aliases => null;
+
 		public virtual bool WillHandle(
 			string[] instructionTokens,
 			StanleyEnvironment environment)
@@ -20,7 +22,7 @@ namespace HereticalSolutions.StanleyScript
 			return true;
 		}
 
-		public virtual async Task Handle(
+		public virtual async Task<bool> Handle(
 			string[] instructionTokens,
 			StanleyEnvironment environment,
 			CancellationToken token)
@@ -35,14 +37,14 @@ namespace HereticalSolutions.StanleyScript
 			{
 				logger.Log("INVALID STACK VARIABLE");
 
-				return;
+				return false;
 			}
 
 			if (storyName.VariableType != typeof(string))
 			{
 				logger.Log($"INVALID STACK VARIABLE TYPE. EXPECTED: {typeof(string).Name} ACTUAL: {storyName.VariableType.Name}");
 
-				return;
+				return false;
 			}
 
 			var storyNameString = storyName.GetValue<string>();
@@ -51,10 +53,12 @@ namespace HereticalSolutions.StanleyScript
 			{
 				logger.Log("INVALID STORY NAME");
 
-				return;
+				return false;
 			}
 
 			logger.Log($"STARTING STORY: {storyNameString}");
+
+			return true;
 		}
 
 		#endregion
