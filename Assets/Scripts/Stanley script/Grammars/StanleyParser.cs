@@ -50,23 +50,25 @@ public partial class StanleyParser : Parser {
 	public const int
 		RULE_script = 0, RULE_storyHeader = 1, RULE_statement = 2, RULE_defineStatement = 3, 
 		RULE_defineSubject = 4, RULE_commandStatement = 5, RULE_timeStatement = 6, 
-		RULE_actionStatement = 7, RULE_actionWithSubject = 8, RULE_actionWithArguments = 9, 
-		RULE_objectArgument = 10, RULE_pluralSubjectsExpression = 11, RULE_relatableSubjectExpression = 12, 
-		RULE_relatablePluralSubjectsExpression = 13, RULE_relatableSingleSubjectExpression = 14, 
-		RULE_subjectExpression = 15, RULE_selectedSubject = 16, RULE_pluralObjectsExpression = 17, 
-		RULE_objectExpression = 18, RULE_selectedObject = 19, RULE_selectionAdjective = 20, 
-		RULE_relativeSelectionAdjective = 21, RULE_assertAdjective = 22, RULE_timeExpression = 23, 
-		RULE_timeStep = 24, RULE_subject = 25, RULE_object = 26, RULE_action = 27, 
-		RULE_importVariableLiteral = 28, RULE_integer = 29, RULE_float = 30, RULE_idLiteral = 31;
+		RULE_actionStatement = 7, RULE_actionExpression = 8, RULE_actionWithArguments = 9, 
+		RULE_objectArgument = 10, RULE_pluralSubjectsExpression = 11, RULE_subjectExpression = 12, 
+		RULE_selectedSubject = 13, RULE_subjectSelectedByQuality = 14, RULE_subjectSelectedInRelation = 15, 
+		RULE_pluralObjectsExpression = 16, RULE_objectExpression = 17, RULE_selectedObject = 18, 
+		RULE_objectSelectedByQuality = 19, RULE_objectSelectedInRelation = 20, 
+		RULE_selectionAdjective = 21, RULE_relativeSelectionAdjective = 22, RULE_assertAdjective = 23, 
+		RULE_timeExpression = 24, RULE_timeStep = 25, RULE_subject = 26, RULE_object = 27, 
+		RULE_action = 28, RULE_importVariableLiteral = 29, RULE_runtimeVariableLiteral = 30, 
+		RULE_integer = 31, RULE_float = 32;
 	public static readonly string[] ruleNames = {
 		"script", "storyHeader", "statement", "defineStatement", "defineSubject", 
-		"commandStatement", "timeStatement", "actionStatement", "actionWithSubject", 
-		"actionWithArguments", "objectArgument", "pluralSubjectsExpression", "relatableSubjectExpression", 
-		"relatablePluralSubjectsExpression", "relatableSingleSubjectExpression", 
-		"subjectExpression", "selectedSubject", "pluralObjectsExpression", "objectExpression", 
-		"selectedObject", "selectionAdjective", "relativeSelectionAdjective", 
+		"commandStatement", "timeStatement", "actionStatement", "actionExpression", 
+		"actionWithArguments", "objectArgument", "pluralSubjectsExpression", "subjectExpression", 
+		"selectedSubject", "subjectSelectedByQuality", "subjectSelectedInRelation", 
+		"pluralObjectsExpression", "objectExpression", "selectedObject", "objectSelectedByQuality", 
+		"objectSelectedInRelation", "selectionAdjective", "relativeSelectionAdjective", 
 		"assertAdjective", "timeExpression", "timeStep", "subject", "object", 
-		"action", "importVariableLiteral", "integer", "float", "idLiteral"
+		"action", "importVariableLiteral", "runtimeVariableLiteral", "integer", 
+		"float"
 	};
 
 	private static readonly string[] _LiteralNames = {
@@ -153,22 +155,22 @@ public partial class StanleyParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 64;
-			storyHeader();
 			State = 66;
+			storyHeader();
+			State = 68;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
 			do {
 				{
 				{
-				State = 65;
+				State = 67;
 				statement();
 				}
 				}
-				State = 68;
+				State = 70;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
-			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & 67553994410558240L) != 0) );
+			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & 69805794224243488L) != 0) );
 			}
 		}
 		catch (RecognitionException re) {
@@ -184,8 +186,8 @@ public partial class StanleyParser : Parser {
 
 	public partial class StoryHeaderContext : ParserRuleContext {
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode STORY() { return GetToken(StanleyParser.STORY, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public SubjectContext subject() {
-			return GetRuleContext<SubjectContext>(0);
+		[System.Diagnostics.DebuggerNonUserCode] public ObjectContext @object() {
+			return GetRuleContext<ObjectContext>(0);
 		}
 		public StoryHeaderContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -207,10 +209,10 @@ public partial class StanleyParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 70;
+			State = 72;
 			Match(STORY);
-			State = 71;
-			subject();
+			State = 73;
+			@object();
 			}
 		}
 		catch (RecognitionException re) {
@@ -249,25 +251,26 @@ public partial class StanleyParser : Parser {
 		StatementContext _localctx = new StatementContext(Context, State);
 		EnterRule(_localctx, 4, RULE_statement);
 		try {
-			State = 75;
+			State = 77;
 			ErrorHandler.Sync(this);
 			switch (TokenStream.LA(1)) {
 			case REFER_TO:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 73;
+				State = 75;
 				defineStatement();
 				}
 				break;
 			case A:
 			case THE:
+			case DOLLAR_SYMB:
 			case STRING_LITERAL:
 			case DECIMAL_LITERAL:
 			case REAL_LITERAL:
 			case ID:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 74;
+				State = 76;
 				commandStatement();
 				}
 				break;
@@ -288,12 +291,12 @@ public partial class StanleyParser : Parser {
 
 	public partial class DefineStatementContext : ParserRuleContext {
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode REFER_TO() { return GetToken(StanleyParser.REFER_TO, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public RelatableSubjectExpressionContext relatableSubjectExpression() {
-			return GetRuleContext<RelatableSubjectExpressionContext>(0);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode AS() { return GetToken(StanleyParser.AS, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public DefineSubjectContext defineSubject() {
 			return GetRuleContext<DefineSubjectContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode AS() { return GetToken(StanleyParser.AS, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ObjectContext @object() {
+			return GetRuleContext<ObjectContext>(0);
 		}
 		public DefineStatementContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -315,14 +318,14 @@ public partial class StanleyParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 77;
-			Match(REFER_TO);
-			State = 78;
-			relatableSubjectExpression();
 			State = 79;
-			Match(AS);
+			Match(REFER_TO);
 			State = 80;
 			defineSubject();
+			State = 81;
+			Match(AS);
+			State = 82;
+			@object();
 			}
 		}
 		catch (RecognitionException re) {
@@ -337,8 +340,11 @@ public partial class StanleyParser : Parser {
 	}
 
 	public partial class DefineSubjectContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public SubjectContext subject() {
-			return GetRuleContext<SubjectContext>(0);
+		[System.Diagnostics.DebuggerNonUserCode] public PluralSubjectsExpressionContext pluralSubjectsExpression() {
+			return GetRuleContext<PluralSubjectsExpressionContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public SubjectExpressionContext subjectExpression() {
+			return GetRuleContext<SubjectExpressionContext>(0);
 		}
 		public DefineSubjectContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -358,10 +364,23 @@ public partial class StanleyParser : Parser {
 		DefineSubjectContext _localctx = new DefineSubjectContext(Context, State);
 		EnterRule(_localctx, 8, RULE_defineSubject);
 		try {
-			EnterOuterAlt(_localctx, 1);
-			{
-			State = 82;
-			subject();
+			State = 86;
+			ErrorHandler.Sync(this);
+			switch ( Interpreter.AdaptivePredict(TokenStream,2,Context) ) {
+			case 1:
+				EnterOuterAlt(_localctx, 1);
+				{
+				State = 84;
+				pluralSubjectsExpression();
+				}
+				break;
+			case 2:
+				EnterOuterAlt(_localctx, 2);
+				{
+				State = 85;
+				subjectExpression();
+				}
+				break;
 			}
 		}
 		catch (RecognitionException re) {
@@ -400,23 +419,30 @@ public partial class StanleyParser : Parser {
 		CommandStatementContext _localctx = new CommandStatementContext(Context, State);
 		EnterRule(_localctx, 10, RULE_commandStatement);
 		try {
-			State = 86;
+			State = 90;
 			ErrorHandler.Sync(this);
-			switch ( Interpreter.AdaptivePredict(TokenStream,2,Context) ) {
-			case 1:
+			switch (TokenStream.LA(1)) {
+			case A:
+			case THE:
+			case DOLLAR_SYMB:
+			case STRING_LITERAL:
+			case ID:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 84;
+				State = 88;
 				actionStatement();
 				}
 				break;
-			case 2:
+			case DECIMAL_LITERAL:
+			case REAL_LITERAL:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 85;
+				State = 89;
 				timeStatement();
 				}
 				break;
+			default:
+				throw new NoViableAltException(this);
 			}
 		}
 		catch (RecognitionException re) {
@@ -463,25 +489,25 @@ public partial class StanleyParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 88;
+			State = 92;
 			timeExpression();
-			State = 93;
+			State = 97;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
 			while (_la==AND) {
 				{
 				{
-				State = 89;
+				State = 93;
 				Match(AND);
-				State = 90;
+				State = 94;
 				timeExpression();
 				}
 				}
-				State = 95;
+				State = 99;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
 			}
-			State = 96;
+			State = 100;
 			Match(PASSED);
 			}
 		}
@@ -497,12 +523,19 @@ public partial class StanleyParser : Parser {
 	}
 
 	public partial class ActionStatementContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ActionWithSubjectContext actionWithSubject() {
-			return GetRuleContext<ActionWithSubjectContext>(0);
+		[System.Diagnostics.DebuggerNonUserCode] public PluralSubjectsExpressionContext pluralSubjectsExpression() {
+			return GetRuleContext<PluralSubjectsExpressionContext>(0);
 		}
-		[System.Diagnostics.DebuggerNonUserCode] public ActionWithArgumentsContext actionWithArguments() {
-			return GetRuleContext<ActionWithArgumentsContext>(0);
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode WERE() { return GetToken(StanleyParser.WERE, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ActionExpressionContext actionExpression() {
+			return GetRuleContext<ActionExpressionContext>(0);
 		}
+		[System.Diagnostics.DebuggerNonUserCode] public SubjectExpressionContext subjectExpression() {
+			return GetRuleContext<SubjectExpressionContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode WAS() { return GetToken(StanleyParser.WAS, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode HAVE() { return GetToken(StanleyParser.HAVE, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode HAS() { return GetToken(StanleyParser.HAS, 0); }
 		public ActionStatementContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -520,73 +553,6 @@ public partial class StanleyParser : Parser {
 	public ActionStatementContext actionStatement() {
 		ActionStatementContext _localctx = new ActionStatementContext(Context, State);
 		EnterRule(_localctx, 14, RULE_actionStatement);
-		try {
-			State = 100;
-			ErrorHandler.Sync(this);
-			switch (TokenStream.LA(1)) {
-			case A:
-			case THE:
-			case STRING_LITERAL:
-			case DECIMAL_LITERAL:
-				EnterOuterAlt(_localctx, 1);
-				{
-				State = 98;
-				actionWithSubject();
-				}
-				break;
-			case ID:
-				EnterOuterAlt(_localctx, 2);
-				{
-				State = 99;
-				actionWithArguments();
-				}
-				break;
-			default:
-				throw new NoViableAltException(this);
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			ErrorHandler.ReportError(this, re);
-			ErrorHandler.Recover(this, re);
-		}
-		finally {
-			ExitRule();
-		}
-		return _localctx;
-	}
-
-	public partial class ActionWithSubjectContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public PluralSubjectsExpressionContext pluralSubjectsExpression() {
-			return GetRuleContext<PluralSubjectsExpressionContext>(0);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode WERE() { return GetToken(StanleyParser.WERE, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ActionWithArgumentsContext actionWithArguments() {
-			return GetRuleContext<ActionWithArgumentsContext>(0);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public SubjectExpressionContext subjectExpression() {
-			return GetRuleContext<SubjectExpressionContext>(0);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode WAS() { return GetToken(StanleyParser.WAS, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode HAVE() { return GetToken(StanleyParser.HAVE, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode HAS() { return GetToken(StanleyParser.HAS, 0); }
-		public ActionWithSubjectContext(ParserRuleContext parent, int invokingState)
-			: base(parent, invokingState)
-		{
-		}
-		public override int RuleIndex { get { return RULE_actionWithSubject; } }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IStanleyParserVisitor<TResult> typedVisitor = visitor as IStanleyParserVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitActionWithSubject(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
-
-	[RuleVersion(0)]
-	public ActionWithSubjectContext actionWithSubject() {
-		ActionWithSubjectContext _localctx = new ActionWithSubjectContext(Context, State);
-		EnterRule(_localctx, 16, RULE_actionWithSubject);
 		int _la;
 		try {
 			State = 118;
@@ -600,7 +566,7 @@ public partial class StanleyParser : Parser {
 				State = 103;
 				Match(WERE);
 				State = 104;
-				actionWithArguments();
+				actionExpression();
 				}
 				break;
 			case 2:
@@ -611,7 +577,7 @@ public partial class StanleyParser : Parser {
 				State = 107;
 				Match(WAS);
 				State = 108;
-				actionWithArguments();
+				actionExpression();
 				}
 				break;
 			case 3:
@@ -622,7 +588,7 @@ public partial class StanleyParser : Parser {
 				State = 111;
 				Match(HAVE);
 				State = 112;
-				actionWithArguments();
+				actionExpression();
 				}
 				break;
 			case 4:
@@ -640,7 +606,62 @@ public partial class StanleyParser : Parser {
 				    Consume();
 				}
 				State = 116;
+				actionExpression();
+				}
+				break;
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class ActionExpressionContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ActionWithArgumentsContext actionWithArguments() {
+			return GetRuleContext<ActionWithArgumentsContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ActionContext action() {
+			return GetRuleContext<ActionContext>(0);
+		}
+		public ActionExpressionContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_actionExpression; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IStanleyParserVisitor<TResult> typedVisitor = visitor as IStanleyParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitActionExpression(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public ActionExpressionContext actionExpression() {
+		ActionExpressionContext _localctx = new ActionExpressionContext(Context, State);
+		EnterRule(_localctx, 16, RULE_actionExpression);
+		try {
+			State = 122;
+			ErrorHandler.Sync(this);
+			switch ( Interpreter.AdaptivePredict(TokenStream,6,Context) ) {
+			case 1:
+				EnterOuterAlt(_localctx, 1);
+				{
+				State = 120;
 				actionWithArguments();
+				}
+				break;
+			case 2:
+				EnterOuterAlt(_localctx, 2);
+				{
+				State = 121;
+				action();
 				}
 				break;
 			}
@@ -681,25 +702,12 @@ public partial class StanleyParser : Parser {
 		ActionWithArgumentsContext _localctx = new ActionWithArgumentsContext(Context, State);
 		EnterRule(_localctx, 18, RULE_actionWithArguments);
 		try {
+			EnterOuterAlt(_localctx, 1);
+			{
 			State = 124;
-			ErrorHandler.Sync(this);
-			switch ( Interpreter.AdaptivePredict(TokenStream,6,Context) ) {
-			case 1:
-				EnterOuterAlt(_localctx, 1);
-				{
-				State = 120;
-				action();
-				State = 121;
-				objectArgument();
-				}
-				break;
-			case 2:
-				EnterOuterAlt(_localctx, 2);
-				{
-				State = 123;
-				action();
-				}
-				break;
+			action();
+			State = 125;
+			objectArgument();
 			}
 		}
 		catch (RecognitionException re) {
@@ -741,18 +749,18 @@ public partial class StanleyParser : Parser {
 		EnterRule(_localctx, 20, RULE_objectArgument);
 		int _la;
 		try {
-			State = 134;
+			State = 135;
 			ErrorHandler.Sync(this);
 			switch ( Interpreter.AdaptivePredict(TokenStream,9,Context) ) {
 			case 1:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 127;
+				State = 128;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
 				if (_la==AT || _la==TO) {
 					{
-					State = 126;
+					State = 127;
 					_la = TokenStream.LA(1);
 					if ( !(_la==AT || _la==TO) ) {
 					ErrorHandler.RecoverInline(this);
@@ -764,19 +772,19 @@ public partial class StanleyParser : Parser {
 					}
 				}
 
-				State = 129;
+				State = 130;
 				pluralObjectsExpression();
 				}
 				break;
 			case 2:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 131;
+				State = 132;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
 				if (_la==AT || _la==TO) {
 					{
-					State = 130;
+					State = 131;
 					_la = TokenStream.LA(1);
 					if ( !(_la==AT || _la==TO) ) {
 					ErrorHandler.RecoverInline(this);
@@ -788,7 +796,7 @@ public partial class StanleyParser : Parser {
 					}
 				}
 
-				State = 133;
+				State = 134;
 				objectExpression();
 				}
 				break;
@@ -806,11 +814,15 @@ public partial class StanleyParser : Parser {
 	}
 
 	public partial class PluralSubjectsExpressionContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public IntegerContext integer() {
-			return GetRuleContext<IntegerContext>(0);
+		[System.Diagnostics.DebuggerNonUserCode] public SubjectContext[] subject() {
+			return GetRuleContexts<SubjectContext>();
 		}
-		[System.Diagnostics.DebuggerNonUserCode] public SubjectContext subject() {
-			return GetRuleContext<SubjectContext>(0);
+		[System.Diagnostics.DebuggerNonUserCode] public SubjectContext subject(int i) {
+			return GetRuleContext<SubjectContext>(i);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] AND() { return GetTokens(StanleyParser.AND); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode AND(int i) {
+			return GetToken(StanleyParser.AND, i);
 		}
 		public PluralSubjectsExpressionContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -829,203 +841,28 @@ public partial class StanleyParser : Parser {
 	public PluralSubjectsExpressionContext pluralSubjectsExpression() {
 		PluralSubjectsExpressionContext _localctx = new PluralSubjectsExpressionContext(Context, State);
 		EnterRule(_localctx, 22, RULE_pluralSubjectsExpression);
-		try {
-			State = 140;
-			ErrorHandler.Sync(this);
-			switch (TokenStream.LA(1)) {
-			case DECIMAL_LITERAL:
-				EnterOuterAlt(_localctx, 1);
-				{
-				State = 136;
-				integer();
-				State = 137;
-				subject();
-				}
-				break;
-			case STRING_LITERAL:
-				EnterOuterAlt(_localctx, 2);
-				{
-				State = 139;
-				subject();
-				}
-				break;
-			default:
-				throw new NoViableAltException(this);
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			ErrorHandler.ReportError(this, re);
-			ErrorHandler.Recover(this, re);
-		}
-		finally {
-			ExitRule();
-		}
-		return _localctx;
-	}
-
-	public partial class RelatableSubjectExpressionContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public RelatablePluralSubjectsExpressionContext relatablePluralSubjectsExpression() {
-			return GetRuleContext<RelatablePluralSubjectsExpressionContext>(0);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public RelatableSingleSubjectExpressionContext relatableSingleSubjectExpression() {
-			return GetRuleContext<RelatableSingleSubjectExpressionContext>(0);
-		}
-		public RelatableSubjectExpressionContext(ParserRuleContext parent, int invokingState)
-			: base(parent, invokingState)
-		{
-		}
-		public override int RuleIndex { get { return RULE_relatableSubjectExpression; } }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IStanleyParserVisitor<TResult> typedVisitor = visitor as IStanleyParserVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitRelatableSubjectExpression(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
-
-	[RuleVersion(0)]
-	public RelatableSubjectExpressionContext relatableSubjectExpression() {
-		RelatableSubjectExpressionContext _localctx = new RelatableSubjectExpressionContext(Context, State);
-		EnterRule(_localctx, 24, RULE_relatableSubjectExpression);
-		try {
-			State = 144;
-			ErrorHandler.Sync(this);
-			switch ( Interpreter.AdaptivePredict(TokenStream,11,Context) ) {
-			case 1:
-				EnterOuterAlt(_localctx, 1);
-				{
-				State = 142;
-				relatablePluralSubjectsExpression();
-				}
-				break;
-			case 2:
-				EnterOuterAlt(_localctx, 2);
-				{
-				State = 143;
-				relatableSingleSubjectExpression();
-				}
-				break;
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			ErrorHandler.ReportError(this, re);
-			ErrorHandler.Recover(this, re);
-		}
-		finally {
-			ExitRule();
-		}
-		return _localctx;
-	}
-
-	public partial class RelatablePluralSubjectsExpressionContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public RelatableSingleSubjectExpressionContext[] relatableSingleSubjectExpression() {
-			return GetRuleContexts<RelatableSingleSubjectExpressionContext>();
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public RelatableSingleSubjectExpressionContext relatableSingleSubjectExpression(int i) {
-			return GetRuleContext<RelatableSingleSubjectExpressionContext>(i);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] AND() { return GetTokens(StanleyParser.AND); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode AND(int i) {
-			return GetToken(StanleyParser.AND, i);
-		}
-		public RelatablePluralSubjectsExpressionContext(ParserRuleContext parent, int invokingState)
-			: base(parent, invokingState)
-		{
-		}
-		public override int RuleIndex { get { return RULE_relatablePluralSubjectsExpression; } }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IStanleyParserVisitor<TResult> typedVisitor = visitor as IStanleyParserVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitRelatablePluralSubjectsExpression(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
-
-	[RuleVersion(0)]
-	public RelatablePluralSubjectsExpressionContext relatablePluralSubjectsExpression() {
-		RelatablePluralSubjectsExpressionContext _localctx = new RelatablePluralSubjectsExpressionContext(Context, State);
-		EnterRule(_localctx, 26, RULE_relatablePluralSubjectsExpression);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 146;
-			relatableSingleSubjectExpression();
-			State = 149;
+			State = 137;
+			subject();
+			State = 140;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
 			do {
 				{
 				{
-				State = 147;
+				State = 138;
 				Match(AND);
-				State = 148;
-				relatableSingleSubjectExpression();
+				State = 139;
+				subject();
 				}
 				}
-				State = 151;
+				State = 142;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
 			} while ( _la==AND );
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			ErrorHandler.ReportError(this, re);
-			ErrorHandler.Recover(this, re);
-		}
-		finally {
-			ExitRule();
-		}
-		return _localctx;
-	}
-
-	public partial class RelatableSingleSubjectExpressionContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ImportVariableLiteralContext importVariableLiteral() {
-			return GetRuleContext<ImportVariableLiteralContext>(0);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public SubjectContext subject() {
-			return GetRuleContext<SubjectContext>(0);
-		}
-		public RelatableSingleSubjectExpressionContext(ParserRuleContext parent, int invokingState)
-			: base(parent, invokingState)
-		{
-		}
-		public override int RuleIndex { get { return RULE_relatableSingleSubjectExpression; } }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IStanleyParserVisitor<TResult> typedVisitor = visitor as IStanleyParserVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitRelatableSingleSubjectExpression(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
-
-	[RuleVersion(0)]
-	public RelatableSingleSubjectExpressionContext relatableSingleSubjectExpression() {
-		RelatableSingleSubjectExpressionContext _localctx = new RelatableSingleSubjectExpressionContext(Context, State);
-		EnterRule(_localctx, 28, RULE_relatableSingleSubjectExpression);
-		try {
-			State = 155;
-			ErrorHandler.Sync(this);
-			switch (TokenStream.LA(1)) {
-			case DOLLAR_SYMB:
-				EnterOuterAlt(_localctx, 1);
-				{
-				State = 153;
-				importVariableLiteral();
-				}
-				break;
-			case STRING_LITERAL:
-				EnterOuterAlt(_localctx, 2);
-				{
-				State = 154;
-				subject();
-				}
-				break;
-			default:
-				throw new NoViableAltException(this);
 			}
 		}
 		catch (RecognitionException re) {
@@ -1062,23 +899,25 @@ public partial class StanleyParser : Parser {
 	[RuleVersion(0)]
 	public SubjectExpressionContext subjectExpression() {
 		SubjectExpressionContext _localctx = new SubjectExpressionContext(Context, State);
-		EnterRule(_localctx, 30, RULE_subjectExpression);
+		EnterRule(_localctx, 24, RULE_subjectExpression);
 		try {
-			State = 159;
+			State = 146;
 			ErrorHandler.Sync(this);
 			switch (TokenStream.LA(1)) {
 			case A:
 			case THE:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 157;
+				State = 144;
 				selectedSubject();
 				}
 				break;
+			case DOLLAR_SYMB:
 			case STRING_LITERAL:
+			case ID:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 158;
+				State = 145;
 				subject();
 				}
 				break;
@@ -1098,27 +937,11 @@ public partial class StanleyParser : Parser {
 	}
 
 	public partial class SelectedSubjectContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode A() { return GetToken(StanleyParser.A, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public SelectionAdjectiveContext selectionAdjective() {
-			return GetRuleContext<SelectionAdjectiveContext>(0);
+		[System.Diagnostics.DebuggerNonUserCode] public SubjectSelectedByQualityContext subjectSelectedByQuality() {
+			return GetRuleContext<SubjectSelectedByQualityContext>(0);
 		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OF() { return GetToken(StanleyParser.OF, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public SubjectContext subject() {
-			return GetRuleContext<SubjectContext>(0);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public AssertAdjectiveContext[] assertAdjective() {
-			return GetRuleContexts<AssertAdjectiveContext>();
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public AssertAdjectiveContext assertAdjective(int i) {
-			return GetRuleContext<AssertAdjectiveContext>(i);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode THE() { return GetToken(StanleyParser.THE, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public RelativeSelectionAdjectiveContext relativeSelectionAdjective() {
-			return GetRuleContext<RelativeSelectionAdjectiveContext>(0);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TO() { return GetToken(StanleyParser.TO, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public SubjectExpressionContext subjectExpression() {
-			return GetRuleContext<SubjectExpressionContext>(0);
+		[System.Diagnostics.DebuggerNonUserCode] public SubjectSelectedInRelationContext subjectSelectedInRelation() {
+			return GetRuleContext<SubjectSelectedInRelationContext>(0);
 		}
 		public SelectedSubjectContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -1136,56 +959,153 @@ public partial class StanleyParser : Parser {
 	[RuleVersion(0)]
 	public SelectedSubjectContext selectedSubject() {
 		SelectedSubjectContext _localctx = new SelectedSubjectContext(Context, State);
-		EnterRule(_localctx, 32, RULE_selectedSubject);
-		int _la;
+		EnterRule(_localctx, 26, RULE_selectedSubject);
 		try {
-			State = 178;
+			State = 150;
 			ErrorHandler.Sync(this);
 			switch (TokenStream.LA(1)) {
 			case A:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 161;
-				Match(A);
-				State = 162;
-				selectionAdjective();
-				State = 166;
-				ErrorHandler.Sync(this);
-				_la = TokenStream.LA(1);
-				while (_la==UNIQUE) {
-					{
-					{
-					State = 163;
-					assertAdjective();
-					}
-					}
-					State = 168;
-					ErrorHandler.Sync(this);
-					_la = TokenStream.LA(1);
-				}
-				State = 169;
-				Match(OF);
-				State = 170;
-				subject();
+				State = 148;
+				subjectSelectedByQuality();
 				}
 				break;
 			case THE:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 172;
-				Match(THE);
-				State = 173;
-				relativeSelectionAdjective();
-				State = 174;
-				Match(TO);
-				State = 175;
-				subjectExpression();
-				State = 176;
-				subject();
+				State = 149;
+				subjectSelectedInRelation();
 				}
 				break;
 			default:
 				throw new NoViableAltException(this);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class SubjectSelectedByQualityContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode A() { return GetToken(StanleyParser.A, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public SelectionAdjectiveContext selectionAdjective() {
+			return GetRuleContext<SelectionAdjectiveContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OF() { return GetToken(StanleyParser.OF, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public SubjectContext subject() {
+			return GetRuleContext<SubjectContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public AssertAdjectiveContext[] assertAdjective() {
+			return GetRuleContexts<AssertAdjectiveContext>();
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public AssertAdjectiveContext assertAdjective(int i) {
+			return GetRuleContext<AssertAdjectiveContext>(i);
+		}
+		public SubjectSelectedByQualityContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_subjectSelectedByQuality; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IStanleyParserVisitor<TResult> typedVisitor = visitor as IStanleyParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitSubjectSelectedByQuality(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public SubjectSelectedByQualityContext subjectSelectedByQuality() {
+		SubjectSelectedByQualityContext _localctx = new SubjectSelectedByQualityContext(Context, State);
+		EnterRule(_localctx, 28, RULE_subjectSelectedByQuality);
+		int _la;
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 152;
+			Match(A);
+			State = 153;
+			selectionAdjective();
+			State = 157;
+			ErrorHandler.Sync(this);
+			_la = TokenStream.LA(1);
+			while (_la==ID) {
+				{
+				{
+				State = 154;
+				assertAdjective();
+				}
+				}
+				State = 159;
+				ErrorHandler.Sync(this);
+				_la = TokenStream.LA(1);
+			}
+			State = 160;
+			Match(OF);
+			State = 161;
+			subject();
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class SubjectSelectedInRelationContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode THE() { return GetToken(StanleyParser.THE, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public RelativeSelectionAdjectiveContext relativeSelectionAdjective() {
+			return GetRuleContext<RelativeSelectionAdjectiveContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TO() { return GetToken(StanleyParser.TO, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public SubjectExpressionContext subjectExpression() {
+			return GetRuleContext<SubjectExpressionContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public SubjectContext subject() {
+			return GetRuleContext<SubjectContext>(0);
+		}
+		public SubjectSelectedInRelationContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_subjectSelectedInRelation; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IStanleyParserVisitor<TResult> typedVisitor = visitor as IStanleyParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitSubjectSelectedInRelation(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public SubjectSelectedInRelationContext subjectSelectedInRelation() {
+		SubjectSelectedInRelationContext _localctx = new SubjectSelectedInRelationContext(Context, State);
+		EnterRule(_localctx, 30, RULE_subjectSelectedInRelation);
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 163;
+			Match(THE);
+			State = 164;
+			relativeSelectionAdjective();
+			State = 165;
+			Match(TO);
+			State = 166;
+			subjectExpression();
+			State = 167;
+			subject();
 			}
 		}
 		catch (RecognitionException re) {
@@ -1225,26 +1145,26 @@ public partial class StanleyParser : Parser {
 	[RuleVersion(0)]
 	public PluralObjectsExpressionContext pluralObjectsExpression() {
 		PluralObjectsExpressionContext _localctx = new PluralObjectsExpressionContext(Context, State);
-		EnterRule(_localctx, 34, RULE_pluralObjectsExpression);
+		EnterRule(_localctx, 32, RULE_pluralObjectsExpression);
 		try {
-			State = 186;
+			State = 175;
 			ErrorHandler.Sync(this);
 			switch (TokenStream.LA(1)) {
 			case DECIMAL_LITERAL:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 180;
+				State = 169;
 				integer();
-				State = 181;
+				State = 170;
 				@object();
 				}
 				break;
 			case REAL_LITERAL:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 183;
+				State = 172;
 				@float();
-				State = 184;
+				State = 173;
 				@object();
 				}
 				break;
@@ -1286,23 +1206,24 @@ public partial class StanleyParser : Parser {
 	[RuleVersion(0)]
 	public ObjectExpressionContext objectExpression() {
 		ObjectExpressionContext _localctx = new ObjectExpressionContext(Context, State);
-		EnterRule(_localctx, 36, RULE_objectExpression);
+		EnterRule(_localctx, 34, RULE_objectExpression);
 		try {
-			State = 190;
+			State = 179;
 			ErrorHandler.Sync(this);
 			switch (TokenStream.LA(1)) {
 			case A:
 			case THE:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 188;
+				State = 177;
 				selectedObject();
 				}
 				break;
 			case STRING_LITERAL:
+			case ID:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 189;
+				State = 178;
 				@object();
 				}
 				break;
@@ -1322,27 +1243,11 @@ public partial class StanleyParser : Parser {
 	}
 
 	public partial class SelectedObjectContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode A() { return GetToken(StanleyParser.A, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public SelectionAdjectiveContext selectionAdjective() {
-			return GetRuleContext<SelectionAdjectiveContext>(0);
+		[System.Diagnostics.DebuggerNonUserCode] public ObjectSelectedByQualityContext objectSelectedByQuality() {
+			return GetRuleContext<ObjectSelectedByQualityContext>(0);
 		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OF() { return GetToken(StanleyParser.OF, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ObjectContext @object() {
-			return GetRuleContext<ObjectContext>(0);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public AssertAdjectiveContext[] assertAdjective() {
-			return GetRuleContexts<AssertAdjectiveContext>();
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public AssertAdjectiveContext assertAdjective(int i) {
-			return GetRuleContext<AssertAdjectiveContext>(i);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode THE() { return GetToken(StanleyParser.THE, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public RelativeSelectionAdjectiveContext relativeSelectionAdjective() {
-			return GetRuleContext<RelativeSelectionAdjectiveContext>(0);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TO() { return GetToken(StanleyParser.TO, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ObjectExpressionContext objectExpression() {
-			return GetRuleContext<ObjectExpressionContext>(0);
+		[System.Diagnostics.DebuggerNonUserCode] public ObjectSelectedInRelationContext objectSelectedInRelation() {
+			return GetRuleContext<ObjectSelectedInRelationContext>(0);
 		}
 		public SelectedObjectContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -1360,52 +1265,23 @@ public partial class StanleyParser : Parser {
 	[RuleVersion(0)]
 	public SelectedObjectContext selectedObject() {
 		SelectedObjectContext _localctx = new SelectedObjectContext(Context, State);
-		EnterRule(_localctx, 38, RULE_selectedObject);
-		int _la;
+		EnterRule(_localctx, 36, RULE_selectedObject);
 		try {
-			State = 209;
+			State = 183;
 			ErrorHandler.Sync(this);
 			switch (TokenStream.LA(1)) {
 			case A:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 192;
-				Match(A);
-				State = 193;
-				selectionAdjective();
-				State = 197;
-				ErrorHandler.Sync(this);
-				_la = TokenStream.LA(1);
-				while (_la==UNIQUE) {
-					{
-					{
-					State = 194;
-					assertAdjective();
-					}
-					}
-					State = 199;
-					ErrorHandler.Sync(this);
-					_la = TokenStream.LA(1);
-				}
-				State = 200;
-				Match(OF);
-				State = 201;
-				@object();
+				State = 181;
+				objectSelectedByQuality();
 				}
 				break;
 			case THE:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 203;
-				Match(THE);
-				State = 204;
-				relativeSelectionAdjective();
-				State = 205;
-				Match(TO);
-				State = 206;
-				objectExpression();
-				State = 207;
-				@object();
+				State = 182;
+				objectSelectedInRelation();
 				}
 				break;
 			default:
@@ -1423,10 +1299,134 @@ public partial class StanleyParser : Parser {
 		return _localctx;
 	}
 
+	public partial class ObjectSelectedByQualityContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode A() { return GetToken(StanleyParser.A, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public SelectionAdjectiveContext selectionAdjective() {
+			return GetRuleContext<SelectionAdjectiveContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OF() { return GetToken(StanleyParser.OF, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ObjectContext @object() {
+			return GetRuleContext<ObjectContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public AssertAdjectiveContext[] assertAdjective() {
+			return GetRuleContexts<AssertAdjectiveContext>();
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public AssertAdjectiveContext assertAdjective(int i) {
+			return GetRuleContext<AssertAdjectiveContext>(i);
+		}
+		public ObjectSelectedByQualityContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_objectSelectedByQuality; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IStanleyParserVisitor<TResult> typedVisitor = visitor as IStanleyParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitObjectSelectedByQuality(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public ObjectSelectedByQualityContext objectSelectedByQuality() {
+		ObjectSelectedByQualityContext _localctx = new ObjectSelectedByQualityContext(Context, State);
+		EnterRule(_localctx, 38, RULE_objectSelectedByQuality);
+		int _la;
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 185;
+			Match(A);
+			State = 186;
+			selectionAdjective();
+			State = 190;
+			ErrorHandler.Sync(this);
+			_la = TokenStream.LA(1);
+			while (_la==ID) {
+				{
+				{
+				State = 187;
+				assertAdjective();
+				}
+				}
+				State = 192;
+				ErrorHandler.Sync(this);
+				_la = TokenStream.LA(1);
+			}
+			State = 193;
+			Match(OF);
+			State = 194;
+			@object();
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class ObjectSelectedInRelationContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode THE() { return GetToken(StanleyParser.THE, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public RelativeSelectionAdjectiveContext relativeSelectionAdjective() {
+			return GetRuleContext<RelativeSelectionAdjectiveContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TO() { return GetToken(StanleyParser.TO, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public SubjectExpressionContext subjectExpression() {
+			return GetRuleContext<SubjectExpressionContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ObjectContext @object() {
+			return GetRuleContext<ObjectContext>(0);
+		}
+		public ObjectSelectedInRelationContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_objectSelectedInRelation; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IStanleyParserVisitor<TResult> typedVisitor = visitor as IStanleyParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitObjectSelectedInRelation(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public ObjectSelectedInRelationContext objectSelectedInRelation() {
+		ObjectSelectedInRelationContext _localctx = new ObjectSelectedInRelationContext(Context, State);
+		EnterRule(_localctx, 40, RULE_objectSelectedInRelation);
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 196;
+			Match(THE);
+			State = 197;
+			relativeSelectionAdjective();
+			State = 198;
+			Match(TO);
+			State = 199;
+			subjectExpression();
+			State = 200;
+			@object();
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
 	public partial class SelectionAdjectiveContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode RANDOM() { return GetToken(StanleyParser.RANDOM, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode WEAKEST() { return GetToken(StanleyParser.WEAKEST, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode STRONGEST() { return GetToken(StanleyParser.STRONGEST, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ID() { return GetToken(StanleyParser.ID, 0); }
 		public SelectionAdjectiveContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -1443,20 +1443,12 @@ public partial class StanleyParser : Parser {
 	[RuleVersion(0)]
 	public SelectionAdjectiveContext selectionAdjective() {
 		SelectionAdjectiveContext _localctx = new SelectionAdjectiveContext(Context, State);
-		EnterRule(_localctx, 40, RULE_selectionAdjective);
-		int _la;
+		EnterRule(_localctx, 42, RULE_selectionAdjective);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 211;
-			_la = TokenStream.LA(1);
-			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 92274688L) != 0)) ) {
-			ErrorHandler.RecoverInline(this);
-			}
-			else {
-				ErrorHandler.ReportMatch(this);
-			    Consume();
-			}
+			State = 202;
+			Match(ID);
 			}
 		}
 		catch (RecognitionException re) {
@@ -1471,8 +1463,7 @@ public partial class StanleyParser : Parser {
 	}
 
 	public partial class RelativeSelectionAdjectiveContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CLOSIEST() { return GetToken(StanleyParser.CLOSIEST, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode FURTHEST() { return GetToken(StanleyParser.FURTHEST, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ID() { return GetToken(StanleyParser.ID, 0); }
 		public RelativeSelectionAdjectiveContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -1489,20 +1480,12 @@ public partial class StanleyParser : Parser {
 	[RuleVersion(0)]
 	public RelativeSelectionAdjectiveContext relativeSelectionAdjective() {
 		RelativeSelectionAdjectiveContext _localctx = new RelativeSelectionAdjectiveContext(Context, State);
-		EnterRule(_localctx, 42, RULE_relativeSelectionAdjective);
-		int _la;
+		EnterRule(_localctx, 44, RULE_relativeSelectionAdjective);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 213;
-			_la = TokenStream.LA(1);
-			if ( !(_la==CLOSIEST || _la==FURTHEST) ) {
-			ErrorHandler.RecoverInline(this);
-			}
-			else {
-				ErrorHandler.ReportMatch(this);
-			    Consume();
-			}
+			State = 204;
+			Match(ID);
 			}
 		}
 		catch (RecognitionException re) {
@@ -1517,7 +1500,7 @@ public partial class StanleyParser : Parser {
 	}
 
 	public partial class AssertAdjectiveContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode UNIQUE() { return GetToken(StanleyParser.UNIQUE, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ID() { return GetToken(StanleyParser.ID, 0); }
 		public AssertAdjectiveContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -1534,12 +1517,12 @@ public partial class StanleyParser : Parser {
 	[RuleVersion(0)]
 	public AssertAdjectiveContext assertAdjective() {
 		AssertAdjectiveContext _localctx = new AssertAdjectiveContext(Context, State);
-		EnterRule(_localctx, 44, RULE_assertAdjective);
+		EnterRule(_localctx, 46, RULE_assertAdjective);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 215;
-			Match(UNIQUE);
+			State = 206;
+			Match(ID);
 			}
 		}
 		catch (RecognitionException re) {
@@ -1554,11 +1537,11 @@ public partial class StanleyParser : Parser {
 	}
 
 	public partial class TimeExpressionContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public IntegerContext integer() {
-			return GetRuleContext<IntegerContext>(0);
-		}
 		[System.Diagnostics.DebuggerNonUserCode] public TimeStepContext timeStep() {
 			return GetRuleContext<TimeStepContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public IntegerContext integer() {
+			return GetRuleContext<IntegerContext>(0);
 		}
 		[System.Diagnostics.DebuggerNonUserCode] public FloatContext @float() {
 			return GetRuleContext<FloatContext>(0);
@@ -1579,31 +1562,30 @@ public partial class StanleyParser : Parser {
 	[RuleVersion(0)]
 	public TimeExpressionContext timeExpression() {
 		TimeExpressionContext _localctx = new TimeExpressionContext(Context, State);
-		EnterRule(_localctx, 46, RULE_timeExpression);
+		EnterRule(_localctx, 48, RULE_timeExpression);
 		try {
-			State = 223;
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 210;
 			ErrorHandler.Sync(this);
 			switch (TokenStream.LA(1)) {
 			case DECIMAL_LITERAL:
-				EnterOuterAlt(_localctx, 1);
 				{
-				State = 217;
+				State = 208;
 				integer();
-				State = 218;
-				timeStep();
 				}
 				break;
 			case REAL_LITERAL:
-				EnterOuterAlt(_localctx, 2);
 				{
-				State = 220;
+				State = 209;
 				@float();
-				State = 221;
-				timeStep();
 				}
 				break;
 			default:
 				throw new NoViableAltException(this);
+			}
+			State = 212;
+			timeStep();
 			}
 		}
 		catch (RecognitionException re) {
@@ -1636,12 +1618,12 @@ public partial class StanleyParser : Parser {
 	[RuleVersion(0)]
 	public TimeStepContext timeStep() {
 		TimeStepContext _localctx = new TimeStepContext(Context, State);
-		EnterRule(_localctx, 48, RULE_timeStep);
+		EnterRule(_localctx, 50, RULE_timeStep);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 225;
+			State = 214;
 			_la = TokenStream.LA(1);
 			if ( !(_la==MINUTES || _la==SECONDS) ) {
 			ErrorHandler.RecoverInline(this);
@@ -1664,7 +1646,12 @@ public partial class StanleyParser : Parser {
 	}
 
 	public partial class SubjectContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode STRING_LITERAL() { return GetToken(StanleyParser.STRING_LITERAL, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ImportVariableLiteralContext importVariableLiteral() {
+			return GetRuleContext<ImportVariableLiteralContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public RuntimeVariableLiteralContext runtimeVariableLiteral() {
+			return GetRuleContext<RuntimeVariableLiteralContext>(0);
+		}
 		public SubjectContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -1681,12 +1668,28 @@ public partial class StanleyParser : Parser {
 	[RuleVersion(0)]
 	public SubjectContext subject() {
 		SubjectContext _localctx = new SubjectContext(Context, State);
-		EnterRule(_localctx, 50, RULE_subject);
+		EnterRule(_localctx, 52, RULE_subject);
 		try {
-			EnterOuterAlt(_localctx, 1);
-			{
-			State = 227;
-			Match(STRING_LITERAL);
+			State = 218;
+			ErrorHandler.Sync(this);
+			switch (TokenStream.LA(1)) {
+			case DOLLAR_SYMB:
+				EnterOuterAlt(_localctx, 1);
+				{
+				State = 216;
+				importVariableLiteral();
+				}
+				break;
+			case STRING_LITERAL:
+			case ID:
+				EnterOuterAlt(_localctx, 2);
+				{
+				State = 217;
+				runtimeVariableLiteral();
+				}
+				break;
+			default:
+				throw new NoViableAltException(this);
 			}
 		}
 		catch (RecognitionException re) {
@@ -1701,6 +1704,7 @@ public partial class StanleyParser : Parser {
 	}
 
 	public partial class ObjectContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ID() { return GetToken(StanleyParser.ID, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode STRING_LITERAL() { return GetToken(StanleyParser.STRING_LITERAL, 0); }
 		public ObjectContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -1718,12 +1722,20 @@ public partial class StanleyParser : Parser {
 	[RuleVersion(0)]
 	public ObjectContext @object() {
 		ObjectContext _localctx = new ObjectContext(Context, State);
-		EnterRule(_localctx, 52, RULE_object);
+		EnterRule(_localctx, 54, RULE_object);
+		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 229;
-			Match(STRING_LITERAL);
+			State = 220;
+			_la = TokenStream.LA(1);
+			if ( !(_la==STRING_LITERAL || _la==ID) ) {
+			ErrorHandler.RecoverInline(this);
+			}
+			else {
+				ErrorHandler.ReportMatch(this);
+			    Consume();
+			}
 			}
 		}
 		catch (RecognitionException re) {
@@ -1738,9 +1750,7 @@ public partial class StanleyParser : Parser {
 	}
 
 	public partial class ActionContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public IdLiteralContext idLiteral() {
-			return GetRuleContext<IdLiteralContext>(0);
-		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ID() { return GetToken(StanleyParser.ID, 0); }
 		public ActionContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -1757,12 +1767,12 @@ public partial class StanleyParser : Parser {
 	[RuleVersion(0)]
 	public ActionContext action() {
 		ActionContext _localctx = new ActionContext(Context, State);
-		EnterRule(_localctx, 54, RULE_action);
+		EnterRule(_localctx, 56, RULE_action);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 231;
-			idLiteral();
+			State = 222;
+			Match(ID);
 			}
 		}
 		catch (RecognitionException re) {
@@ -1778,9 +1788,7 @@ public partial class StanleyParser : Parser {
 
 	public partial class ImportVariableLiteralContext : ParserRuleContext {
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode DOLLAR_SYMB() { return GetToken(StanleyParser.DOLLAR_SYMB, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public IdLiteralContext idLiteral() {
-			return GetRuleContext<IdLiteralContext>(0);
-		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ID() { return GetToken(StanleyParser.ID, 0); }
 		public ImportVariableLiteralContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -1797,14 +1805,60 @@ public partial class StanleyParser : Parser {
 	[RuleVersion(0)]
 	public ImportVariableLiteralContext importVariableLiteral() {
 		ImportVariableLiteralContext _localctx = new ImportVariableLiteralContext(Context, State);
-		EnterRule(_localctx, 56, RULE_importVariableLiteral);
+		EnterRule(_localctx, 58, RULE_importVariableLiteral);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 233;
+			State = 224;
 			Match(DOLLAR_SYMB);
-			State = 234;
-			idLiteral();
+			State = 225;
+			Match(ID);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class RuntimeVariableLiteralContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ID() { return GetToken(StanleyParser.ID, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode STRING_LITERAL() { return GetToken(StanleyParser.STRING_LITERAL, 0); }
+		public RuntimeVariableLiteralContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_runtimeVariableLiteral; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IStanleyParserVisitor<TResult> typedVisitor = visitor as IStanleyParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitRuntimeVariableLiteral(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public RuntimeVariableLiteralContext runtimeVariableLiteral() {
+		RuntimeVariableLiteralContext _localctx = new RuntimeVariableLiteralContext(Context, State);
+		EnterRule(_localctx, 60, RULE_runtimeVariableLiteral);
+		int _la;
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 227;
+			_la = TokenStream.LA(1);
+			if ( !(_la==STRING_LITERAL || _la==ID) ) {
+			ErrorHandler.RecoverInline(this);
+			}
+			else {
+				ErrorHandler.ReportMatch(this);
+			    Consume();
+			}
 			}
 		}
 		catch (RecognitionException re) {
@@ -1836,11 +1890,11 @@ public partial class StanleyParser : Parser {
 	[RuleVersion(0)]
 	public IntegerContext integer() {
 		IntegerContext _localctx = new IntegerContext(Context, State);
-		EnterRule(_localctx, 58, RULE_integer);
+		EnterRule(_localctx, 62, RULE_integer);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 236;
+			State = 229;
 			Match(DECIMAL_LITERAL);
 			}
 		}
@@ -1873,11 +1927,11 @@ public partial class StanleyParser : Parser {
 	[RuleVersion(0)]
 	public FloatContext @float() {
 		FloatContext _localctx = new FloatContext(Context, State);
-		EnterRule(_localctx, 60, RULE_float);
+		EnterRule(_localctx, 64, RULE_float);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 238;
+			State = 231;
 			Match(REAL_LITERAL);
 			}
 		}
@@ -1892,118 +1946,77 @@ public partial class StanleyParser : Parser {
 		return _localctx;
 	}
 
-	public partial class IdLiteralContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ID() { return GetToken(StanleyParser.ID, 0); }
-		public IdLiteralContext(ParserRuleContext parent, int invokingState)
-			: base(parent, invokingState)
-		{
-		}
-		public override int RuleIndex { get { return RULE_idLiteral; } }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IStanleyParserVisitor<TResult> typedVisitor = visitor as IStanleyParserVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitIdLiteral(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
-
-	[RuleVersion(0)]
-	public IdLiteralContext idLiteral() {
-		IdLiteralContext _localctx = new IdLiteralContext(Context, State);
-		EnterRule(_localctx, 62, RULE_idLiteral);
-		try {
-			EnterOuterAlt(_localctx, 1);
-			{
-			State = 240;
-			Match(ID);
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			ErrorHandler.ReportError(this, re);
-			ErrorHandler.Recover(this, re);
-		}
-		finally {
-			ExitRule();
-		}
-		return _localctx;
-	}
-
 	private static int[] _serializedATN = {
-		4,1,57,243,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,6,2,7,
+		4,1,57,234,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,6,2,7,
 		7,7,2,8,7,8,2,9,7,9,2,10,7,10,2,11,7,11,2,12,7,12,2,13,7,13,2,14,7,14,
 		2,15,7,15,2,16,7,16,2,17,7,17,2,18,7,18,2,19,7,19,2,20,7,20,2,21,7,21,
 		2,22,7,22,2,23,7,23,2,24,7,24,2,25,7,25,2,26,7,26,2,27,7,27,2,28,7,28,
-		2,29,7,29,2,30,7,30,2,31,7,31,1,0,1,0,4,0,67,8,0,11,0,12,0,68,1,1,1,1,
-		1,1,1,2,1,2,3,2,76,8,2,1,3,1,3,1,3,1,3,1,3,1,4,1,4,1,5,1,5,3,5,87,8,5,
-		1,6,1,6,1,6,5,6,92,8,6,10,6,12,6,95,9,6,1,6,1,6,1,7,1,7,3,7,101,8,7,1,
-		8,1,8,1,8,1,8,1,8,1,8,1,8,1,8,1,8,1,8,1,8,1,8,1,8,1,8,1,8,1,8,3,8,119,
-		8,8,1,9,1,9,1,9,1,9,3,9,125,8,9,1,10,3,10,128,8,10,1,10,1,10,3,10,132,
-		8,10,1,10,3,10,135,8,10,1,11,1,11,1,11,1,11,3,11,141,8,11,1,12,1,12,3,
-		12,145,8,12,1,13,1,13,1,13,4,13,150,8,13,11,13,12,13,151,1,14,1,14,3,14,
-		156,8,14,1,15,1,15,3,15,160,8,15,1,16,1,16,1,16,5,16,165,8,16,10,16,12,
-		16,168,9,16,1,16,1,16,1,16,1,16,1,16,1,16,1,16,1,16,1,16,3,16,179,8,16,
-		1,17,1,17,1,17,1,17,1,17,1,17,3,17,187,8,17,1,18,1,18,3,18,191,8,18,1,
-		19,1,19,1,19,5,19,196,8,19,10,19,12,19,199,9,19,1,19,1,19,1,19,1,19,1,
-		19,1,19,1,19,1,19,1,19,3,19,210,8,19,1,20,1,20,1,21,1,21,1,22,1,22,1,23,
-		1,23,1,23,1,23,1,23,1,23,3,23,224,8,23,1,24,1,24,1,25,1,25,1,26,1,26,1,
-		27,1,27,1,28,1,28,1,28,1,29,1,29,1,30,1,30,1,31,1,31,1,31,0,0,32,0,2,4,
-		6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,44,46,48,50,52,
-		54,56,58,60,62,0,5,1,0,16,17,2,0,11,11,14,14,2,0,23,24,26,26,1,0,21,22,
-		1,0,27,28,234,0,64,1,0,0,0,2,70,1,0,0,0,4,75,1,0,0,0,6,77,1,0,0,0,8,82,
-		1,0,0,0,10,86,1,0,0,0,12,88,1,0,0,0,14,100,1,0,0,0,16,118,1,0,0,0,18,124,
-		1,0,0,0,20,134,1,0,0,0,22,140,1,0,0,0,24,144,1,0,0,0,26,146,1,0,0,0,28,
-		155,1,0,0,0,30,159,1,0,0,0,32,178,1,0,0,0,34,186,1,0,0,0,36,190,1,0,0,
-		0,38,209,1,0,0,0,40,211,1,0,0,0,42,213,1,0,0,0,44,215,1,0,0,0,46,223,1,
-		0,0,0,48,225,1,0,0,0,50,227,1,0,0,0,52,229,1,0,0,0,54,231,1,0,0,0,56,233,
-		1,0,0,0,58,236,1,0,0,0,60,238,1,0,0,0,62,240,1,0,0,0,64,66,3,2,1,0,65,
-		67,3,4,2,0,66,65,1,0,0,0,67,68,1,0,0,0,68,66,1,0,0,0,68,69,1,0,0,0,69,
-		1,1,0,0,0,70,71,5,6,0,0,71,72,3,50,25,0,72,3,1,0,0,0,73,76,3,6,3,0,74,
-		76,3,10,5,0,75,73,1,0,0,0,75,74,1,0,0,0,76,5,1,0,0,0,77,78,5,5,0,0,78,
-		79,3,24,12,0,79,80,5,12,0,0,80,81,3,8,4,0,81,7,1,0,0,0,82,83,3,50,25,0,
-		83,9,1,0,0,0,84,87,3,14,7,0,85,87,3,12,6,0,86,84,1,0,0,0,86,85,1,0,0,0,
-		87,11,1,0,0,0,88,93,3,46,23,0,89,90,5,10,0,0,90,92,3,46,23,0,91,89,1,0,
-		0,0,92,95,1,0,0,0,93,91,1,0,0,0,93,94,1,0,0,0,94,96,1,0,0,0,95,93,1,0,
-		0,0,96,97,5,18,0,0,97,13,1,0,0,0,98,101,3,16,8,0,99,101,3,18,9,0,100,98,
-		1,0,0,0,100,99,1,0,0,0,101,15,1,0,0,0,102,103,3,22,11,0,103,104,5,20,0,
-		0,104,105,3,18,9,0,105,119,1,0,0,0,106,107,3,30,15,0,107,108,5,19,0,0,
-		108,109,3,18,9,0,109,119,1,0,0,0,110,111,3,22,11,0,111,112,5,17,0,0,112,
-		113,3,18,9,0,113,119,1,0,0,0,114,115,3,30,15,0,115,116,7,0,0,0,116,117,
-		3,18,9,0,117,119,1,0,0,0,118,102,1,0,0,0,118,106,1,0,0,0,118,110,1,0,0,
-		0,118,114,1,0,0,0,119,17,1,0,0,0,120,121,3,54,27,0,121,122,3,20,10,0,122,
-		125,1,0,0,0,123,125,3,54,27,0,124,120,1,0,0,0,124,123,1,0,0,0,125,19,1,
-		0,0,0,126,128,7,1,0,0,127,126,1,0,0,0,127,128,1,0,0,0,128,129,1,0,0,0,
-		129,135,3,34,17,0,130,132,7,1,0,0,131,130,1,0,0,0,131,132,1,0,0,0,132,
-		133,1,0,0,0,133,135,3,36,18,0,134,127,1,0,0,0,134,131,1,0,0,0,135,21,1,
-		0,0,0,136,137,3,58,29,0,137,138,3,50,25,0,138,141,1,0,0,0,139,141,3,50,
-		25,0,140,136,1,0,0,0,140,139,1,0,0,0,141,23,1,0,0,0,142,145,3,26,13,0,
-		143,145,3,28,14,0,144,142,1,0,0,0,144,143,1,0,0,0,145,25,1,0,0,0,146,149,
-		3,28,14,0,147,148,5,10,0,0,148,150,3,28,14,0,149,147,1,0,0,0,150,151,1,
-		0,0,0,151,149,1,0,0,0,151,152,1,0,0,0,152,27,1,0,0,0,153,156,3,56,28,0,
-		154,156,3,50,25,0,155,153,1,0,0,0,155,154,1,0,0,0,156,29,1,0,0,0,157,160,
-		3,32,16,0,158,160,3,50,25,0,159,157,1,0,0,0,159,158,1,0,0,0,160,31,1,0,
-		0,0,161,162,5,8,0,0,162,166,3,40,20,0,163,165,3,44,22,0,164,163,1,0,0,
-		0,165,168,1,0,0,0,166,164,1,0,0,0,166,167,1,0,0,0,167,169,1,0,0,0,168,
-		166,1,0,0,0,169,170,5,13,0,0,170,171,3,50,25,0,171,179,1,0,0,0,172,173,
-		5,9,0,0,173,174,3,42,21,0,174,175,5,14,0,0,175,176,3,30,15,0,176,177,3,
-		50,25,0,177,179,1,0,0,0,178,161,1,0,0,0,178,172,1,0,0,0,179,33,1,0,0,0,
-		180,181,3,58,29,0,181,182,3,52,26,0,182,187,1,0,0,0,183,184,3,60,30,0,
-		184,185,3,52,26,0,185,187,1,0,0,0,186,180,1,0,0,0,186,183,1,0,0,0,187,
-		35,1,0,0,0,188,191,3,38,19,0,189,191,3,52,26,0,190,188,1,0,0,0,190,189,
-		1,0,0,0,191,37,1,0,0,0,192,193,5,8,0,0,193,197,3,40,20,0,194,196,3,44,
-		22,0,195,194,1,0,0,0,196,199,1,0,0,0,197,195,1,0,0,0,197,198,1,0,0,0,198,
-		200,1,0,0,0,199,197,1,0,0,0,200,201,5,13,0,0,201,202,3,52,26,0,202,210,
-		1,0,0,0,203,204,5,9,0,0,204,205,3,42,21,0,205,206,5,14,0,0,206,207,3,36,
-		18,0,207,208,3,52,26,0,208,210,1,0,0,0,209,192,1,0,0,0,209,203,1,0,0,0,
-		210,39,1,0,0,0,211,212,7,2,0,0,212,41,1,0,0,0,213,214,7,3,0,0,214,43,1,
-		0,0,0,215,216,5,25,0,0,216,45,1,0,0,0,217,218,3,58,29,0,218,219,3,48,24,
-		0,219,224,1,0,0,0,220,221,3,60,30,0,221,222,3,48,24,0,222,224,1,0,0,0,
-		223,217,1,0,0,0,223,220,1,0,0,0,224,47,1,0,0,0,225,226,7,4,0,0,226,49,
-		1,0,0,0,227,228,5,52,0,0,228,51,1,0,0,0,229,230,5,52,0,0,230,53,1,0,0,
-		0,231,232,3,62,31,0,232,55,1,0,0,0,233,234,5,51,0,0,234,235,3,62,31,0,
-		235,57,1,0,0,0,236,237,5,53,0,0,237,59,1,0,0,0,238,239,5,54,0,0,239,61,
-		1,0,0,0,240,241,5,55,0,0,241,63,1,0,0,0,22,68,75,86,93,100,118,124,127,
-		131,134,140,144,151,155,159,166,178,186,190,197,209,223
+		2,29,7,29,2,30,7,30,2,31,7,31,2,32,7,32,1,0,1,0,4,0,69,8,0,11,0,12,0,70,
+		1,1,1,1,1,1,1,2,1,2,3,2,78,8,2,1,3,1,3,1,3,1,3,1,3,1,4,1,4,3,4,87,8,4,
+		1,5,1,5,3,5,91,8,5,1,6,1,6,1,6,5,6,96,8,6,10,6,12,6,99,9,6,1,6,1,6,1,7,
+		1,7,1,7,1,7,1,7,1,7,1,7,1,7,1,7,1,7,1,7,1,7,1,7,1,7,1,7,1,7,3,7,119,8,
+		7,1,8,1,8,3,8,123,8,8,1,9,1,9,1,9,1,10,3,10,129,8,10,1,10,1,10,3,10,133,
+		8,10,1,10,3,10,136,8,10,1,11,1,11,1,11,4,11,141,8,11,11,11,12,11,142,1,
+		12,1,12,3,12,147,8,12,1,13,1,13,3,13,151,8,13,1,14,1,14,1,14,5,14,156,
+		8,14,10,14,12,14,159,9,14,1,14,1,14,1,14,1,15,1,15,1,15,1,15,1,15,1,15,
+		1,16,1,16,1,16,1,16,1,16,1,16,3,16,176,8,16,1,17,1,17,3,17,180,8,17,1,
+		18,1,18,3,18,184,8,18,1,19,1,19,1,19,5,19,189,8,19,10,19,12,19,192,9,19,
+		1,19,1,19,1,19,1,20,1,20,1,20,1,20,1,20,1,20,1,21,1,21,1,22,1,22,1,23,
+		1,23,1,24,1,24,3,24,211,8,24,1,24,1,24,1,25,1,25,1,26,1,26,3,26,219,8,
+		26,1,27,1,27,1,28,1,28,1,29,1,29,1,29,1,30,1,30,1,31,1,31,1,32,1,32,1,
+		32,0,0,33,0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,
+		44,46,48,50,52,54,56,58,60,62,64,0,4,1,0,16,17,2,0,11,11,14,14,1,0,27,
+		28,2,0,52,52,55,55,222,0,66,1,0,0,0,2,72,1,0,0,0,4,77,1,0,0,0,6,79,1,0,
+		0,0,8,86,1,0,0,0,10,90,1,0,0,0,12,92,1,0,0,0,14,118,1,0,0,0,16,122,1,0,
+		0,0,18,124,1,0,0,0,20,135,1,0,0,0,22,137,1,0,0,0,24,146,1,0,0,0,26,150,
+		1,0,0,0,28,152,1,0,0,0,30,163,1,0,0,0,32,175,1,0,0,0,34,179,1,0,0,0,36,
+		183,1,0,0,0,38,185,1,0,0,0,40,196,1,0,0,0,42,202,1,0,0,0,44,204,1,0,0,
+		0,46,206,1,0,0,0,48,210,1,0,0,0,50,214,1,0,0,0,52,218,1,0,0,0,54,220,1,
+		0,0,0,56,222,1,0,0,0,58,224,1,0,0,0,60,227,1,0,0,0,62,229,1,0,0,0,64,231,
+		1,0,0,0,66,68,3,2,1,0,67,69,3,4,2,0,68,67,1,0,0,0,69,70,1,0,0,0,70,68,
+		1,0,0,0,70,71,1,0,0,0,71,1,1,0,0,0,72,73,5,6,0,0,73,74,3,54,27,0,74,3,
+		1,0,0,0,75,78,3,6,3,0,76,78,3,10,5,0,77,75,1,0,0,0,77,76,1,0,0,0,78,5,
+		1,0,0,0,79,80,5,5,0,0,80,81,3,8,4,0,81,82,5,12,0,0,82,83,3,54,27,0,83,
+		7,1,0,0,0,84,87,3,22,11,0,85,87,3,24,12,0,86,84,1,0,0,0,86,85,1,0,0,0,
+		87,9,1,0,0,0,88,91,3,14,7,0,89,91,3,12,6,0,90,88,1,0,0,0,90,89,1,0,0,0,
+		91,11,1,0,0,0,92,97,3,48,24,0,93,94,5,10,0,0,94,96,3,48,24,0,95,93,1,0,
+		0,0,96,99,1,0,0,0,97,95,1,0,0,0,97,98,1,0,0,0,98,100,1,0,0,0,99,97,1,0,
+		0,0,100,101,5,18,0,0,101,13,1,0,0,0,102,103,3,22,11,0,103,104,5,20,0,0,
+		104,105,3,16,8,0,105,119,1,0,0,0,106,107,3,24,12,0,107,108,5,19,0,0,108,
+		109,3,16,8,0,109,119,1,0,0,0,110,111,3,22,11,0,111,112,5,17,0,0,112,113,
+		3,16,8,0,113,119,1,0,0,0,114,115,3,24,12,0,115,116,7,0,0,0,116,117,3,16,
+		8,0,117,119,1,0,0,0,118,102,1,0,0,0,118,106,1,0,0,0,118,110,1,0,0,0,118,
+		114,1,0,0,0,119,15,1,0,0,0,120,123,3,18,9,0,121,123,3,56,28,0,122,120,
+		1,0,0,0,122,121,1,0,0,0,123,17,1,0,0,0,124,125,3,56,28,0,125,126,3,20,
+		10,0,126,19,1,0,0,0,127,129,7,1,0,0,128,127,1,0,0,0,128,129,1,0,0,0,129,
+		130,1,0,0,0,130,136,3,32,16,0,131,133,7,1,0,0,132,131,1,0,0,0,132,133,
+		1,0,0,0,133,134,1,0,0,0,134,136,3,34,17,0,135,128,1,0,0,0,135,132,1,0,
+		0,0,136,21,1,0,0,0,137,140,3,52,26,0,138,139,5,10,0,0,139,141,3,52,26,
+		0,140,138,1,0,0,0,141,142,1,0,0,0,142,140,1,0,0,0,142,143,1,0,0,0,143,
+		23,1,0,0,0,144,147,3,26,13,0,145,147,3,52,26,0,146,144,1,0,0,0,146,145,
+		1,0,0,0,147,25,1,0,0,0,148,151,3,28,14,0,149,151,3,30,15,0,150,148,1,0,
+		0,0,150,149,1,0,0,0,151,27,1,0,0,0,152,153,5,8,0,0,153,157,3,42,21,0,154,
+		156,3,46,23,0,155,154,1,0,0,0,156,159,1,0,0,0,157,155,1,0,0,0,157,158,
+		1,0,0,0,158,160,1,0,0,0,159,157,1,0,0,0,160,161,5,13,0,0,161,162,3,52,
+		26,0,162,29,1,0,0,0,163,164,5,9,0,0,164,165,3,44,22,0,165,166,5,14,0,0,
+		166,167,3,24,12,0,167,168,3,52,26,0,168,31,1,0,0,0,169,170,3,62,31,0,170,
+		171,3,54,27,0,171,176,1,0,0,0,172,173,3,64,32,0,173,174,3,54,27,0,174,
+		176,1,0,0,0,175,169,1,0,0,0,175,172,1,0,0,0,176,33,1,0,0,0,177,180,3,36,
+		18,0,178,180,3,54,27,0,179,177,1,0,0,0,179,178,1,0,0,0,180,35,1,0,0,0,
+		181,184,3,38,19,0,182,184,3,40,20,0,183,181,1,0,0,0,183,182,1,0,0,0,184,
+		37,1,0,0,0,185,186,5,8,0,0,186,190,3,42,21,0,187,189,3,46,23,0,188,187,
+		1,0,0,0,189,192,1,0,0,0,190,188,1,0,0,0,190,191,1,0,0,0,191,193,1,0,0,
+		0,192,190,1,0,0,0,193,194,5,13,0,0,194,195,3,54,27,0,195,39,1,0,0,0,196,
+		197,5,9,0,0,197,198,3,44,22,0,198,199,5,14,0,0,199,200,3,24,12,0,200,201,
+		3,54,27,0,201,41,1,0,0,0,202,203,5,55,0,0,203,43,1,0,0,0,204,205,5,55,
+		0,0,205,45,1,0,0,0,206,207,5,55,0,0,207,47,1,0,0,0,208,211,3,62,31,0,209,
+		211,3,64,32,0,210,208,1,0,0,0,210,209,1,0,0,0,211,212,1,0,0,0,212,213,
+		3,50,25,0,213,49,1,0,0,0,214,215,7,2,0,0,215,51,1,0,0,0,216,219,3,58,29,
+		0,217,219,3,60,30,0,218,216,1,0,0,0,218,217,1,0,0,0,219,53,1,0,0,0,220,
+		221,7,3,0,0,221,55,1,0,0,0,222,223,5,55,0,0,223,57,1,0,0,0,224,225,5,51,
+		0,0,225,226,5,55,0,0,226,59,1,0,0,0,227,228,7,3,0,0,228,61,1,0,0,0,229,
+		230,5,53,0,0,230,63,1,0,0,0,231,232,5,54,0,0,232,65,1,0,0,0,20,70,77,86,
+		90,97,118,122,128,132,135,142,146,150,157,175,179,183,190,210,218
 	};
 
 	public static readonly ATN _ATN =

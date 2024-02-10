@@ -3,12 +3,12 @@ using System.Threading.Tasks;
 
 namespace HereticalSolutions.StanleyScript
 {
-	public class AllocateRuntimeVariable
+	public class TryCastToRuntimeVariable
 		: AStanleyOperation
 	{
 		#region IStanleyOperation
 
-		public override string Opcode => "OP_ALLOC_RTM";
+		public override string Opcode => "OP_TCAST_RTM";
 
 		public override bool WillHandle(
 			string[] instructionTokens,
@@ -29,9 +29,6 @@ namespace HereticalSolutions.StanleyScript
 
 			var logger = environment as ILoggable;
 
-			//REMEMBER: when popping from the stack, the order is reversed
-
-			//Get variable name
 			if (!stack.Pop(
 				out var variableName))
 			{
@@ -48,30 +45,18 @@ namespace HereticalSolutions.StanleyScript
 			if (!AssertValueNotEmpty(variableNameString, logger))
 				return false;
 
-			//Get variable to clone
-			if (!stack.Pop(
-				out var variableToClone))
-			{
-				logger.Log("STACK VARIABLE NOT FOUND");
-
-				return false;
-			}
-
-			if (!AssertVariable(variableToClone, logger))
-				return false;
-
-			//Add new runtime variable
-			if (!environment.AddRuntimeVariable(
+			if (environment.GetRuntimeVariable(
 				variableNameString,
-				new StanleyCachedVariable(
-					variableNameString,
-					variableToClone.VariableType,
-					variableToClone.GetValue())))
+				out var runtimeVariable))
 			{
-				logger.Log($"COULD NOT ADD RUNTIME VARIABLE: {variableNameString}");
+				stack.Push(
+					runtimeVariable);
 
-				return false;
+				return true;
 			}
+
+			stack.Push(
+				variableName);
 
 			return true;
 		}

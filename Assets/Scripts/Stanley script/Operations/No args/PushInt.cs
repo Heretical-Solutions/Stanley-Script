@@ -1,14 +1,15 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace HereticalSolutions.StanleyScript
 {
-	public class PushString
+	public class PushInt
 		: AStanleyOperation
 	{
 		#region  IStanleyOperation
 
-		public override string Opcode => "OP_PUSH_STR";
+		public override string Opcode => "OP_PUSH_INT";
 
 		public override bool WillHandle(
 			string[] instructionTokens,
@@ -36,8 +37,8 @@ namespace HereticalSolutions.StanleyScript
 			stack.Push(
 				new StanleyCachedVariable(
 					"TEMPVAR",
-					typeof(string),
-					instructionTokens[1]));
+					typeof(int),
+					Convert.ToInt32(instructionTokens[1])));
 
 			return true;
 		}

@@ -81,11 +81,11 @@ public interface IStanleyParserVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitActionStatement([NotNull] StanleyParser.ActionStatementContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="StanleyParser.actionWithSubject"/>.
+	/// Visit a parse tree produced by <see cref="StanleyParser.actionExpression"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitActionWithSubject([NotNull] StanleyParser.ActionWithSubjectContext context);
+	Result VisitActionExpression([NotNull] StanleyParser.ActionExpressionContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="StanleyParser.actionWithArguments"/>.
 	/// </summary>
@@ -105,24 +105,6 @@ public interface IStanleyParserVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitPluralSubjectsExpression([NotNull] StanleyParser.PluralSubjectsExpressionContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="StanleyParser.relatableSubjectExpression"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitRelatableSubjectExpression([NotNull] StanleyParser.RelatableSubjectExpressionContext context);
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="StanleyParser.relatablePluralSubjectsExpression"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitRelatablePluralSubjectsExpression([NotNull] StanleyParser.RelatablePluralSubjectsExpressionContext context);
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="StanleyParser.relatableSingleSubjectExpression"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitRelatableSingleSubjectExpression([NotNull] StanleyParser.RelatableSingleSubjectExpressionContext context);
-	/// <summary>
 	/// Visit a parse tree produced by <see cref="StanleyParser.subjectExpression"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -134,6 +116,18 @@ public interface IStanleyParserVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitSelectedSubject([NotNull] StanleyParser.SelectedSubjectContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="StanleyParser.subjectSelectedByQuality"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitSubjectSelectedByQuality([NotNull] StanleyParser.SubjectSelectedByQualityContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="StanleyParser.subjectSelectedInRelation"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitSubjectSelectedInRelation([NotNull] StanleyParser.SubjectSelectedInRelationContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="StanleyParser.pluralObjectsExpression"/>.
 	/// </summary>
@@ -152,6 +146,18 @@ public interface IStanleyParserVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitSelectedObject([NotNull] StanleyParser.SelectedObjectContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="StanleyParser.objectSelectedByQuality"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitObjectSelectedByQuality([NotNull] StanleyParser.ObjectSelectedByQualityContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="StanleyParser.objectSelectedInRelation"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitObjectSelectedInRelation([NotNull] StanleyParser.ObjectSelectedInRelationContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="StanleyParser.selectionAdjective"/>.
 	/// </summary>
@@ -207,6 +213,12 @@ public interface IStanleyParserVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitImportVariableLiteral([NotNull] StanleyParser.ImportVariableLiteralContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="StanleyParser.runtimeVariableLiteral"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitRuntimeVariableLiteral([NotNull] StanleyParser.RuntimeVariableLiteralContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="StanleyParser.integer"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -218,11 +230,5 @@ public interface IStanleyParserVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitFloat([NotNull] StanleyParser.FloatContext context);
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="StanleyParser.idLiteral"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitIdLiteral([NotNull] StanleyParser.IdLiteralContext context);
 }
 } // namespace HereticalSolutions.StanleyScript.Grammars

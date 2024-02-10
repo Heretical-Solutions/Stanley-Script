@@ -4,6 +4,8 @@ namespace HereticalSolutions.StanleyScript
 	{
 		EExecutionStatus Status { get; }
 
+		int CurrentLine { get; }
+
 		void LoadProgram(
 			string[] instructions);
 

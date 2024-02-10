@@ -1,14 +1,17 @@
+using System;
+using System.Globalization;
+
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace HereticalSolutions.StanleyScript
 {
-	public class PushString
+	public class PushFloat
 		: AStanleyOperation
 	{
 		#region  IStanleyOperation
 
-		public override string Opcode => "OP_PUSH_STR";
+		public override string Opcode => "OP_PUSH_FLT";
 
 		public override bool WillHandle(
 			string[] instructionTokens,
@@ -36,8 +39,8 @@ namespace HereticalSolutions.StanleyScript
 			stack.Push(
 				new StanleyCachedVariable(
 					"TEMPVAR",
-					typeof(string),
-					instructionTokens[1]));
+					typeof(int),
+					float.Parse(instructionTokens[1], CultureInfo.InvariantCulture)));
 
 			return true;
 		}

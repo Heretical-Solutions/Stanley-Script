@@ -32,6 +32,8 @@ namespace HereticalSolutions.StanleyScript
 
 		private string[] instructions;
 
+		private int currentLine = -1;
+
 		private CancellationTokenSource cancellationTokenSource;
 
 		public StanleyEnvironment(
@@ -54,6 +56,8 @@ namespace HereticalSolutions.StanleyScript
 			executionStatus = EExecutionStatus.IDLE;
 
 			instructions = null;
+
+			currentLine = -1;
 
 			programCounter = 0;
 
@@ -139,6 +143,12 @@ namespace HereticalSolutions.StanleyScript
 			return true;
 		}
 
+		public void SetCurrentLine(
+			int line)
+		{
+			currentLine = line;
+		}
+
 		public bool GetRuntimeVariable(
 			string name,
 			out IStanleyVariable variable)
@@ -176,10 +186,14 @@ namespace HereticalSolutions.StanleyScript
 
 		public EExecutionStatus Status { get => executionStatus; }
 
+		public int CurrentLine { get => currentLine; }
+
 		public void LoadProgram(
 			string[] instructions)
 		{
 			this.instructions = instructions;
+
+			currentLine = 0;
 
 			programCounter = 0;
 		}
@@ -219,9 +233,66 @@ namespace HereticalSolutions.StanleyScript
 			stack.Push(variable);
 		}
 
-		public IStanleyVariable Pop()
+		public bool Pop(
+			out IStanleyVariable variable)
 		{
-			return stack.Pop();
+			if (stack.Count > 0)
+			{
+				variable = stack.Pop();
+
+				return true;
+			}
+
+			variable = null;
+
+			return false;
+		}
+
+		public bool Peek(
+			out IStanleyVariable variable)
+		{
+			if (stack.Count > 0)
+			{
+				variable = stack.Peek();
+
+				return true;
+			}
+
+			variable = null;
+
+			return false;
+		}
+
+		public bool PeekAt(
+			int index,
+			out IStanleyVariable variable)
+		{
+			if (stack.Count > index)
+			{
+				variable = stack.ToArray()[index];
+
+				return true;
+			}
+
+			variable = null;
+
+			return false;
+		}
+
+		public bool PeekFromTop(
+			int relativeIndex,
+			out IStanleyVariable variable)
+		{
+			if (stack.Count > relativeIndex)
+			{
+				variable = stack.ToArray()[stack.Count - relativeIndex - 1];
+
+				return true;
+			}
+
+			variable = null;
+
+			return false;
 		}
 
 		#endregion
@@ -280,7 +351,7 @@ namespace HereticalSolutions.StanleyScript
 
 				if (!handled)
 				{
-					Log("NO OPERATION HANDLED: " + opcode);
+					Log("OPERATION NOT HANDLED: " + opcode);
 
 					return false;
 				}

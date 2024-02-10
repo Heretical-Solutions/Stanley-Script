@@ -5,40 +5,54 @@ using System.Threading.Tasks;
 namespace HereticalSolutions.StanleyScript
 {
 	public class ConcatenateVariables
-		: IStanleyOperation
+		: AStanleyOperation
 	{
 		#region IStanleyOperation
 
-		public string Opcode => "OP_CONCAT";
+		public override string Opcode => "OP_CONCAT";
 
-		public string[] Aliases => null;
-
-		public virtual bool WillHandle(
+		public override bool WillHandle(
 			string[] instructionTokens,
-			StanleyEnvironment environment)
+			IRuntimeEnvironment environment)
 		{
-			if (instructionTokens[0] != Opcode)
+			if (!AssertOpcode(instructionTokens))
 				return false;
 
-			if (instructionTokens.Length < 2)
+			if (!AssertMinInstructionLength(instructionTokens, 2))
 				return false;
 
-			if (string.IsNullOrEmpty(instructionTokens[1]))
+			if (AssertInstructionNotEmpty(instructionTokens, 1))
 				return false;
 
 			return true;
 		}
 
-		public virtual async Task<bool> Handle(
+		public override async Task<bool> Handle(
 			string[] instructionTokens,
-			StanleyEnvironment environment,
+			IRuntimeEnvironment environment,
 			CancellationToken token)
 		{
 			var stack = environment as IStackMachine;
 
 			var logger = environment as ILoggable;
 
-			int arrayLength = Convert.ToInt32(instructionTokens[1]);
+			//int arrayLength = Convert.ToInt32(instructionTokens[1]);
+
+			//REMEMBER: when popping from the stack, the order is reversed
+
+			//Get variables amount
+			if (!stack.Pop(
+				out var variablesAmount))
+			{
+				logger.Log("STACK VARIABLE NOT FOUND");
+
+				return false;
+			}
+
+			if (!AssertVariable<int>(variablesAmount, logger))
+				return false;
+
+			int arrayLength = variablesAmount.GetValue<int>();
 
 			IStanleyVariable[] variables = new IStanleyVariable[arrayLength];
 
@@ -46,14 +60,16 @@ namespace HereticalSolutions.StanleyScript
 
 			for (int i = arrayLength - 1; i > -1; i--)
 			{
-				var arrayElement = stack.Pop();
-
-				if (arrayElement == null)
+				if (!stack.Pop(
+					out var arrayElement))
 				{
-					logger.Log("INVALID STACK VARIABLE");
+					logger.Log("STACK VARIABLE NOT FOUND");
 
 					return false;
 				}
+
+				if (!AssertVariable(arrayElement, logger))
+					return false;
 
 				variables[i] = arrayElement;
 			}

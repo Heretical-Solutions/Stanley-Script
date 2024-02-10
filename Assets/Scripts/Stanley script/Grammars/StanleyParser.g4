@@ -12,7 +12,7 @@ script
 	;
 
 storyHeader
-	: STORY subject
+	: STORY object //subject
 	;
 
 statement
@@ -25,11 +25,12 @@ statement
 // Define statements
 
 defineStatement
-	: REFER_TO relatableSubjectExpression AS defineSubject
+	: REFER_TO defineSubject AS object
 	;
 
 defineSubject
-	: subject
+	: pluralSubjectsExpression
+	| subjectExpression
 	;
 
 // Command statements
@@ -54,39 +55,22 @@ timeStatement
 // Action statements
 
 actionStatement
-	: actionWithSubject
-	| actionWithArguments;
-
-actionWithSubject
-	: pluralSubjectsExpression WERE actionWithArguments
-	| subjectExpression WAS actionWithArguments
-	| pluralSubjectsExpression HAVE actionWithArguments
-	| subjectExpression (HAVE | HAS) actionWithArguments
+	: pluralSubjectsExpression WERE actionExpression
+	| subjectExpression WAS actionExpression
+	| pluralSubjectsExpression HAVE actionExpression
+	| subjectExpression (HAVE | HAS) actionExpression
 	;
 
-actionWithArguments
-	//: action numberArgument
-	//| action locationArgument
-	//| action subjectArgument
-	//| action objectArgument
-	: action objectArgument
+actionExpression
+	: actionWithArguments
 	| action
 	;
 
+actionWithArguments
+	: action objectArgument
+	;
+
 // Action arguments
-
-
-//numberArgument
-//	: TO pluralObjectsExpression
-//	;
-
-//locationArgument
-//	: TO objectExpression
-//	;
-
-//subjectArgument
-//	: AT subjectExpression
-//	;
 
 objectArgument
 	: (TO | AT)? pluralObjectsExpression
@@ -96,22 +80,7 @@ objectArgument
 // Subject expressions
 
 pluralSubjectsExpression
-	: integer subject
-	| subject
-	;
-
-relatableSubjectExpression
-	: relatablePluralSubjectsExpression
-	| relatableSingleSubjectExpression
-	;
-
-relatablePluralSubjectsExpression
-	: relatableSingleSubjectExpression (AND relatableSingleSubjectExpression)+
-	;
-
-relatableSingleSubjectExpression
-	: importVariableLiteral
-	| subject
+	: subject (AND subject)+
 	;
 
 subjectExpression
@@ -119,15 +88,25 @@ subjectExpression
 	| subject
 	;
 
+// Selected subject expressions
+
 selectedSubject
+	: subjectSelectedByQuality
+	| subjectSelectedInRelation
+	;
+
+subjectSelectedByQuality
 	: A selectionAdjective assertAdjective* OF subject
-	| THE relativeSelectionAdjective TO subjectExpression subject
+	;
+
+subjectSelectedInRelation
+	: THE relativeSelectionAdjective TO subjectExpression subject
 	;
 
 // Object expressions
 
 pluralObjectsExpression
-	: integer object
+	: integer object //objectExpression //Commenting this out. It would be weird to have "5.0 THE closiest TO Player chairs" as an object //Maybe?
 	| float object
 	;
 
@@ -136,33 +115,36 @@ objectExpression
 	| object
 	;
 
+// Selected subject expressions
+
 selectedObject
-	: A selectionAdjective assertAdjective* OF object
-	| THE relativeSelectionAdjective TO objectExpression object
-	;
+	: objectSelectedByQuality
+	| objectSelectedInRelation;
+
+objectSelectedByQuality:
+	A selectionAdjective assertAdjective* OF object;
+
+objectSelectedInRelation:
+	THE relativeSelectionAdjective TO subjectExpression object; //Keep in mind: TO subject, not TO object //Maybe?
 
 // Selection adjectives
 
 selectionAdjective
-	: RANDOM
-	| WEAKEST
-	| STRONGEST
+	: ID //RANDOM | WEAKEST | STRONGEST
 	;
 
 relativeSelectionAdjective
-	: CLOSIEST
-	| FURTHEST
+	: ID //CLOSIEST | FURTHEST
 	;
 
 assertAdjective
-	: UNIQUE
+	: ID //UNIQUE
 	;
 
 // Time expressions
 
 timeExpression
-	: integer timeStep
-	| float timeStep
+	: (integer | float) timeStep
 	;
 
 timeStep
@@ -172,22 +154,31 @@ timeStep
 
 // Simple subjects, objects and actions
 
+//(SUFFIX_N | SUFFIX_D | SUFFIX_ED)? //Suffixes in LL parsers just don't work. Gonna have to use aliases (like 'give', 'given', 'gave') instead.
+
 subject
-	: STRING_LITERAL //QUOTE_SYMB idLiteral (SUFFIX_S)? QUOTE_SYMB
+	: importVariableLiteral
+	| runtimeVariableLiteral
 	;
 
 object
-	: STRING_LITERAL //QUOTE_SYMB idLiteral (SUFFIX_S)? QUOTE_SYMB
+	: ID 				//runtimeVariableLiteral //Just to differentiate object values from variables
+	| STRING_LITERAL
 	;
 
 action
-	: idLiteral //(SUFFIX_N | SUFFIX_D | SUFFIX_ED)? //Suffixes in LL parsers just don't work. Gonna have to root em out in codegen
+	: ID
 	;
 
 // Literals
 
 importVariableLiteral
-	: DOLLAR_SYMB idLiteral
+	: DOLLAR_SYMB ID
+	;
+
+runtimeVariableLiteral
+	: ID
+	| STRING_LITERAL
 	;
 
 integer
@@ -196,8 +187,4 @@ integer
 
 float
 	: REAL_LITERAL
-	;
-
-idLiteral
-	: ID
 	;

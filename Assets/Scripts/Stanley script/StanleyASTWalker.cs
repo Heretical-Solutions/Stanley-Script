@@ -13,17 +13,9 @@ namespace HereticalSolutions.StanleyScript
 
 		private List<string> instructions;
 
-		private bool pushingRuntimeVariablesAllowed = true;
+		private int currentStackDepth = 0;
 
-		/*
-		private string commandOpcode = string.Empty;
-
-		private string commandTarget = string.Empty;
-
-		private int commandArgumentsCount = 0;
-
-		private List<string> commandArguments = new List<string>();
-		*/
+		private int actionTargetStackIndex = -1;
 
 		public StanleyASTWalker(
 			IRuntimeEnvironment runtimeEnvironment,
@@ -32,6 +24,17 @@ namespace HereticalSolutions.StanleyScript
 			this.runtimeEnvironment = runtimeEnvironment;
 
 			this.instructions = instructions;
+
+			Initialize();
+		}
+
+		public void Initialize()
+		{
+			instructions.Clear();
+
+			currentStackDepth = 0;
+
+			actionTargetStackIndex = -1;
 		}
 
 		public string[] GetInstructions()
@@ -39,165 +42,347 @@ namespace HereticalSolutions.StanleyScript
 			return instructions.ToArray();
 		}
 
+		private void DebugLogStackDepth()
+		{
+			instructions.Add(
+				$"Stack depth: {currentStackDepth}");
+		}
+
 		public override object VisitScript(StanleyParser.ScriptContext context)
 		{
-			//UnityEngine.Debug.Log("Visiting script");
-
-			//UnityEngine.Debug.Log($"Text: {context.GetText()}");
-
 			base.VisitScript(context);
+
 
 			return null;
 		}
 
 		public override object VisitStatement(StanleyParser.StatementContext context)
 		{
-			//UnityEngine.Debug.Log("Visiting statement");
+			int stackDepthAtContextStart = currentStackDepth;
 
-			//UnityEngine.Debug.Log($"Text: {context.GetText()}");
+			int lineIndex = context.Start.Line;
+
+			instructions.Add(
+				$"OP_PUSH_INT {lineIndex}");
+
+			currentStackDepth++;
+
+			currentStackDepth = stackDepthAtContextStart;
+
+			instructions.Add(
+				"OP_LINE");
+
+
+			DebugLogStackDepth();
 
 			base.VisitStatement(context);
+
+
+			DebugLogStackDepth();
 
 			return null;
 		}
 
         public override object VisitStoryHeader([NotNull] StanleyParser.StoryHeaderContext context)
         {
-			//UnityEngine.Debug.Log("Visiting header");
+			int stackDepthAtContextStart = currentStackDepth;
 
-			//UnityEngine.Debug.Log($"Text: {context.GetText()}");
+			int lineIndex = context.Start.Line;
 
-			//UnityEngine.Debug.Log($"Child count: {context.ChildCount}");
+			instructions.Add(
+				$"OP_PUSH_INT {lineIndex}");
 
-			//for (int i = 0; i < context.ChildCount; i++)
-			//{
-			//	UnityEngine.Debug.Log($"-- {context.children[i].GetText()}");
-			//}
+			currentStackDepth++;
 
-			pushingRuntimeVariablesAllowed = false;
+			currentStackDepth = stackDepthAtContextStart;
+
+			instructions.Add(
+				"OP_LINE");
+
+
+			DebugLogStackDepth();
 
 			base.VisitStoryHeader(context);
 
-			pushingRuntimeVariablesAllowed = true;
+
+			currentStackDepth = stackDepthAtContextStart;
 
 			instructions.Add(
 				$"OP_READ_STORY");
+
+
+			DebugLogStackDepth();
 
 			return null;
         }
 
         public override object VisitDefineStatement([NotNull] StanleyParser.DefineStatementContext context)
         {
-            base.VisitDefineStatement(context);
+			int stackDepthAtContextStart = currentStackDepth;
+
+			base.VisitDefineStatement(context);
+
+
+			currentStackDepth = stackDepthAtContextStart;
 
 			instructions.Add(
 				$"OP_ALLOC_RTM");
 
+
+			DebugLogStackDepth();
+
 			return null;
         }
 
-        public override object VisitRelatablePluralSubjectsExpression([NotNull] StanleyParser.RelatablePluralSubjectsExpressionContext context)
+        public override object VisitActionStatement([NotNull] StanleyParser.ActionStatementContext context)
         {
-            base.VisitRelatablePluralSubjectsExpression(context);
+			int stackDepthAtContextStart = currentStackDepth;
 
-			var subjects = context.relatableSingleSubjectExpression();
+			actionTargetStackIndex = stackDepthAtContextStart + 1;
+
+			base.VisitActionStatement(context);
+
+
+			currentStackDepth = stackDepthAtContextStart;
+
+			instructions.Add(
+				$"OP_INVOKE");
+
+			//Flushing because (plural)subjectExpression will put the target at the beginning of the stack so that it can be peeked later
+			instructions.Add(
+				$"OP_FLUSH");
+
+			actionTargetStackIndex = -1;
+
+
+			DebugLogStackDepth();
+
+			return null;
+		}
+
+/*
+        public override object VisitActionExpression([NotNull] StanleyParser.ActionExpressionContext context)
+        {
+			int stackDepthAtContextStart = currentStackDepth;
+
+			base.VisitActionExpression(context);
+
+
+			currentStackDepth = stackDepthAtContextStart;
+
+			instructions.Add(
+				$"OP_INVOKE");
+
+
+			DebugLogStackDepth();
+
+			return null;
+		}
+*/
+
+        public override object VisitActionWithArguments([NotNull] StanleyParser.ActionWithArgumentsContext context)
+		{
+			//int stackDepthAtContextStart = currentStackDepth;
+
+			//BE CAREFUL WHEN REORDERING VISITS
+			//DO NOT USE base.VisitRight or base.VisitLeft
+			//BECAUSE YOU MAY HAVE OVERRIDEN THOSE VISITS
+			//BUT YOU STILL CALL TO THEIR BASE IMPLEMENTATIONS
+			VisitObjectArgument(context.objectArgument());
+
+			instructions.Add(
+				$"OP_PUSH_INT {actionTargetStackIndex}");
+
+			instructions.Add(
+				$"OP_PUSH_STK");
+
+			currentStackDepth++;
+
+
+			DebugLogStackDepth();
+
+			VisitAction(context.action());
+
+
+			DebugLogStackDepth();
+
+			return null;
+		}
+
+		public override object VisitPluralSubjectsExpression([NotNull] StanleyParser.PluralSubjectsExpressionContext context)
+		{
+			int stackDepthAtContextStart = currentStackDepth;
+
+			base.VisitPluralSubjectsExpression(context);
+
+			var subjects = context.subject();
 
 			var subjectsAmount = subjects.Length;
 
 			instructions.Add(
-				$"OP_CONCAT {subjectsAmount}");
+				$"OP_PUSH_INT {subjectsAmount}");
 
-			return null;
-        }
+			currentStackDepth++;
 
-        public override object VisitImportVariableLiteral([NotNull] StanleyParser.ImportVariableLiteralContext context)
-        {
-            base.VisitImportVariableLiteral(context);
+
+			currentStackDepth = stackDepthAtContextStart;
 
 			instructions.Add(
-				$"OP_PUSH_IMP");
+				$"OP_CONCAT");
+
+			currentStackDepth++;
+
+
+			DebugLogStackDepth();
 
 			return null;
-        }
+		}
 
-        public override object VisitDefineSubject([NotNull] StanleyParser.DefineSubjectContext context)
-        {
-			pushingRuntimeVariablesAllowed = false;
+		public override object VisitPluralObjectsExpression([NotNull] StanleyParser.PluralObjectsExpressionContext context)
+		{
+			//int stackDepthAtContextStart = currentStackDepth;
 
-			base.VisitDefineSubject(context);
+			base.VisitPluralObjectsExpression(context);
 
-			pushingRuntimeVariablesAllowed = true;
+			//TODO: instead of MUL, try to find out WHAT an object is and perform respective operation
+			/*
+			currentStackDepth = stackDepthAtContextStart;
+
+			instructions.Add(
+				$"OP_MUL");
+
+			currentStackDepth++;
+			*/
 
 			return null;
-        }
+		}
 
-        public override object VisitSubject([NotNull] StanleyParser.SubjectContext context)
+
+		public override object VisitObject([NotNull] StanleyParser.ObjectContext context)
         {
-			//UnityEngine.Debug.Log("Visiting subject");
-
-			base.VisitSubject(context);
-
-			var text = context.GetText();
-
-			instructions.Add($"OP_PUSH_STR {text}");
-
-			//I think it's better to leave reserved symbols in the variable names
-
-			//instructions.Add(
-			//	$"OP_PUSH_STR {text.Substring(1, text.Length - 2)}");
-
-			if (pushingRuntimeVariablesAllowed)
-			{
-				instructions.Add(
-					$"OP_PUSH_RTM");
-			}
-
-            return null;
-        }
-
-        public override object VisitObject([NotNull] StanleyParser.ObjectContext context)
-        {
-			//UnityEngine.Debug.Log("Visiting object");
-
 			base.VisitObject(context);
 
+
 			var text = context.GetText();
 
 			instructions.Add($"OP_PUSH_STR {text}");
 
-			//I think it's better to leave reserved symbols in the variable names
+			currentStackDepth++;
 
-			//instructions.Add(
-			//	$"OP_PUSH_STR {text.Substring(1, text.Length - 2)}");
 
-			if (pushingRuntimeVariablesAllowed)
-			{
-				instructions.Add(
-					$"OP_PUSH_RTM");
-			}
+			DebugLogStackDepth();
 
 			return null;
         }
 
         public override object VisitAction([NotNull] StanleyParser.ActionContext context)
         {
-            base.VisitAction(context);
+			base.VisitAction(context);
 
-
-
-			return null;
-        }
-
-        public override object VisitIdLiteral([NotNull] StanleyParser.IdLiteralContext context)
-        {
-            base.VisitIdLiteral(context);
 
 			var text = context.GetText();
 
 			instructions.Add(
 				$"OP_PUSH_STR {text}");
 
+			currentStackDepth++;
+
+
+			DebugLogStackDepth();
+
 			return null;
         }
+
+		public override object VisitImportVariableLiteral([NotNull] StanleyParser.ImportVariableLiteralContext context)
+		{
+			int stackDepthAtContextStart = currentStackDepth;
+
+			base.VisitImportVariableLiteral(context);
+
+
+			var text = context.GetText();
+
+			instructions.Add(
+				$"OP_PUSH_STR {text.Substring(1, text.Length - 1)}");
+
+			currentStackDepth++;
+
+
+			currentStackDepth = stackDepthAtContextStart;
+
+			instructions.Add(
+				$"OP_PUSH_IMP");
+
+			currentStackDepth++;
+
+
+			DebugLogStackDepth();
+
+			return null;
+		}
+
+		public override object VisitRuntimeVariableLiteral([NotNull] StanleyParser.RuntimeVariableLiteralContext context)
+        {
+			int stackDepthAtContextStart = currentStackDepth;
+
+			base.VisitRuntimeVariableLiteral(context);
+
+
+			var text = context.GetText();
+
+			instructions.Add(
+				$"OP_PUSH_STR {text}");
+
+			currentStackDepth++;
+
+
+			currentStackDepth = stackDepthAtContextStart;
+
+			instructions.Add(
+				$"OP_PUSH_RTM");
+
+			currentStackDepth++;
+
+
+			DebugLogStackDepth();
+
+			return null;
+		}
+
+        public override object VisitInteger([NotNull] StanleyParser.IntegerContext context)
+        {
+            base.VisitInteger(context);
+
+
+			var text = context.GetText();
+
+			instructions.Add(
+				$"OP_PUSH_INT {text}");
+
+			currentStackDepth++;
+
+
+			DebugLogStackDepth();
+
+			return null;
+        }
+
+        public override object VisitFloat([NotNull] StanleyParser.FloatContext context)
+        {
+			base.VisitFloat(context);
+
+
+			var text = context.GetText();
+
+			instructions.Add(
+				$"OP_PUSH_FLT {text}");
+
+			currentStackDepth++;
+
+
+			DebugLogStackDepth();
+
+			return null;
+		}
     }
 }

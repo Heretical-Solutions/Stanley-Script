@@ -18,6 +18,10 @@ namespace HereticalSolutions.StanleyScript
 			IStanleyVariable variable);
 
 
+		void SetCurrentLine(
+			int line);
+
+
 		bool GetRuntimeVariable(
 			string name,
 			out IStanleyVariable variable);

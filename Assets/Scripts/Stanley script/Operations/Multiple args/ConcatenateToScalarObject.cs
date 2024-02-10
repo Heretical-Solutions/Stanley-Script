@@ -1,20 +1,27 @@
+/*
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace HereticalSolutions.StanleyScript
 {
-	public class AllocateRuntimeVariable
+	public class ConcatenateToScalarObject<TValue>
 		: AStanleyOperation
 	{
 		#region IStanleyOperation
 
-		public override string Opcode => "OP_ALLOC_RTM";
+		public override string Opcode => "OP_MUL";
 
 		public override bool WillHandle(
 			string[] instructionTokens,
 			IRuntimeEnvironment environment)
 		{
 			if (!AssertOpcode(instructionTokens))
+				return false;
+
+			var stack = environment as IStackMachine;
+
+			if (!AssertStackVariableType<TValue>(stack, 0))
 				return false;
 
 			return true;
@@ -31,47 +38,40 @@ namespace HereticalSolutions.StanleyScript
 
 			//REMEMBER: when popping from the stack, the order is reversed
 
-			//Get variable name
+			//Get variable to multiply
 			if (!stack.Pop(
-				out var variableName))
+				out var variableToMultiply))
 			{
 				logger.Log("STACK VARIABLE NOT FOUND");
 
 				return false;
 			}
 
-			if (!AssertVariable<string>(variableName, logger))
+			if (!AssertVariable(variableToMultiply, logger))
 				return false;
 
-			var variableNameString = variableName.GetValue<string>();
-
-			if (!AssertValueNotEmpty(variableNameString, logger))
-				return false;
-
-			//Get variable to clone
+			//Get amount
 			if (!stack.Pop(
-				out var variableToClone))
+				out var amount))
 			{
 				logger.Log("STACK VARIABLE NOT FOUND");
 
 				return false;
 			}
 
-			if (!AssertVariable(variableToClone, logger))
+			if (!AssertVariable<int>(amount, logger))
 				return false;
 
-			//Add new runtime variable
-			if (!environment.AddRuntimeVariable(
-				variableNameString,
+			stack.Push(
 				new StanleyCachedVariable(
-					variableNameString,
-					variableToClone.VariableType,
-					variableToClone.GetValue())))
-			{
-				logger.Log($"COULD NOT ADD RUNTIME VARIABLE: {variableNameString}");
+					"TEMPVAR",
+					typeof(StanleyScalarObject),
+					new StanleyScalarObject
+					{
+						Amount = amount.GetValue<int>(),
 
-				return false;
-			}
+						Unit 
+					}));
 
 			return true;
 		}
@@ -79,3 +79,4 @@ namespace HereticalSolutions.StanleyScript
 		#endregion
 	}
 }
+*/

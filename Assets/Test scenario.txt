@@ -2,44 +2,44 @@
 STORY ABOUT "autotest"                                                              //storyHeader
 
 //Name things
-REFER TO $game AS "Game"                                                            //defineStatement, relatableSingleSubjectExpression
-REFER TO $pc AS "Squad"                                                             //defineStatement, relatableSingleSubjectExpression
-REFER TO $user AS "Player"                                                          //defineStatement, relatableSingleSubjectExpression
+REFER TO $game AS Game                                                              //defineStatement, relatableSingleSubjectExpression
+REFER TO $pc AS Squad                                                               //defineStatement, relatableSingleSubjectExpression
+REFER TO $user AS Player                                                            //defineStatement, relatableSingleSubjectExpression
 REFER TO $all_active_perks AS "All active perks"                                    //defineStatement, relatableSingleSubjectExpression
 REFER TO $all_passive_perks AS "All passive perks"                                  //defineStatement, relatableSingleSubjectExpression
 
 //Start scenario
-"Game" WAS started                                                                  //commandStatement, actionWithSubject, subjectExpression
+Game WAS started                                                                    //commandStatement, actionWithSubject, subjectExpression
 
 //Pause immediately
-"Game" WAS paused                                                                   //commandStatement, actionWithSubject, subjectExpression
+Game WAS paused                                                                     //commandStatement, actionWithSubject, subjectExpression
 
 //Give squad immortality
-"Squad" WAS given "immortality"                                                     //commandStatement, actionWithSubject, objectArgument
+Squad WAS given immortality                                                         //commandStatement, actionWithSubject, objectArgument
 
 //Give squad random perks at max level
-"Squad" WAS given A RANDOM UNIQUE OF "All active perks"                             //commandStatement, actionWithSubject, objectArgument, selectedObject, selectionAdjective, assertAdjective
-"Squad" WAS given A RANDOM UNIQUE OF "All active perks"                             //commandStatement, actionWithSubject, objectArgument, selectedObject, selectionAdjective, assertAdjective
-"Squad" WAS given A RANDOM UNIQUE OF "All active perks"                             //commandStatement, actionWithSubject, objectArgument, selectedObject, selectionAdjective, assertAdjective
-"Squad" WAS given A RANDOM UNIQUE OF "All active perks"                             //commandStatement, actionWithSubject, objectArgument, selectedObject, selectionAdjective, assertAdjective
+Squad WAS given A random unpicked OF "All active perks"                             //commandStatement, actionWithSubject, objectArgument, selectedObject, selectionAdjective, assertAdjective
+Squad WAS given A random unpicked OF "All active perks"                             //commandStatement, actionWithSubject, objectArgument, selectedObject, selectionAdjective, assertAdjective
+Squad WAS given A random unpicked OF "All active perks"                             //commandStatement, actionWithSubject, objectArgument, selectedObject, selectionAdjective, assertAdjective
+Squad WAS given A random unpicked OF "All active perks"                             //commandStatement, actionWithSubject, objectArgument, selectedObject, selectionAdjective, assertAdjective
 
-"Squad" WAS given A RANDOM UNIQUE OF "All passive perks"                            //commandStatement, actionWithSubject, objectArgument, selectedObject, selectionAdjective, assertAdjective
-"Squad" WAS given A RANDOM UNIQUE OF "All passive perks"                            //commandStatement, actionWithSubject, objectArgument, selectedObject, selectionAdjective, assertAdjective
-"Squad" WAS given A RANDOM UNIQUE OF "All passive perks"                            //commandStatement, actionWithSubject, objectArgument, selectedObject, selectionAdjective, assertAdjective
-"Squad" WAS given A RANDOM UNIQUE OF "All passive perks"                            //commandStatement, actionWithSubject, objectArgument, selectedObject, selectionAdjective, assertAdjective
+Squad WAS given A random unpicked OF "All passive perks"                            //commandStatement, actionWithSubject, objectArgument, selectedObject, selectionAdjective, assertAdjective
+Squad WAS given A random unpicked OF "All passive perks"                            //commandStatement, actionWithSubject, objectArgument, selectedObject, selectionAdjective, assertAdjective
+Squad WAS given A random unpicked OF "All passive perks"                            //commandStatement, actionWithSubject, objectArgument, selectedObject, selectionAdjective, assertAdjective
+Squad WAS given A random unpicked OF "All passive perks"                            //commandStatement, actionWithSubject, objectArgument, selectedObject, selectionAdjective, assertAdjective
 
 REFER TO $selected_active_perks AND $selected_passive_perks AS "All selected perks" //defineStatement, relatablePluralSubjectsExpression
 "All selected perks" WERE maxed                                                     //commandStatement, actionWithSubject, pluralSubjectsExpression
 
 //Start moving
-"Squad" HAS faced A RANDOM OF "directions"
-"Squad" HAS accelerated TO 1.0 "speed"
+Squad HAS faced A random OF directions
+Squad HAS accelerated TO 1.0 speed
 
 //Set game at 5x speed
-"Game" WAS accelerated TO 5.0 "speed"
+Game WAS accelerated TO 5.0 speed
 
 //Resume the game
-"Game" WAS unpaused
+Game WAS unpaused
 
 //Wait for 15 minutes
 15 MINUTES PASSED

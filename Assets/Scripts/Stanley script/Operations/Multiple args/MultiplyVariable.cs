@@ -1,20 +1,27 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace HereticalSolutions.StanleyScript
 {
-	public class AllocateRuntimeVariable
+	public class MultiplyVariable
 		: AStanleyOperation
 	{
 		#region IStanleyOperation
 
-		public override string Opcode => "OP_ALLOC_RTM";
+		public override string Opcode => "OP_MUL";
 
 		public override bool WillHandle(
 			string[] instructionTokens,
 			IRuntimeEnvironment environment)
 		{
 			if (!AssertOpcode(instructionTokens))
+				return false;
+
+			if (!AssertMinInstructionLength(instructionTokens, 2))
+				return false;
+
+			if (AssertInstructionNotEmpty(instructionTokens, 1))
 				return false;
 
 			return true;
@@ -31,47 +38,44 @@ namespace HereticalSolutions.StanleyScript
 
 			//REMEMBER: when popping from the stack, the order is reversed
 
-			//Get variable name
+			//Get variable to multiply
 			if (!stack.Pop(
-				out var variableName))
+				out var variableToMultiply))
 			{
 				logger.Log("STACK VARIABLE NOT FOUND");
 
 				return false;
 			}
 
-			if (!AssertVariable<string>(variableName, logger))
+			if (!AssertVariable(variableToMultiply, logger))
 				return false;
 
-			var variableNameString = variableName.GetValue<string>();
-
-			if (!AssertValueNotEmpty(variableNameString, logger))
-				return false;
-
-			//Get variable to clone
+			//Get amount
 			if (!stack.Pop(
-				out var variableToClone))
+				out var amount))
 			{
 				logger.Log("STACK VARIABLE NOT FOUND");
 
 				return false;
 			}
 
-			if (!AssertVariable(variableToClone, logger))
+			if (!AssertVariable<int>(amount, logger))
 				return false;
 
-			//Add new runtime variable
-			if (!environment.AddRuntimeVariable(
-				variableNameString,
+			int arrayLength = amount.GetValue<int>();
+
+			IStanleyVariable[] variables = new IStanleyVariable[arrayLength];
+
+			for (int i = 0; i < arrayLength; i++)
+			{
+				variables[i] = variableToMultiply;
+			}
+
+			stack.Push(
 				new StanleyCachedVariable(
-					variableNameString,
-					variableToClone.VariableType,
-					variableToClone.GetValue())))
-			{
-				logger.Log($"COULD NOT ADD RUNTIME VARIABLE: {variableNameString}");
-
-				return false;
-			}
+					"TEMPVAR",
+					typeof(Array),
+					variables));
 
 			return true;
 		}

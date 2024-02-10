@@ -3,12 +3,12 @@ using System.Threading.Tasks;
 
 namespace HereticalSolutions.StanleyScript
 {
-	public class ReadStory
+	public class PushStackVariable
 		: AStanleyOperation
 	{
-		#region  IStanleyOperation
+		#region IStanleyOperation
 
-		public override string Opcode => "OP_READ_STORY";
+		public override string Opcode => "OP_PUSH_STK";
 
 		public override bool WillHandle(
 			string[] instructionTokens,
@@ -30,22 +30,29 @@ namespace HereticalSolutions.StanleyScript
 			var logger = environment as ILoggable;
 
 			if (!stack.Pop(
-				out var storyName))
+				out var stackIndex))
 			{
 				logger.Log("STACK VARIABLE NOT FOUND");
 
 				return false;
 			}
 
-			if (!AssertVariable<string>(storyName, logger))
+			if (!AssertVariable<int>(stackIndex, logger))
 				return false;
 
-			var storyNameString = storyName.GetValue<string>();
+			var stackIndexValue = stackIndex.GetValue<int>();
 
-			if (!AssertValueNotEmpty(storyNameString, logger))
+			if (!stack.PeekAt(
+				stackIndexValue,
+				out var stackVariable))
+			{
+				logger.Log($"STACK VARIABLE NOT FOUND AT: {stackIndexValue}");
+
 				return false;
+			}
 
-			logger.Log($"STARTING STORY: {storyNameString}");
+			stack.Push(
+				stackVariable);
 
 			return true;
 		}

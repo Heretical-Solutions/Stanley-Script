@@ -3,24 +3,18 @@ using System.Threading.Tasks;
 
 namespace HereticalSolutions.StanleyScript
 {
-	public class PushString
+	public class SetLineIndex
 		: AStanleyOperation
 	{
 		#region  IStanleyOperation
 
-		public override string Opcode => "OP_PUSH_STR";
+		public override string Opcode => "OP_LINE";
 
 		public override bool WillHandle(
 			string[] instructionTokens,
 			IRuntimeEnvironment environment)
 		{
 			if (!AssertOpcode(instructionTokens))
-				return false;
-
-			if (!AssertMinInstructionLength(instructionTokens, 2))
-				return false;
-
-			if (AssertInstructionNotEmpty(instructionTokens, 1))
 				return false;
 
 			return true;
@@ -33,11 +27,24 @@ namespace HereticalSolutions.StanleyScript
 		{
 			var stack = environment as IStackMachine;
 
-			stack.Push(
-				new StanleyCachedVariable(
-					"TEMPVAR",
-					typeof(string),
-					instructionTokens[1]));
+			var logger = environment as ILoggable;
+
+			if (!stack.Pop(
+				out var lineIndex))
+			{
+				logger.Log("STACK VARIABLE NOT FOUND");
+
+				return false;
+			}
+
+			if (!AssertVariable<string>(lineIndex, logger))
+				return false;
+
+			var lineIndexValue = lineIndex.GetValue<int>();
+
+			logger.Log($"STARTING LINE: {lineIndexValue}");
+
+			environment.SetCurrentLine(lineIndexValue);
 
 			return true;
 		}
