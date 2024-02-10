@@ -1,27 +1,21 @@
-/*
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace HereticalSolutions.StanleyScript
 {
-	public class ConcatenateToScalarObject<TValue>
+	public class ConcatenateToScalarObject
 		: AStanleyOperation
 	{
 		#region IStanleyOperation
 
-		public override string Opcode => "OP_MUL";
+		public override string Opcode => "OP_SCAL";
 
 		public override bool WillHandle(
 			string[] instructionTokens,
 			IRuntimeEnvironment environment)
 		{
 			if (!AssertOpcode(instructionTokens))
-				return false;
-
-			var stack = environment as IStackMachine;
-
-			if (!AssertStackVariableType<TValue>(stack, 0))
 				return false;
 
 			return true;
@@ -59,19 +53,52 @@ namespace HereticalSolutions.StanleyScript
 				return false;
 			}
 
-			if (!AssertVariable<int>(amount, logger))
+			if (!AssertVariable(amount, logger))
 				return false;
 
-			stack.Push(
-				new StanleyCachedVariable(
-					"TEMPVAR",
-					typeof(StanleyScalarObject),
-					new StanleyScalarObject
-					{
-						Amount = amount.GetValue<int>(),
+			double amountValue;
 
-						Unit 
-					}));
+			if (amount.VariableType == typeof(int))
+			{
+				amountValue = amount.GetValue<int>();
+			}
+			else if (amount.VariableType == typeof(float))
+			{
+				amountValue = amount.GetValue<float>();
+			}
+			else
+			{
+				logger.Log("INVALID AMOUNT VARIABLE TYPE");
+
+				return false;
+			}
+
+			if (variableToMultiply.VariableType == typeof(string))
+			{
+				stack.Push(
+					new StanleyCachedVariable(
+						"TEMPVAR",
+						typeof(StanleyScalarPropertyObject),
+						new StanleyScalarPropertyObject
+						{
+							Amount = amountValue,
+
+							Property = variableToMultiply.GetValue<string>()
+						}));
+			}
+			else
+			{
+				stack.Push(
+					new StanleyCachedVariable(
+						"TEMPVAR",
+						typeof(StanleyScalarVariableObject),
+						new StanleyScalarVariableObject
+						{
+							Amount = amountValue,
+
+							Variable = variableToMultiply
+						}));
+			}
 
 			return true;
 		}
@@ -79,4 +106,3 @@ namespace HereticalSolutions.StanleyScript
 		#endregion
 	}
 }
-*/

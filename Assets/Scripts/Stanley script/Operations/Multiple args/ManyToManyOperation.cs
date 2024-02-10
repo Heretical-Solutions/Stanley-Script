@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 
 namespace HereticalSolutions.StanleyScript
 {
+	//The signature should look like this:
+	//give WHOM WHAT
 	public abstract class ManyToManyOperation
 		: AStanleyOperation
 	{

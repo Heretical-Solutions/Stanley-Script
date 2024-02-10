@@ -7,6 +7,8 @@ namespace HereticalSolutions.StanleyScript
 	public class StanleyASTWalker
 		: StanleyParserBaseVisitor<object>
 	{
+		private const string SELECTION_OPCODE = "select";
+
 		private IRuntimeEnvironment runtimeEnvironment;
 
 		//Walking runtime
@@ -240,23 +242,178 @@ namespace HereticalSolutions.StanleyScript
 
 		public override object VisitPluralObjectsExpression([NotNull] StanleyParser.PluralObjectsExpressionContext context)
 		{
-			//int stackDepthAtContextStart = currentStackDepth;
+			int stackDepthAtContextStart = currentStackDepth;
 
 			base.VisitPluralObjectsExpression(context);
 
-			//TODO: instead of MUL, try to find out WHAT an object is and perform respective operation
-			/*
 			currentStackDepth = stackDepthAtContextStart;
 
 			instructions.Add(
-				$"OP_MUL");
+				$"OP_SCAL");
 
 			currentStackDepth++;
-			*/
 
 			return null;
 		}
 
+		//The signature should look like this:
+		//select SELECTOR FROM_WHAT ARGUMENT ASSERT_AMOUNT ASSERT? ASSERT?
+		public override object VisitObjectSelectedByQuality([NotNull] StanleyParser.ObjectSelectedByQualityContext context)
+        {
+			int stackDepthAtContextStart = currentStackDepth;
+
+			//base.VisitObjectSelectedByQuality(context);
+
+			//First, let's push asserts
+			var assertAdjectives = context.assertAdjective();
+
+			int assertAdjectivesAmount = assertAdjectives.Length;
+
+			for (int i = 0; i < assertAdjectivesAmount; i++)
+			{
+				VisitAssertAdjective(assertAdjectives[i]);
+			}
+
+			//Then asserts amount
+			instructions.Add(
+				$"OP_PUSH_INT {assertAdjectivesAmount}");
+
+			currentStackDepth++;
+
+			//Then the argument (in quality selection it's the target)
+			instructions.Add(
+				$"OP_PUSH_INT {actionTargetStackIndex}");
+
+			instructions.Add(
+				$"OP_PUSH_STK");
+
+			currentStackDepth++;
+
+			//Then the what (selection adjective)
+			VisitObject(context.@object());
+
+			//Then the selector
+			VisitSelectionAdjective(context.selectionAdjective());
+
+			//Finally, the opcode
+			instructions.Add(
+				$"OP_PUSH_STR {SELECTION_OPCODE}");
+
+			currentStackDepth++;
+
+			DebugLogStackDepth();
+
+			currentStackDepth = stackDepthAtContextStart;
+
+			instructions.Add(
+				$"OP_INVOKE");
+
+			currentStackDepth++;
+
+
+			DebugLogStackDepth();
+
+			return null;
+        }
+
+		//The signature should look like this:
+		//select SELECTOR FROM_WHAT ARGUMENT ASSERT_AMOUNT ASSERT? ASSERT?
+		public override object VisitObjectSelectedInRelation([NotNull] StanleyParser.ObjectSelectedInRelationContext context)
+        {
+			int stackDepthAtContextStart = currentStackDepth;
+
+			//base.VisitObjectSelectedInRelation(context);
+
+			//First, let's push asserts amount
+			instructions.Add(
+				$"OP_PUSH_INT {0}");
+
+			currentStackDepth++;
+
+			//Then the argument (in relation selection it's the subject expression)
+			VisitSubjectExpression(context.subjectExpression());
+
+			//Then the what (selection adjective)
+			VisitObject(context.@object());
+
+			//Then the selector
+			VisitRelativeSelectionAdjective(context.relativeSelectionAdjective());
+
+			//Finally, the opcode
+			instructions.Add(
+				$"OP_PUSH_STR {SELECTION_OPCODE}");
+
+			currentStackDepth++;
+
+			DebugLogStackDepth();
+
+			currentStackDepth = stackDepthAtContextStart;
+
+			instructions.Add(
+				$"OP_INVOKE");
+
+			currentStackDepth++;
+
+
+			DebugLogStackDepth();
+
+			return null;
+		}
+
+        public override object VisitSelectionAdjective([NotNull] StanleyParser.SelectionAdjectiveContext context)
+		{
+			base.VisitSelectionAdjective(context);
+
+
+			var text = context.GetText();
+
+			instructions.Add(
+				$"OP_PUSH_STR {text}");
+
+			currentStackDepth++;
+
+
+			DebugLogStackDepth();
+
+			return null;
+		}
+
+		public override object VisitRelativeSelectionAdjective([NotNull] StanleyParser.RelativeSelectionAdjectiveContext context)
+		{
+			base.VisitRelativeSelectionAdjective(context);
+
+
+			var text = context.GetText();
+
+			instructions.Add(
+				$"OP_PUSH_STR {text}");
+
+			currentStackDepth++;
+
+
+			DebugLogStackDepth();
+
+			return null;
+		}
+
+
+		public override object VisitAssertAdjective([NotNull] StanleyParser.AssertAdjectiveContext context)
+		{
+			base.VisitAssertAdjective(context);
+
+
+			var text = context.GetText();
+
+			instructions.Add(
+				$"OP_PUSH_STR {text}");
+
+			currentStackDepth++;
+
+
+			DebugLogStackDepth();
+
+			return null;
+		}
 
 		public override object VisitObject([NotNull] StanleyParser.ObjectContext context)
         {
@@ -266,6 +423,8 @@ namespace HereticalSolutions.StanleyScript
 			var text = context.GetText();
 
 			instructions.Add($"OP_PUSH_STR {text}");
+
+			instructions.Add($"OP_TCAST_RTM");
 
 			currentStackDepth++;
 

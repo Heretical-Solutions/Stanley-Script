@@ -115,7 +115,7 @@ objectExpression
 	| object
 	;
 
-// Selected subject expressions
+// Selected object expressions
 
 selectedObject
 	: objectSelectedByQuality
@@ -125,7 +125,7 @@ objectSelectedByQuality:
 	A selectionAdjective assertAdjective* OF object;
 
 objectSelectedInRelation:
-	THE relativeSelectionAdjective TO subjectExpression object; //Keep in mind: TO subject, not TO object //Maybe?
+	THE relativeSelectionAdjective TO subjectExpression object; //Keep in mind: TO subject, not TO object
 
 // Selection adjectives
 
