@@ -24,7 +24,7 @@ namespace HereticalSolutions.StanleyScript
 			//if (!AssertMinInstructionLength(instructionTokens, 2))
 			//	return false;
 
-			//if (AssertInstructionNotEmpty(instructionTokens, 1))
+			//if (!AssertInstructionNotEmpty(instructionTokens, 1))
 			//	return false;
 
 			return true;
@@ -37,7 +37,7 @@ namespace HereticalSolutions.StanleyScript
 		{
 			var stack = environment as IStackMachine;
 
-			var logger = environment as ILoggable;
+			var reportable = environment as IReportable;
 
 			var REPL = environment as IREPL;
 
@@ -52,17 +52,17 @@ namespace HereticalSolutions.StanleyScript
 			if (!stack.Pop(
 				out var opcode))
 			{
-				logger.Log("STACK VARIABLE NOT FOUND");
+				reportable.Log("STACK VARIABLE NOT FOUND");
 
 				return false;
 			}
 
-			if (!AssertVariable<string>(opcode, logger))
+			if (!AssertVariable<string>(opcode, reportable))
 				return false;
 
 			var opcodeString = opcode.GetValue<string>();
 
-			if (!AssertValueNotEmpty(opcodeString, logger))
+			if (!AssertValueNotEmpty(opcodeString, reportable))
 				return false;
 
 			bool result = await REPL.Execute(

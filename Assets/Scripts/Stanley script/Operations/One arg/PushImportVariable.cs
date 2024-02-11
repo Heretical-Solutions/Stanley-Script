@@ -27,29 +27,29 @@ namespace HereticalSolutions.StanleyScript
 		{
 			var stack = environment as IStackMachine;
 
-			var logger = environment as ILoggable;
+			var reportable = environment as IReportable;
 
 			if (!stack.Pop(
 				out var variableName))
 			{
-				logger.Log("STACK VARIABLE NOT FOUND");
+				reportable.Log("STACK VARIABLE NOT FOUND");
 
 				return false;
 			}
 
-			if (!AssertVariable<string>(variableName, logger))
+			if (!AssertVariable<string>(variableName, reportable))
 				return false;
 
 			var variableNameString = variableName.GetValue<string>();
 
-			if (!AssertValueNotEmpty(variableNameString, logger))
+			if (!AssertValueNotEmpty(variableNameString, reportable))
 				return false;
 
 			if (!environment.GetImportVariable(
 				variableNameString,
 				out var importVariable))
 			{
-				logger.Log($"IMPORT VARIABLE NOT FOUND: {variableNameString}");
+				reportable.Log($"IMPORT VARIABLE NOT FOUND: {variableNameString}");
 
 				return false;
 			}

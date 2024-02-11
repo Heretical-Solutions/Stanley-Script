@@ -1,10 +1,10 @@
 namespace HereticalSolutions.StanleyScript
 {
-	public interface ILoggable
+	public interface IReportable
 	{
 		void Log(
 			string message);
 
-		string[] GetLogs();
+		string[] GetReport();
 	}
 }

@@ -28,6 +28,29 @@ namespace HereticalSolutions.StanleyScript
 			return instructionTokens[0] == Opcode;
 		}
 
+		protected bool AssertOpcodeOrAlias(string[] instructionTokens)
+		{
+			if (instructionTokens[0] == Opcode)
+			{
+				return true;
+			}
+
+			if (Aliases == null)
+			{
+				return false;
+			}
+
+			foreach (var alias in Aliases)
+			{
+				if (instructionTokens[0] == alias)
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
 		protected bool AssertMinInstructionLength(
 			string[] instructionTokens,
 			int targetLength)
@@ -40,6 +63,13 @@ namespace HereticalSolutions.StanleyScript
 			int instructionIndex)
 		{
 			return !string.IsNullOrEmpty(instructionTokens[instructionIndex]);
+		}
+
+		protected bool AssertMinStackSize(
+			IStackMachine stack,
+			int targetLength)
+		{
+			return stack.StackSize >= targetLength;
 		}
 
 		protected bool AssertStackVariableType<TVariable>(
@@ -59,6 +89,26 @@ namespace HereticalSolutions.StanleyScript
 			}
 
 			return true;
+		}
+
+		protected bool AssertStackVariableTypeIsArray(
+			IStackMachine stack,
+			int offsetFromTop)
+		{
+			if (!stack.PeekFromTop(
+				offsetFromTop,
+				out var variable))
+			{
+				return false;
+			}
+
+			if (variable.VariableType.IsArray
+				&& variable.VariableType != typeof(IStanleyVariable)) //Just to tell the difference
+			{
+				return true;
+			}
+
+			return false;
 		}
 
 		protected bool AssertStackVariable<TVariable>(
@@ -88,11 +138,11 @@ namespace HereticalSolutions.StanleyScript
 
 		protected bool AssertVariable(
 			IStanleyVariable variable,
-			ILoggable logger)
+			IReportable reportable)
 		{
 			if (variable == null)
 			{
-				logger.Log("INVALID STACK VARIABLE");
+				reportable.Log("INVALID STACK VARIABLE");
 
 				return false;
 			}
@@ -102,18 +152,18 @@ namespace HereticalSolutions.StanleyScript
 
 		protected bool AssertVariable<TVariable>(
 			IStanleyVariable variable,
-			ILoggable logger)
+			IReportable reportable)
 		{
 			if (variable == null)
 			{
-				logger.Log("INVALID STACK VARIABLE");
+				reportable.Log("INVALID STACK VARIABLE");
 
 				return false;
 			}
 
 			if (variable.VariableType != typeof(TVariable))
 			{
-				logger.Log($"INVALID STACK VARIABLE TYPE. EXPECTED: {typeof(string).Name} ACTUAL: {variable.VariableType.Name}");
+				reportable.Log($"INVALID STACK VARIABLE TYPE. EXPECTED: {typeof(string).Name} ACTUAL: {variable.VariableType.Name}");
 
 				return false;
 			}
@@ -123,11 +173,11 @@ namespace HereticalSolutions.StanleyScript
 
 		protected bool AssertValueNotEmpty(
 			string value,
-			ILoggable logger)
+			IReportable reportable)
 		{
 			if (string.IsNullOrEmpty(value))
 			{
-				logger.Log("INVALID VARIABLE VALUE");
+				reportable.Log("INVALID VARIABLE VALUE");
 
 				return false;
 			}

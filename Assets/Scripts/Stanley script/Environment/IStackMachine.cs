@@ -2,6 +2,8 @@ namespace HereticalSolutions.StanleyScript
 {
 	public interface IStackMachine
 	{
+		int StackSize { get; }
+
 		void Push(
 			IStanleyVariable variable);
 
@@ -11,11 +13,11 @@ namespace HereticalSolutions.StanleyScript
 		public bool Peek(
 			out IStanleyVariable variable);
 
-		public bool PeekAt(
-			int index,
+		public bool PeekFromTop(
+			int relativeIndex,
 			out IStanleyVariable variable);
 
-		public bool PeekFromTop(
+		public bool PeekFromBottom(
 			int relativeIndex,
 			out IStanleyVariable variable);
 	}

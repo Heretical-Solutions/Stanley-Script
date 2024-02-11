@@ -5,22 +5,16 @@ namespace HereticalSolutions.StanleyScript
 	public interface IRuntimeEnvironment
 	{
 		bool LoadInputVariable(
-			string name,
 			IStanleyVariable variable);
 
 		bool LoadOperation(
-			string name,
 			IStanleyOperation operation);
 
-
 		bool AddRuntimeVariable(
-			string name,
 			IStanleyVariable variable);
-
 
 		void SetCurrentLine(
 			int line);
-
 
 		bool GetRuntimeVariable(
 			string name,

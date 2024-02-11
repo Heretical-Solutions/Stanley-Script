@@ -27,12 +27,12 @@ namespace HereticalSolutions.StanleyScript
 		{
 			var stack = environment as IStackMachine;
 
-			var logger = environment as ILoggable;
+			var reportable = environment as IReportable;
 
 			if (!stack.Pop(
 				out var _))
 			{
-				logger.Log("STACK VARIABLE NOT FOUND");
+				reportable.Log("STACK VARIABLE NOT FOUND");
 
 				return false;
 			}

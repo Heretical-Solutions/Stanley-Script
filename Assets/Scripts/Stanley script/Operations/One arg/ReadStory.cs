@@ -27,25 +27,25 @@ namespace HereticalSolutions.StanleyScript
 		{
 			var stack = environment as IStackMachine;
 
-			var logger = environment as ILoggable;
+			var reportable = environment as IReportable;
 
 			if (!stack.Pop(
 				out var storyName))
 			{
-				logger.Log("STACK VARIABLE NOT FOUND");
+				reportable.Log("STACK VARIABLE NOT FOUND");
 
 				return false;
 			}
 
-			if (!AssertVariable<string>(storyName, logger))
+			if (!AssertVariable<string>(storyName, reportable))
 				return false;
 
 			var storyNameString = storyName.GetValue<string>();
 
-			if (!AssertValueNotEmpty(storyNameString, logger))
+			if (!AssertValueNotEmpty(storyNameString, reportable))
 				return false;
 
-			logger.Log($"STARTING STORY: {storyNameString}");
+			reportable.Log($"STARTING STORY: {storyNameString}");
 
 			return true;
 		}

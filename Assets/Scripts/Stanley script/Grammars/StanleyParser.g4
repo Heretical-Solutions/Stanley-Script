@@ -45,7 +45,6 @@ timeStatement
 
 // Event statements
 
-
 // Assert statements
 
 //assertStatement
@@ -56,9 +55,9 @@ timeStatement
 
 actionStatement
 	: pluralSubjectsExpression WERE actionExpression
-	| subjectExpression WAS actionExpression
+	| subjectExpression (WERE | WAS) actionExpression //Remember that a variable may contain an array so "WERE" is still appliable
 	| pluralSubjectsExpression HAVE actionExpression
-	| subjectExpression (HAVE | HAS) actionExpression
+	| subjectExpression (HAVE | HAS) actionExpression //Same for HAVE
 	;
 
 actionExpression

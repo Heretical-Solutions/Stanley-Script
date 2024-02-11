@@ -12,9 +12,9 @@ namespace HereticalSolutions.StanleyScript
 
 		void Start()
 		{
-			StanleyInterpreter interpreter = new StanleyInterpreter();
-			
-			interpreter.Interpret(scriptFile.text);
+			StanleyInterpreter interpreter = StanleyFactory.BuildInterpreter();
+
+			interpreter.Execute(scriptFile.text);
 		}
 	}
 }

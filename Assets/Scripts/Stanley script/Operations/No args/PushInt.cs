@@ -21,7 +21,7 @@ namespace HereticalSolutions.StanleyScript
 			if (!AssertMinInstructionLength(instructionTokens, 2))
 				return false;
 
-			if (AssertInstructionNotEmpty(instructionTokens, 1))
+			if (!AssertInstructionNotEmpty(instructionTokens, 1))
 				return false;
 
 			return true;
@@ -36,7 +36,7 @@ namespace HereticalSolutions.StanleyScript
 
 			stack.Push(
 				new StanleyCachedVariable(
-					"TEMPVAR",
+					StanleyConsts.TEMPORARY_VARIABLE,
 					typeof(int),
 					Convert.ToInt32(instructionTokens[1])));
 

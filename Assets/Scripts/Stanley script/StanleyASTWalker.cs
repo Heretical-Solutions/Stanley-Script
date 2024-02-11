@@ -1,30 +1,30 @@
 using System.Collections.Generic;
-using Antlr4.Runtime.Misc;
+
 using HereticalSolutions.StanleyScript.Grammars;
+
+using Antlr4.Runtime.Misc;
 
 namespace HereticalSolutions.StanleyScript
 {
 	public class StanleyASTWalker
 		: StanleyParserBaseVisitor<object>
 	{
-		private const string SELECTION_OPCODE = "select";
-
-		private IRuntimeEnvironment runtimeEnvironment;
-
 		//Walking runtime
 
-		private List<string> instructions;
+		private readonly List<string> instructions;
 
 		private int currentStackDepth = 0;
 
 		private int actionTargetStackIndex = -1;
 
+		private bool flush = false;
+
+		private bool objectCanBeRuntimeVariable = true;
+
 		public StanleyASTWalker(
 			IRuntimeEnvironment runtimeEnvironment,
 			List<string> instructions)
 		{
-			this.runtimeEnvironment = runtimeEnvironment;
-
 			this.instructions = instructions;
 
 			Initialize();
@@ -37,6 +37,10 @@ namespace HereticalSolutions.StanleyScript
 			currentStackDepth = 0;
 
 			actionTargetStackIndex = -1;
+
+			flush = false;
+
+			objectCanBeRuntimeVariable = true;
 		}
 
 		public string[] GetInstructions()
@@ -44,16 +48,9 @@ namespace HereticalSolutions.StanleyScript
 			return instructions.ToArray();
 		}
 
-		private void DebugLogStackDepth()
-		{
-			instructions.Add(
-				$"Stack depth: {currentStackDepth}");
-		}
-
 		public override object VisitScript(StanleyParser.ScriptContext context)
 		{
 			base.VisitScript(context);
-
 
 			return null;
 		}
@@ -74,13 +71,7 @@ namespace HereticalSolutions.StanleyScript
 			instructions.Add(
 				"OP_LINE");
 
-
-			DebugLogStackDepth();
-
 			base.VisitStatement(context);
-
-
-			DebugLogStackDepth();
 
 			return null;
 		}
@@ -101,19 +92,16 @@ namespace HereticalSolutions.StanleyScript
 			instructions.Add(
 				"OP_LINE");
 
-
-			DebugLogStackDepth();
+			objectCanBeRuntimeVariable = false;
 
 			base.VisitStoryHeader(context);
 
+			objectCanBeRuntimeVariable = true;
 
 			currentStackDepth = stackDepthAtContextStart;
 
 			instructions.Add(
 				$"OP_READ_STORY");
-
-
-			DebugLogStackDepth();
 
 			return null;
         }
@@ -122,16 +110,16 @@ namespace HereticalSolutions.StanleyScript
         {
 			int stackDepthAtContextStart = currentStackDepth;
 
+			objectCanBeRuntimeVariable = false;
+
 			base.VisitDefineStatement(context);
 
+			objectCanBeRuntimeVariable = true;
 
 			currentStackDepth = stackDepthAtContextStart;
 
 			instructions.Add(
 				$"OP_ALLOC_RTM");
-
-
-			DebugLogStackDepth();
 
 			return null;
         }
@@ -140,24 +128,25 @@ namespace HereticalSolutions.StanleyScript
         {
 			int stackDepthAtContextStart = currentStackDepth;
 
-			actionTargetStackIndex = stackDepthAtContextStart + 1;
+			actionTargetStackIndex = stackDepthAtContextStart;
 
 			base.VisitActionStatement(context);
-
 
 			currentStackDepth = stackDepthAtContextStart;
 
 			instructions.Add(
 				$"OP_INVOKE");
 
-			//Flushing because (plural)subjectExpression will put the target at the beginning of the stack so that it can be peeked later
-			instructions.Add(
-				$"OP_FLUSH");
+			if (flush)
+			{
+				//Flushing because (plural)subjectExpression will put the target at the beginning of the stack so that it can be peeked later
+				instructions.Add(
+					$"OP_FLUSH");
+			}
+			
+			flush = false;
 
 			actionTargetStackIndex = -1;
-
-
-			DebugLogStackDepth();
 
 			return null;
 		}
@@ -169,14 +158,10 @@ namespace HereticalSolutions.StanleyScript
 
 			base.VisitActionExpression(context);
 
-
 			currentStackDepth = stackDepthAtContextStart;
 
 			instructions.Add(
 				$"OP_INVOKE");
-
-
-			DebugLogStackDepth();
 
 			return null;
 		}
@@ -200,13 +185,9 @@ namespace HereticalSolutions.StanleyScript
 
 			currentStackDepth++;
 
-
-			DebugLogStackDepth();
-
 			VisitAction(context.action());
 
-
-			DebugLogStackDepth();
+			flush = true;
 
 			return null;
 		}
@@ -226,16 +207,12 @@ namespace HereticalSolutions.StanleyScript
 
 			currentStackDepth++;
 
-
 			currentStackDepth = stackDepthAtContextStart;
 
 			instructions.Add(
 				$"OP_CONCAT");
 
 			currentStackDepth++;
-
-
-			DebugLogStackDepth();
 
 			return null;
 		}
@@ -297,11 +274,9 @@ namespace HereticalSolutions.StanleyScript
 
 			//Finally, the opcode
 			instructions.Add(
-				$"OP_PUSH_STR {SELECTION_OPCODE}");
+				$"OP_PUSH_STR {StanleyConsts.SELECTION_OPCODE}");
 
 			currentStackDepth++;
-
-			DebugLogStackDepth();
 
 			currentStackDepth = stackDepthAtContextStart;
 
@@ -309,9 +284,6 @@ namespace HereticalSolutions.StanleyScript
 				$"OP_INVOKE");
 
 			currentStackDepth++;
-
-
-			DebugLogStackDepth();
 
 			return null;
         }
@@ -341,11 +313,9 @@ namespace HereticalSolutions.StanleyScript
 
 			//Finally, the opcode
 			instructions.Add(
-				$"OP_PUSH_STR {SELECTION_OPCODE}");
+				$"OP_PUSH_STR {StanleyConsts.SELECTION_OPCODE}");
 
 			currentStackDepth++;
-
-			DebugLogStackDepth();
 
 			currentStackDepth = stackDepthAtContextStart;
 
@@ -354,9 +324,6 @@ namespace HereticalSolutions.StanleyScript
 
 			currentStackDepth++;
 
-
-			DebugLogStackDepth();
-
 			return null;
 		}
 
@@ -364,16 +331,12 @@ namespace HereticalSolutions.StanleyScript
 		{
 			base.VisitSelectionAdjective(context);
 
-
 			var text = context.GetText();
 
 			instructions.Add(
 				$"OP_PUSH_STR {text}");
 
 			currentStackDepth++;
-
-
-			DebugLogStackDepth();
 
 			return null;
 		}
@@ -382,7 +345,6 @@ namespace HereticalSolutions.StanleyScript
 		{
 			base.VisitRelativeSelectionAdjective(context);
 
-
 			var text = context.GetText();
 
 			instructions.Add(
@@ -390,27 +352,19 @@ namespace HereticalSolutions.StanleyScript
 
 			currentStackDepth++;
 
-
-			DebugLogStackDepth();
-
 			return null;
 		}
-
 
 		public override object VisitAssertAdjective([NotNull] StanleyParser.AssertAdjectiveContext context)
 		{
 			base.VisitAssertAdjective(context);
 
-
 			var text = context.GetText();
 
 			instructions.Add(
 				$"OP_PUSH_STR {text}");
 
 			currentStackDepth++;
-
-
-			DebugLogStackDepth();
 
 			return null;
 		}
@@ -419,17 +373,16 @@ namespace HereticalSolutions.StanleyScript
         {
 			base.VisitObject(context);
 
-
 			var text = context.GetText();
 
 			instructions.Add($"OP_PUSH_STR {text}");
 
-			instructions.Add($"OP_TCAST_RTM");
+			if (objectCanBeRuntimeVariable)
+			{
+				instructions.Add($"OP_TCAST_RTM");
+			}
 
 			currentStackDepth++;
-
-
-			DebugLogStackDepth();
 
 			return null;
         }
@@ -438,16 +391,12 @@ namespace HereticalSolutions.StanleyScript
         {
 			base.VisitAction(context);
 
-
 			var text = context.GetText();
 
 			instructions.Add(
 				$"OP_PUSH_STR {text}");
 
 			currentStackDepth++;
-
-
-			DebugLogStackDepth();
 
 			return null;
         }
@@ -458,7 +407,6 @@ namespace HereticalSolutions.StanleyScript
 
 			base.VisitImportVariableLiteral(context);
 
-
 			var text = context.GetText();
 
 			instructions.Add(
@@ -466,16 +414,12 @@ namespace HereticalSolutions.StanleyScript
 
 			currentStackDepth++;
 
-
 			currentStackDepth = stackDepthAtContextStart;
 
 			instructions.Add(
 				$"OP_PUSH_IMP");
 
 			currentStackDepth++;
-
-
-			DebugLogStackDepth();
 
 			return null;
 		}
@@ -486,14 +430,12 @@ namespace HereticalSolutions.StanleyScript
 
 			base.VisitRuntimeVariableLiteral(context);
 
-
 			var text = context.GetText();
 
 			instructions.Add(
 				$"OP_PUSH_STR {text}");
 
 			currentStackDepth++;
-
 
 			currentStackDepth = stackDepthAtContextStart;
 
@@ -502,16 +444,12 @@ namespace HereticalSolutions.StanleyScript
 
 			currentStackDepth++;
 
-
-			DebugLogStackDepth();
-
 			return null;
 		}
 
         public override object VisitInteger([NotNull] StanleyParser.IntegerContext context)
         {
             base.VisitInteger(context);
-
 
 			var text = context.GetText();
 
@@ -520,9 +458,6 @@ namespace HereticalSolutions.StanleyScript
 
 			currentStackDepth++;
 
-
-			DebugLogStackDepth();
-
 			return null;
         }
 
@@ -530,16 +465,12 @@ namespace HereticalSolutions.StanleyScript
         {
 			base.VisitFloat(context);
 
-
 			var text = context.GetText();
 
 			instructions.Add(
 				$"OP_PUSH_FLT {text}");
 
 			currentStackDepth++;
-
-
-			DebugLogStackDepth();
 
 			return null;
 		}

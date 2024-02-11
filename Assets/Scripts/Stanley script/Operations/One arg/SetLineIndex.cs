@@ -27,22 +27,22 @@ namespace HereticalSolutions.StanleyScript
 		{
 			var stack = environment as IStackMachine;
 
-			var logger = environment as ILoggable;
+			var reportable = environment as IReportable;
 
 			if (!stack.Pop(
 				out var lineIndex))
 			{
-				logger.Log("STACK VARIABLE NOT FOUND");
+				reportable.Log("STACK VARIABLE NOT FOUND");
 
 				return false;
 			}
 
-			if (!AssertVariable<string>(lineIndex, logger))
+			if (!AssertVariable<int>(lineIndex, reportable))
 				return false;
 
 			var lineIndexValue = lineIndex.GetValue<int>();
 
-			logger.Log($"STARTING LINE: {lineIndexValue}");
+			reportable.Log($"STARTING LINE: {lineIndexValue}");
 
 			environment.SetCurrentLine(lineIndexValue);
 

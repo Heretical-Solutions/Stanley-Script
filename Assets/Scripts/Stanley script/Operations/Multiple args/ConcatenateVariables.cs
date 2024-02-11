@@ -18,11 +18,11 @@ namespace HereticalSolutions.StanleyScript
 			if (!AssertOpcode(instructionTokens))
 				return false;
 
-			if (!AssertMinInstructionLength(instructionTokens, 2))
-				return false;
+			//if (!AssertMinInstructionLength(instructionTokens, 2))
+			//	return false;
 
-			if (AssertInstructionNotEmpty(instructionTokens, 1))
-				return false;
+			//if (!AssertInstructionNotEmpty(instructionTokens, 1))
+			//	return false;
 
 			return true;
 		}
@@ -34,7 +34,7 @@ namespace HereticalSolutions.StanleyScript
 		{
 			var stack = environment as IStackMachine;
 
-			var logger = environment as ILoggable;
+			var reportable = environment as IReportable;
 
 			//int arrayLength = Convert.ToInt32(instructionTokens[1]);
 
@@ -44,12 +44,12 @@ namespace HereticalSolutions.StanleyScript
 			if (!stack.Pop(
 				out var variablesAmount))
 			{
-				logger.Log("STACK VARIABLE NOT FOUND");
+				reportable.Log("STACK VARIABLE NOT FOUND");
 
 				return false;
 			}
 
-			if (!AssertVariable<int>(variablesAmount, logger))
+			if (!AssertVariable<int>(variablesAmount, reportable))
 				return false;
 
 			int arrayLength = variablesAmount.GetValue<int>();
@@ -63,12 +63,12 @@ namespace HereticalSolutions.StanleyScript
 				if (!stack.Pop(
 					out var arrayElement))
 				{
-					logger.Log("STACK VARIABLE NOT FOUND");
+					reportable.Log("STACK VARIABLE NOT FOUND");
 
 					return false;
 				}
 
-				if (!AssertVariable(arrayElement, logger))
+				if (!AssertVariable(arrayElement, reportable))
 					return false;
 
 				variables[i] = arrayElement;
@@ -76,7 +76,7 @@ namespace HereticalSolutions.StanleyScript
 
 			stack.Push(
 				new StanleyCachedVariable(
-					"TEMPVAR",
+					StanleyConsts.TEMPORARY_VARIABLE,
 					typeof(Array),
 					variables));
 

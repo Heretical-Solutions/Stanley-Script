@@ -12,19 +12,19 @@ namespace HereticalSolutions.StanleyScript
 		  IExecutable,
 		  IStackMachine,
 		  IREPL,
-		  ILoggable
+		  IReportable
 	{
 		private const string REGEX_SPLIT_BY_WHITESPACE_UNLESS_WITHIN_QUOTES = "(?<=^[^\"]*(?:\"[^\"]*\"[^\"]*)*) (?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)";
 
-		private Dictionary<string, IStanleyVariable> inputVariables;
+		private readonly Dictionary<string, IStanleyVariable> inputVariables;
 
-		private Dictionary<string, List<IStanleyOperation>> operationsChainOfResponsibility;
+		private readonly Dictionary<string, List<IStanleyOperation>> operationsChainOfResponsibility;
 
-		private Dictionary<string, IStanleyVariable> runtimeVariables;
+		private readonly Dictionary<string, IStanleyVariable> runtimeVariables;
 
-		private Stack<IStanleyVariable> stack;
+		private readonly Stack<IStanleyVariable> stack;
 
-		private List<string> logs;
+		private readonly List<string> report;
 
 		private EExecutionStatus executionStatus;
 
@@ -41,7 +41,7 @@ namespace HereticalSolutions.StanleyScript
 			Dictionary<string, List<IStanleyOperation>> operationsChainOfResponsibility,
 			Dictionary<string, IStanleyVariable> runtimeVariables,
 			Stack<IStanleyVariable> stack,
-			List<string> logs)
+			List<string> report)
 		{
 			this.inputVariables = inputVariables;
 
@@ -51,7 +51,7 @@ namespace HereticalSolutions.StanleyScript
 
 			this.stack = stack;
 
-			this.logs = logs;
+			this.report = report;
 
 			executionStatus = EExecutionStatus.IDLE;
 
@@ -67,9 +67,10 @@ namespace HereticalSolutions.StanleyScript
 		#region IRuntimeEnvironment
 
 		public bool LoadInputVariable(
-			string name,
 			IStanleyVariable variable)
 		{
+			string name = variable.Name;
+
 			if (inputVariables.ContainsKey(name))
 			{
 				return false;
@@ -83,19 +84,20 @@ namespace HereticalSolutions.StanleyScript
 		}
 
 		public bool LoadOperation(
-			string name,
 			IStanleyOperation operation)
 		{
-			if (operationsChainOfResponsibility.ContainsKey(name))
+			string opcode = operation.Opcode;
+
+			if (operationsChainOfResponsibility.ContainsKey(opcode))
 			{
-				operationsChainOfResponsibility[name].Insert(
+				operationsChainOfResponsibility[opcode].Insert(
 					0,
 					operation);
 			}
 			else
 			{
 				operationsChainOfResponsibility.Add(
-					name,
+					opcode,
 					new List<IStanleyOperation>
 					{
 						operation
@@ -128,9 +130,10 @@ namespace HereticalSolutions.StanleyScript
 		}
 
 		public bool AddRuntimeVariable(
-			string name,
 			IStanleyVariable variable)
 		{
+			string name = variable.Name;
+
 			if (runtimeVariables.ContainsKey(name))
 			{
 				return false;
@@ -191,41 +194,69 @@ namespace HereticalSolutions.StanleyScript
 		public void LoadProgram(
 			string[] instructions)
 		{
+			Stop();
+
 			this.instructions = instructions;
 
 			currentLine = 0;
 
 			programCounter = 0;
+
+			report.Clear();
 		}
 
 		public void Start()
 		{
+			switch (executionStatus)
+			{
+				case EExecutionStatus.IDLE:
+				case EExecutionStatus.PAUSED:
+				case EExecutionStatus.STOPPED:
+				{
+					executionStatus = EExecutionStatus.RUNNING;
 
+					RunInternal();
+
+					//Task.Run(async () =>
+					//{
+					//	RunInternal();
+					//});
+				}
+
+				break;
+			}
 		}
 
 		public void Step()
 		{
-
+			if (executionStatus == EExecutionStatus.PAUSED)
+			{
+				ExecuteInternal(cancellationTokenSource.Token);
+			}
 		}
 
 		public void Pause()
 		{
-
+			executionStatus = EExecutionStatus.PAUSED;
 		}
 
 		public void Resume()
 		{
-
+			executionStatus = EExecutionStatus.RUNNING;
 		}
 
 		public void Stop()
 		{
+			executionStatus = EExecutionStatus.STOPPED;
 
+			cancellationTokenSource.Cancel();
 		}
 
 		#endregion
 
-		#region Stack machine
+		#region IStackMachine
+
+		public int StackSize => stack.Count;
 
 		public void Push(
 			IStanleyVariable variable)
@@ -263,13 +294,13 @@ namespace HereticalSolutions.StanleyScript
 			return false;
 		}
 
-		public bool PeekAt(
-			int index,
+		public bool PeekFromTop(
+			int relativeIndex,
 			out IStanleyVariable variable)
 		{
-			if (stack.Count > index)
+			if (stack.Count > relativeIndex)
 			{
-				variable = stack.ToArray()[index];
+				variable = stack.ToArray()[relativeIndex];
 
 				return true;
 			}
@@ -279,7 +310,7 @@ namespace HereticalSolutions.StanleyScript
 			return false;
 		}
 
-		public bool PeekFromTop(
+		public bool PeekFromBottom(
 			int relativeIndex,
 			out IStanleyVariable variable)
 		{
@@ -297,17 +328,17 @@ namespace HereticalSolutions.StanleyScript
 
 		#endregion
 
-		#region Logging
+		#region IReportable
 
 		public void Log(
 			string message)
 		{
-			logs.Add(message);
+			report.Add(message);
 		}
 
-		public string[] GetLogs()
+		public string[] GetReport()
 		{
-			return logs.ToArray();
+			return report.ToArray();
 		}
 
 		#endregion
@@ -368,8 +399,56 @@ namespace HereticalSolutions.StanleyScript
 
 		#endregion
 
+		private async Task<bool> RunInternal()
+		{
+			while (executionStatus == EExecutionStatus.RUNNING)
+			{
+				if (programCounter < instructions.Length)
+				{
+					var result = await ExecuteInternal(cancellationTokenSource.Token);
+
+					if (!result)
+					{
+						StopInternal();
+
+						return false;
+					}
+				}
+				else
+				{
+					StopInternal();
+
+					return true;
+				}
+			}
+
+			return true;
+		}
+
+		private void StopInternal()
+		{
+			executionStatus = EExecutionStatus.STOPPED;
+
+			UnityEngine.Debug.Log("--------");
+
+			UnityEngine.Debug.Log("REPORT:");
+
+			UnityEngine.Debug.Log("--------");
+
+			for (int i = 0; i < report.Count; i++)
+			{
+				UnityEngine.Debug.Log($"{i}: {report[i]}");
+			}
+
+			UnityEngine.Debug.Log("--------");
+
+			cancellationTokenSource.Cancel();
+		}
+
 		private async Task<bool> ExecuteInternal(CancellationToken cancellationToken)
 		{
+			UnityEngine.Debug.Log("Executing line " + programCounter);
+
 			string instruction = instructions[programCounter];
 
 			bool result = await Execute(

@@ -27,7 +27,7 @@ namespace HereticalSolutions.StanleyScript
 		{
 			var stack = environment as IStackMachine;
 
-			var logger = environment as ILoggable;
+			var reportable = environment as IReportable;
 
 			//REMEMBER: when popping from the stack, the order is reversed
 
@@ -35,40 +35,39 @@ namespace HereticalSolutions.StanleyScript
 			if (!stack.Pop(
 				out var variableName))
 			{
-				logger.Log("STACK VARIABLE NOT FOUND");
+				reportable.Log("STACK VARIABLE NOT FOUND");
 
 				return false;
 			}
 
-			if (!AssertVariable<string>(variableName, logger))
+			if (!AssertVariable<string>(variableName, reportable))
 				return false;
 
 			var variableNameString = variableName.GetValue<string>();
 
-			if (!AssertValueNotEmpty(variableNameString, logger))
+			if (!AssertValueNotEmpty(variableNameString, reportable))
 				return false;
 
 			//Get variable to clone
 			if (!stack.Pop(
 				out var variableToClone))
 			{
-				logger.Log("STACK VARIABLE NOT FOUND");
+				reportable.Log("STACK VARIABLE NOT FOUND");
 
 				return false;
 			}
 
-			if (!AssertVariable(variableToClone, logger))
+			if (!AssertVariable(variableToClone, reportable))
 				return false;
 
 			//Add new runtime variable
 			if (!environment.AddRuntimeVariable(
-				variableNameString,
 				new StanleyCachedVariable(
 					variableNameString,
 					variableToClone.VariableType,
 					variableToClone.GetValue())))
 			{
-				logger.Log($"COULD NOT ADD RUNTIME VARIABLE: {variableNameString}");
+				reportable.Log($"COULD NOT ADD RUNTIME VARIABLE: {variableNameString}");
 
 				return false;
 			}

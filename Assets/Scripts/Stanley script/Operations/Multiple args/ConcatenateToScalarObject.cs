@@ -28,32 +28,32 @@ namespace HereticalSolutions.StanleyScript
 		{
 			var stack = environment as IStackMachine;
 
-			var logger = environment as ILoggable;
+			var reportable = environment as IReportable;
 
 			//REMEMBER: when popping from the stack, the order is reversed
 
-			//Get variable to multiply
+			//Get variable to concatenate
 			if (!stack.Pop(
 				out var variableToMultiply))
 			{
-				logger.Log("STACK VARIABLE NOT FOUND");
+				reportable.Log("STACK VARIABLE NOT FOUND");
 
 				return false;
 			}
 
-			if (!AssertVariable(variableToMultiply, logger))
+			if (!AssertVariable(variableToMultiply, reportable))
 				return false;
 
 			//Get amount
 			if (!stack.Pop(
 				out var amount))
 			{
-				logger.Log("STACK VARIABLE NOT FOUND");
+				reportable.Log("STACK VARIABLE NOT FOUND");
 
 				return false;
 			}
 
-			if (!AssertVariable(amount, logger))
+			if (!AssertVariable(amount, reportable))
 				return false;
 
 			double amountValue;
@@ -68,7 +68,7 @@ namespace HereticalSolutions.StanleyScript
 			}
 			else
 			{
-				logger.Log("INVALID AMOUNT VARIABLE TYPE");
+				reportable.Log("INVALID AMOUNT VARIABLE TYPE");
 
 				return false;
 			}
@@ -77,7 +77,7 @@ namespace HereticalSolutions.StanleyScript
 			{
 				stack.Push(
 					new StanleyCachedVariable(
-						"TEMPVAR",
+						StanleyConsts.TEMPORARY_VARIABLE,
 						typeof(StanleyScalarPropertyObject),
 						new StanleyScalarPropertyObject
 						{
@@ -90,7 +90,7 @@ namespace HereticalSolutions.StanleyScript
 			{
 				stack.Push(
 					new StanleyCachedVariable(
-						"TEMPVAR",
+						StanleyConsts.TEMPORARY_VARIABLE,
 						typeof(StanleyScalarVariableObject),
 						new StanleyScalarVariableObject
 						{

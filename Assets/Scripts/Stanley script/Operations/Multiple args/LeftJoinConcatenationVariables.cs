@@ -5,15 +5,15 @@ using System.Threading.Tasks;
 namespace HereticalSolutions.StanleyScript
 {
 	//The signature should look like this:
-	//give WHOM WHAT
-	public abstract class ManyToManyOperation
+	//opcode WHOM
+	public class LeftJoinConcatenationVariables
 		: AStanleyOperation
 	{
 		private readonly string opcode;
 
 		private readonly string[] aliases;
 
-		public ManyToManyOperation(
+		public LeftJoinConcatenationVariables(
 			string opcode,
 			string[] aliases)
 		{
@@ -32,13 +32,12 @@ namespace HereticalSolutions.StanleyScript
 			string[] instructionTokens,
 			IRuntimeEnvironment environment)
 		{
-			if (!AssertOpcode(instructionTokens))
+			if (!AssertOpcodeOrAlias(instructionTokens))
 				return false;
 
 			var stack = environment as IStackMachine;
 
-			if (!AssertStackVariableType<Array>(stack, 0)
-				&& !AssertStackVariableType<Array>(stack, 1))
+			if (!AssertStackVariableType<Array>(stack, 0))
 				return false;
 
 			return true;
@@ -51,32 +50,23 @@ namespace HereticalSolutions.StanleyScript
 		{
 			var stack = environment as IStackMachine;
 
-			var logger = environment as ILoggable;
+			var reportable = environment as IReportable;
 
 			var REPL = environment as IREPL;
 
+			//Get target variable
 			if (!stack.Pop(
 				out var target))
 			{
-				logger.Log("STACK VARIABLE NOT FOUND");
+				reportable.Log("STACK VARIABLE NOT FOUND");
 
 				return false;
 			}
 
-			if (!AssertVariable(target, logger))
+			if (!AssertVariable(target, reportable))
 				return false;
 
-			if (!stack.Pop(
-				out var argument))
-			{
-				logger.Log("STACK VARIABLE NOT FOUND");
-
-				return false;
-			}
-
-			if (!AssertVariable(argument, logger))
-				return false;
-
+			//Unwrap targets
 			IStanleyVariable[] targets;
 
 			if (target.VariableType == typeof(Array))
@@ -88,32 +78,17 @@ namespace HereticalSolutions.StanleyScript
 				targets = new IStanleyVariable[] { target };
 			}
 
-			IStanleyVariable[] arguments;
-
-			if (argument.VariableType == typeof(Array))
-			{
-				arguments = argument.GetValue<IStanleyVariable[]>();
-			}
-			else
-			{
-				arguments = new IStanleyVariable[] { argument };
-			}
-
+			//Invoke for each
 			foreach (var targetVariable in targets)
 			{
-				foreach (var argumentVariable in arguments)
-				{
-					stack.Push(targetVariable);
+				stack.Push(targetVariable);
 
-					stack.Push(argumentVariable);
+				bool result = await REPL.Execute(
+					opcode,
+					token);
 
-					bool result = await REPL.Execute(
-						opcode,
-						token);
-						
-					if (!result)
-						return false;
-				}
+				if (!result)
+					return false;
 			}
 
 			return true;
