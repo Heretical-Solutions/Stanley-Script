@@ -82,6 +82,11 @@ namespace UImGui
 		[SerializeField]
 		private bool _doGlobalEvents = true; // Do global/default Layout event too.
 
+		//Addition: screen scaling
+		[Header("Screen scaling")]
+		[SerializeField]
+		private Vector2 _referenceScreenSize = new Vector2(800, 600);
+
 		private bool _isChangingCamera = false;
 
 		public CommandBuffer CommandBuffer => _renderCommandBuffer;
@@ -100,6 +105,9 @@ namespace UImGui
 
 		public void SetUserData(System.IntPtr userDataPtr)
 		{
+			//Addition: screen scaling
+			UpdateScaleFactor();
+
 			_initialConfiguration.UserData = userDataPtr;
 			ImGuiIOPtr io = ImGui.GetIO();
 			_initialConfiguration.ApplyTo(io);
@@ -166,6 +174,9 @@ namespace UImGui
 			}
 
 			UImGuiUtility.SetCurrentContext(_context);
+
+			//Addition: screen scaling
+			UpdateScaleFactor();
 
 			ImGuiIOPtr io = ImGui.GetIO();
 
@@ -247,6 +258,11 @@ namespace UImGui
 
 			Constants.PrepareFrameMarker.Begin(this);
 			_context.TextureManager.PrepareFrame(io);
+
+			//Addition: scale distances with screen scaling
+			var displayRect = _camera.pixelRect;
+			displayRect.size = displayRect.size * _initialConfiguration.DisplayFramebufferScale;
+
 			_platform.PrepareFrame(io, _camera.pixelRect);
 			ImGui.NewFrame();
 			
@@ -297,7 +313,28 @@ namespace UImGui
 		{
 			_platform?.Shutdown(io);
 			_platform = platform;
+
+			//Addition: screen scaling
+			UpdateScaleFactor();
+
 			_platform?.Initialize(io, _initialConfiguration, "Unity " + _platformType.ToString());
+		}
+
+		//Addition: screen scaling
+		private void UpdateScaleFactor()
+		{
+			var width = Screen.width;
+
+			var factor = (float)width / (float)_referenceScreenSize.x;
+
+			Debug.Log($"Screen width: {width} Reference width: {_referenceScreenSize.x} Factor: {factor}");
+
+			_initialConfiguration.FontGlobalScale = factor;
+
+			//Not working. Unneeded even
+			//_initialConfiguration.DisplayFramebufferScale = new Vector2(
+			//	factor,
+			//	factor);
 		}
 	}
 }

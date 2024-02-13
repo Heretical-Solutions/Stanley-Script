@@ -22,6 +22,7 @@ namespace UImGui.Editor
 		private SerializedProperty _shaders;
 		private SerializedProperty _style;
 		private SerializedProperty _cursorShapes;
+		private SerializedProperty _referenceScreenSize;
 		private readonly StringBuilder _messages = new StringBuilder();
 
 		private bool usingImNodes = true;
@@ -52,6 +53,7 @@ namespace UImGui.Editor
 			EditorGUILayout.PropertyField(_shaders);
 			EditorGUILayout.PropertyField(_style);
 			EditorGUILayout.PropertyField(_cursorShapes);
+			EditorGUILayout.PropertyField(_referenceScreenSize);
 
 			bool changed = EditorGUI.EndChangeCheck();
 			if (changed)
@@ -82,6 +84,7 @@ namespace UImGui.Editor
 			_shaders = serializedObject.FindProperty("_shaders");
 			_style = serializedObject.FindProperty("_style");
 			_cursorShapes = serializedObject.FindProperty("_cursorShapes");
+			_referenceScreenSize = serializedObject.FindProperty("_referenceScreenSize");
 
 #if UIMGUI_REMOVE_IMNODES
 			usingImNodes = false;
