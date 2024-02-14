@@ -10,6 +10,8 @@ namespace HereticalSolutions.StanleyScript
 
 		private readonly IExecutable executable;
 
+		private readonly IReportable reportable;
+
 		private readonly ScenarioNameScriptPair[] scenarioPlaylist;
 
 
@@ -27,6 +29,8 @@ namespace HereticalSolutions.StanleyScript
 			this.scenarioPlaylist = scenarioPlaylist;
 
 			this.executable = executable;
+
+			this.reportable = executable as IReportable;
 
 
 			currentScenarioName = string.Empty;
@@ -51,9 +55,32 @@ namespace HereticalSolutions.StanleyScript
 			// e.g. Leave a fixed amount of width for labels (by passing a negative value), the rest goes to widgets.
 			ImGui.PushItemWidth(ImGui.GetFontSize() * -12);
 
-			#region Playback controls
+			DrawPlaybackControls();
 
+			ImGui.SeparatorText("Current scenario");
+
+			DrawScenarioListing();
+
+			DrawReportListing();
+
+			ImGui.SeparatorText("Playlist");
+
+			DrawScenarioPlaylist();
+
+			// End of ShowDemoWindow()
+			ImGui.PopItemWidth();
+			ImGui.End();
+		}
+
+		private void DrawPlaybackControls()
+		{
 			ImGui.SeparatorText("Playback controls");
+
+			ImGui.Text($"Status: {executable.Status}");
+
+			ImGui.SameLine();
+
+			ImGui.Text($"Program counter: {executable.ProgramCounter}");
 
 			DrawStartButton();
 
@@ -72,28 +99,6 @@ namespace HereticalSolutions.StanleyScript
 			ImGui.SameLine();
 
 			DrawStopButton();
-
-			#endregion
-
-			#region Scenario listing
-
-			ImGui.SeparatorText("Scenario listing");
-
-			DrawScenarioListing();
-
-			#endregion
-
-			#region Scenario playlist
-
-			ImGui.SeparatorText("Scenario playlist");
-
-			DrawScenarioPlaylist();
-
-			#endregion
-
-			// End of ShowDemoWindow()
-			ImGui.PopItemWidth();
-			ImGui.End();
 		}
 
 		private void DrawStartButton()
@@ -138,24 +143,58 @@ namespace HereticalSolutions.StanleyScript
 
 		private void DrawScenarioListing()
 		{
+			if (!ImGui.CollapsingHeader("Scenario listing"))
+				return;
+
 			if (!string.IsNullOrEmpty(currentScenarioName))
 			{
-				ImGui.Text($"Current scenario: {currentScenarioName}");
+				ImGui.Text($"Current name: {currentScenarioName}");
 
 				ImGui.BeginChild(
 					"Listing",
 					new Vector2(
-						ImGui.GetContentRegionAvail().X * 0.75f,
+						ImGui.GetContentRegionAvail().X,
 						300));
 
 				string[] lines = currentScenario.Split('\n'); //executable.Instructions;
+
+				int currentLine = executable.CurrentLine - 1; //-1 because ANTLR4's AST starts with line 1, not line 0
 
 				if (lines != null)
 				{
 					for (int i = 0; i < lines.Length; i++)
 					{
-						ImGui.Text(lines[i]);
+						string lineText = lines[i];
+
+						if (currentLine == i)
+							lineText = $"> {lineText}";
+
+						ImGui.Text(lineText);
 					}
+				}
+
+				ImGui.EndChild();
+			}
+		}
+
+		private void DrawReportListing()
+		{
+			if (!ImGui.CollapsingHeader("Report listing"))
+				return;
+
+			var report = reportable.GetReport();
+
+			if (report != null)
+			{
+				ImGui.BeginChild(
+					"Report",
+					new Vector2(
+						ImGui.GetContentRegionAvail().X,
+						300));
+
+				for (int i = 0; i < report.Length; i++)
+				{
+					ImGui.Text(report[i]);
 				}
 
 				ImGui.EndChild();
@@ -164,6 +203,9 @@ namespace HereticalSolutions.StanleyScript
 
 		private void DrawScenarioPlaylist()
 		{
+			if (!ImGui.CollapsingHeader("Scenario playlist"))
+				return;
+
 			for (int i = 0; i < scenarioPlaylist.Length; i++)
 			{
 				if (ImGui.Button($"Load {scenarioPlaylist[i].Name}"))

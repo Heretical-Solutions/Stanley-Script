@@ -6,6 +6,8 @@ namespace HereticalSolutions.StanleyScript
 
 		int CurrentLine { get; }
 
+		int ProgramCounter { get; }
+
 		string[] Instructions { get; }
 
 		void LoadProgram(

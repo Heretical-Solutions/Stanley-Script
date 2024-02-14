@@ -26,6 +26,7 @@ namespace HereticalSolutions.StanleyScript
 
 		private readonly List<string> report;
 
+
 		private EExecutionStatus executionStatus;
 
 		private int programCounter = 0;
@@ -34,7 +35,11 @@ namespace HereticalSolutions.StanleyScript
 
 		private int currentLine = -1;
 
+		private bool stepMode = false;
+
+
 		private CancellationTokenSource cancellationTokenSource;
+
 
 		public StanleyEnvironment(
 			Dictionary<string, IStanleyVariable> inputVariables,
@@ -60,6 +65,8 @@ namespace HereticalSolutions.StanleyScript
 			currentLine = -1;
 
 			programCounter = 0;
+
+			stepMode = false;
 
 			cancellationTokenSource = new CancellationTokenSource();
 		}
@@ -191,6 +198,8 @@ namespace HereticalSolutions.StanleyScript
 
 		public int CurrentLine { get => currentLine; }
 
+		public int ProgramCounter { get => programCounter; }
+
 		public string[] Instructions { get => instructions; }
 
 		public void LoadProgram(
@@ -200,9 +209,11 @@ namespace HereticalSolutions.StanleyScript
 
 			this.instructions = instructions;
 
-			currentLine = 0;
+			currentLine = -1;
 
 			programCounter = 0;
+
+			stepMode = false;
 
 			report.Clear();
 		}
@@ -215,13 +226,25 @@ namespace HereticalSolutions.StanleyScript
 				case EExecutionStatus.PAUSED:
 				case EExecutionStatus.STOPPED:
 				{
+					if (instructions == null
+						|| instructions.Length == 0)
+						return;
+
 					executionStatus = EExecutionStatus.RUNNING;
 
-					RunInternal();
+					programCounter = 0;
+
+					stepMode = false;
+
+					report.Clear();
+
+					cancellationTokenSource = new CancellationTokenSource();
+
+					RunInternal(cancellationTokenSource.Token);
 
 					//Task.Run(async () =>
 					//{
-					//	RunInternal();
+					//	RunInternal(cancellationTokenSource.Token);
 					//});
 				}
 
@@ -231,27 +254,80 @@ namespace HereticalSolutions.StanleyScript
 
 		public void Step()
 		{
-			if (executionStatus == EExecutionStatus.PAUSED)
+			switch (executionStatus)
 			{
-				ExecuteInternal(cancellationTokenSource.Token);
+				case EExecutionStatus.PAUSED:
+				{
+					stepMode = true;
+
+					executionStatus = EExecutionStatus.RUNNING;
+
+					//ExecuteInternal(cancellationTokenSource.Token);
+				}
+
+					break;
+
+				case EExecutionStatus.IDLE:
+				case EExecutionStatus.STOPPED:
+				{
+					if (instructions == null
+						|| instructions.Length == 0)
+						return;
+
+					executionStatus = EExecutionStatus.RUNNING;
+
+					programCounter = 0;
+
+					stepMode = true;
+
+					report.Clear();
+
+					cancellationTokenSource = new CancellationTokenSource();
+
+					RunInternal(cancellationTokenSource.Token);
+
+					//Task.Run(async () =>
+					//{
+					//	RunInternal(cancellationTokenSource.Token);
+					//});
+				}
+
+					break;
 			}
 		}
 
 		public void Pause()
 		{
-			executionStatus = EExecutionStatus.PAUSED;
+			switch (executionStatus)
+			{
+				case EExecutionStatus.RUNNING:
+					executionStatus = EExecutionStatus.PAUSED;
+
+					break;
+			}
 		}
 
 		public void Resume()
 		{
-			executionStatus = EExecutionStatus.RUNNING;
+			switch (executionStatus)
+			{
+				case EExecutionStatus.PAUSED:
+
+					stepMode = false;
+
+					executionStatus = EExecutionStatus.RUNNING;
+
+					break;
+			}
 		}
 
 		public void Stop()
 		{
 			executionStatus = EExecutionStatus.STOPPED;
 
-			cancellationTokenSource.Cancel();
+			stepMode = false;
+
+			StopInternal();
 		}
 
 		#endregion
@@ -401,50 +477,77 @@ namespace HereticalSolutions.StanleyScript
 
 		#endregion
 
-		private async Task<bool> RunInternal()
+		private async Task<bool> RunInternal(CancellationToken cancellationToken)
 		{
-			while (executionStatus == EExecutionStatus.RUNNING)
+			while (!cancellationToken.IsCancellationRequested)
 			{
-				if (programCounter < instructions.Length)
+				switch (executionStatus)
 				{
-					var result = await ExecuteInternal(cancellationTokenSource.Token);
-
-					if (!result)
+					case EExecutionStatus.RUNNING:
 					{
-						StopInternal();
+						if (programCounter < instructions.Length)
+						{
+							var result = await ExecuteInternal(cancellationTokenSource.Token);
+
+							if (!result)
+							{
+								executionStatus = EExecutionStatus.STOPPED;
+
+								Log("SCRIPT FINISHED DUE TO INTERNAL ERROR. CHECK LOGS FOR DETAILS");
+
+								return false;
+							}
+
+							if (PauseBeforeNextLine())
+							{
+								executionStatus = EExecutionStatus.PAUSED;
+
+								continue;
+							}
+						}
+						else
+						{
+							stepMode = false;
+
+							executionStatus = EExecutionStatus.FINISHED;
+
+							Log("SCRIPT FINISHED WITH EXECUTION STATUS \"FINISHED\"");
+
+							return true;
+						}
+					}
+
+						break;
+
+					case EExecutionStatus.PAUSED:
+
+						await Task.Yield();
+
+						continue;
+
+					case EExecutionStatus.IDLE:
+					case EExecutionStatus.STOPPED:
+					case EExecutionStatus.FINISHED:
+						Log($"SCRIPT INTERRUPTED WITH EXECUTION STATUS \"{executionStatus}\"");
+
+						stepMode = false;
 
 						return false;
-					}
-				}
-				else
-				{
-					StopInternal();
-
-					return true;
 				}
 			}
 
-			return true;
+			Log($"SCRIPT INTERRUPTED WITH EXECUTION STATUS \"{executionStatus}\"");
+
+			stepMode = false;
+
+			return false;
 		}
 
 		private void StopInternal()
 		{
-			executionStatus = EExecutionStatus.STOPPED;
+			//cancellationTokenSource?.Dispose();
 
-			UnityEngine.Debug.Log("--------");
-
-			UnityEngine.Debug.Log("REPORT:");
-
-			UnityEngine.Debug.Log("--------");
-
-			for (int i = 0; i < report.Count; i++)
-			{
-				UnityEngine.Debug.Log($"{i}: {report[i]}");
-			}
-
-			UnityEngine.Debug.Log("--------");
-
-			cancellationTokenSource.Cancel();
+			cancellationTokenSource?.Cancel();
 		}
 
 		private async Task<bool> ExecuteInternal(CancellationToken cancellationToken)
@@ -460,6 +563,20 @@ namespace HereticalSolutions.StanleyScript
 			programCounter++;
 
 			return result;
+		}
+
+		private bool PauseBeforeNextLine()
+		{
+			if (!stepMode)
+				return false;
+
+			if ((programCounter + 1) >= instructions.Length)
+				return false;
+
+			if (instructions[programCounter + 1].StartsWith("OP_LINE"))
+				return true;
+
+			return false;
 		}
 	}
 }
