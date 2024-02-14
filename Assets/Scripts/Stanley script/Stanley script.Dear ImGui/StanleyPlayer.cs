@@ -59,7 +59,14 @@ namespace HereticalSolutions.StanleyScript
 
 			ImGui.SeparatorText("Current scenario");
 
+			if (!string.IsNullOrEmpty(currentScenarioName))
+			{
+				ImGui.BulletText($"Name: {currentScenarioName}");
+			}
+
 			DrawScenarioListing();
+
+			DrawOpcodesListing();
 
 			DrawReportListing();
 
@@ -79,6 +86,14 @@ namespace HereticalSolutions.StanleyScript
 			ImGui.Text($"Status: {executable.Status}");
 
 			ImGui.SameLine();
+
+			string pcText = $"Program counter: {executable.ProgramCounter}";
+
+			ImGui.SetCursorPosX(
+				ImGui.GetCursorPosX()
+				+ ImGui.GetColumnWidth()
+				- ImGui.CalcTextSize(pcText).X);
+				//- ImGui.GetStyle().ItemSpacing.X);
 
 			ImGui.Text($"Program counter: {executable.ProgramCounter}");
 
@@ -148,10 +163,8 @@ namespace HereticalSolutions.StanleyScript
 
 			if (!string.IsNullOrEmpty(currentScenarioName))
 			{
-				ImGui.Text($"Current name: {currentScenarioName}");
-
 				ImGui.BeginChild(
-					"Listing",
+					"Scenario listing",
 					new Vector2(
 						ImGui.GetContentRegionAvail().X,
 						300));
@@ -164,7 +177,7 @@ namespace HereticalSolutions.StanleyScript
 				{
 					for (int i = 0; i < lines.Length; i++)
 					{
-						string lineText = lines[i];
+						string lineText = $"{i}: {lines[i]}";
 
 						if (currentLine == i)
 							lineText = $"> {lineText}";
@@ -187,14 +200,41 @@ namespace HereticalSolutions.StanleyScript
 			if (report != null)
 			{
 				ImGui.BeginChild(
-					"Report",
+					"Report listing",
 					new Vector2(
 						ImGui.GetContentRegionAvail().X,
 						300));
 
 				for (int i = 0; i < report.Length; i++)
 				{
-					ImGui.Text(report[i]);
+					ImGui.Text($"{i}: {report[i]}");
+				}
+
+				ImGui.EndChild();
+			}
+		}
+
+		private void DrawOpcodesListing()
+		{
+			if (!ImGui.CollapsingHeader("Opcodes listing"))
+				return;
+
+			if (!string.IsNullOrEmpty(currentScenarioName))
+			{
+				ImGui.BeginChild(
+					"Opcodes listing",
+					new Vector2(
+						ImGui.GetContentRegionAvail().X,
+						300));
+
+				string[] instructions = executable.Instructions;
+
+				if (instructions != null)
+				{
+					for (int i = 0; i < instructions.Length; i++)
+					{
+						ImGui.Text($"{i}: {instructions[i]}");
+					}
 				}
 
 				ImGui.EndChild();
