@@ -191,6 +191,8 @@ namespace HereticalSolutions.StanleyScript
 
 		public int CurrentLine { get => currentLine; }
 
+		public string[] Instructions { get => instructions; }
+
 		public void LoadProgram(
 			string[] instructions)
 		{

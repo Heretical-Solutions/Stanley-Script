@@ -15,11 +15,11 @@ namespace HereticalSolutions.StanleyScript
 					new List<string>()),
 				new List<string>());
 
-			IRuntimeEnvironment environment = BuildEnvironment();
+			//IRuntimeEnvironment environment = BuildEnvironment();
 
 			return new StanleyInterpreter(
-				walker,
-				environment);
+				walker); //,
+				//environment);
 		}
 
 		public static StanleyEnvironment BuildEnvironment()

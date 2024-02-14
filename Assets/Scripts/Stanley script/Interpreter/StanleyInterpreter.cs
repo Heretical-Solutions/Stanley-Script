@@ -7,20 +7,22 @@ using Antlr4.Runtime;
 namespace HereticalSolutions.StanleyScript
 {
     public class StanleyInterpreter
+        : IStanleyInterpreter
     {
         private readonly StanleyASTWalker walker;
 
-        private readonly IRuntimeEnvironment environment;
+        //private readonly IRuntimeEnvironment environment;
 
         public StanleyInterpreter(
-            StanleyASTWalker walker,
-            IRuntimeEnvironment environment)
+            StanleyASTWalker walker)//,
+            //IRuntimeEnvironment environment)
         {
             this.walker = walker;
 
-            this.environment = environment;
+            //this.environment = environment;
         }
 
+        /*
         public IRuntimeEnvironment Environment
         {
             get
@@ -28,7 +30,9 @@ namespace HereticalSolutions.StanleyScript
                 return environment;
             }
         }
+        */
 
+        /*
         public IExecutable Executable
         {
             get
@@ -36,8 +40,9 @@ namespace HereticalSolutions.StanleyScript
                 return environment as IExecutable;
             }
         }
+        */
 
-        public string[] Interpret(string script)
+        public string[] InterpretToOpcode(string script)
         {
             AntlrInputStream inputStream = new AntlrInputStream(script);
 
@@ -60,9 +65,10 @@ namespace HereticalSolutions.StanleyScript
             return instructions;
         }
 
+        /*
         public void Execute(string script)
         {
-            var instructions = Interpret(script);
+            var instructions = InterpretToOpcode(script);
 
             UnityEngine.Debug.Log("--------");
 
@@ -83,5 +89,6 @@ namespace HereticalSolutions.StanleyScript
 
             executable.Start();
         }
+        */
     }
 }

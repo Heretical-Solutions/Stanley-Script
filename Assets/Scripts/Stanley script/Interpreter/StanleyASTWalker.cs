@@ -101,7 +101,7 @@ namespace HereticalSolutions.StanleyScript
 			currentStackDepth = stackDepthAtContextStart;
 
 			instructions.Add(
-				$"OP_READ_STORY");
+				$"OP_STORY");
 
 			return null;
         }

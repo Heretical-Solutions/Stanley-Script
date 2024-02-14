@@ -5,7 +5,9 @@ using UnityEngine;
 
 namespace HereticalSolutions.StanleyScript.Sample
 {
-	public class SampleStanleyInterpreterMono : MonoBehaviour
+	public class SampleStanleyScriptMono
+		: MonoBehaviour,
+		  IStanleyScriptMono
 	{
 		[SerializeField]
 		private TextAsset scriptFile;
@@ -22,13 +24,23 @@ namespace HereticalSolutions.StanleyScript.Sample
 		[SerializeField]
 		private Perk[] passivePerks;
 
-		private StanleyInterpreter interpreter;
+		private IStanleyInterpreter interpreter;
+
+		private IRuntimeEnvironment environment;
+
+		private IExecutable executable;
+
+		public IStanleyInterpreter Interpreter => interpreter;
+
+		public IRuntimeEnvironment Environment => environment;
 
 		void Awake()
 		{
 			interpreter = StanleyFactory.BuildInterpreter();
 
-			var environment = interpreter.Environment;
+			environment = StanleyFactory.BuildEnvironment();
+
+			executable = environment as IExecutable;
 
 			#region Input variables
 
@@ -135,7 +147,7 @@ namespace HereticalSolutions.StanleyScript.Sample
 
 		void Start()
 		{
-			interpreter.Execute(scriptFile.text);
+			//interpreter.Execute(scriptFile.text);
 		}
 	}
 }

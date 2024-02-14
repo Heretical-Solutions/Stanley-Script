@@ -8,7 +8,7 @@ namespace HereticalSolutions.StanleyScript
 	{
 		#region  IStanleyOperation
 
-		public override string Opcode => "OP_READ_STORY";
+		public override string Opcode => "OP_STORY";
 
 		public override bool WillHandle(
 			string[] instructionTokens,
