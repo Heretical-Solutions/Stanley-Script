@@ -39,7 +39,7 @@ namespace HereticalSolutions.StanleyScript
 			stack.Push(
 				new StanleyCachedVariable(
 					StanleyConsts.TEMPORARY_VARIABLE,
-					typeof(int),
+					typeof(float),
 					float.Parse(instructionTokens[1], CultureInfo.InvariantCulture)));
 
 			return true;

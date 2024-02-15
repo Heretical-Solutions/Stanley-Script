@@ -67,8 +67,8 @@ namespace HereticalSolutions.StanleyScript
 
 			bool result = await REPL.Execute(
 				opcodeString,
-				token)
-				.ThrowExceptions();
+				token);
+				//.ThrowExceptions();
 
 			return result;
 		}

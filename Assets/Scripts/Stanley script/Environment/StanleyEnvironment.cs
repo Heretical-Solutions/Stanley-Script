@@ -465,8 +465,8 @@ namespace HereticalSolutions.StanleyScript
 						result = await operation.Handle(
 							instructionTokens,
 							this,
-							cancellationToken)
-							.ThrowExceptions();
+							cancellationToken);
+							//.ThrowExceptions();
 
 						handled = true;
 
@@ -503,8 +503,8 @@ namespace HereticalSolutions.StanleyScript
 					{
 						if (programCounter < instructions.Length)
 						{
-							var result = await ExecuteInternal(cancellationTokenSource.Token)
-								.ThrowExceptions();
+							var result = await ExecuteInternal(cancellationTokenSource.Token);
+								//.ThrowExceptions();
 
 							if (!result)
 							{
@@ -575,8 +575,8 @@ namespace HereticalSolutions.StanleyScript
 
 			bool result = await Execute(
 				instruction,
-				cancellationToken)
-				.ThrowExceptions();
+				cancellationToken);
+				//.ThrowExceptions();
 
 			programCounter++;
 

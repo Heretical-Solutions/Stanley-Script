@@ -7,7 +7,7 @@ class MyClass
 	[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
 	static void LogExceptions()
 	{
-		UnityEngine.Debug.Log("LogExceptions");
+		Debug.Log("INITIATING CAPTURING ASYNC EXCEPTIONS");
 
 		TaskScheduler.UnobservedTaskException +=
 			(_, e) => UnityEngine.Debug.LogException(e.Exception);

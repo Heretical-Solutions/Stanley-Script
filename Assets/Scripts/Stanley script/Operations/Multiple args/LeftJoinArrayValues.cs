@@ -99,8 +99,8 @@ namespace HereticalSolutions.StanleyScript
 
 				bool result = await REPL.Execute(
 					opcode,
-					token)
-					.ThrowExceptions();
+					token);
+					//.ThrowExceptions();
 
 				if (!result)
 					return false;
