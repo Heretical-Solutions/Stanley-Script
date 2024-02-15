@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 using System.Text.RegularExpressions;
@@ -240,12 +241,26 @@ namespace HereticalSolutions.StanleyScript
 
 					cancellationTokenSource = new CancellationTokenSource();
 
-					RunInternal(cancellationTokenSource.Token);
+						//RunInternal(cancellationTokenSource.Token)
+						//	.ThrowExceptions();
 
-					//Task.Run(async () =>
-					//{
-					//	RunInternal(cancellationTokenSource.Token);
-					//});
+						//try
+						//{
+						//	RunInternal(cancellationTokenSource.Token)
+						//}
+						//catch (Exception e)
+						//{
+						//	UnityEngine.Debug.LogError(e);
+						//}
+
+						//Task.Run(async () =>
+						//{
+						//	await RunInternal(cancellationTokenSource.Token)
+						//		.ThrowExceptions();
+						//});
+
+						TaskExtensions.RunSync<bool>(
+							() => RunInternal(cancellationTokenSource.Token));
 				}
 
 				break;
@@ -450,7 +465,8 @@ namespace HereticalSolutions.StanleyScript
 						result = await operation.Handle(
 							instructionTokens,
 							this,
-							cancellationToken);
+							cancellationToken)
+							.ThrowExceptions();
 
 						handled = true;
 
@@ -487,7 +503,8 @@ namespace HereticalSolutions.StanleyScript
 					{
 						if (programCounter < instructions.Length)
 						{
-							var result = await ExecuteInternal(cancellationTokenSource.Token);
+							var result = await ExecuteInternal(cancellationTokenSource.Token)
+								.ThrowExceptions();
 
 							if (!result)
 							{
@@ -558,7 +575,8 @@ namespace HereticalSolutions.StanleyScript
 
 			bool result = await Execute(
 				instruction,
-				cancellationToken);
+				cancellationToken)
+				.ThrowExceptions();
 
 			programCounter++;
 

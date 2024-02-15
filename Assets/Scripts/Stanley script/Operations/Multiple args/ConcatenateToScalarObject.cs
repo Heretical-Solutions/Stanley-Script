@@ -60,11 +60,11 @@ namespace HereticalSolutions.StanleyScript
 
 			if (amount.VariableType == typeof(int))
 			{
-				amountValue = amount.GetValue<int>();
+				amountValue = Convert.ToDouble(amount.GetValue<int>());
 			}
 			else if (amount.VariableType == typeof(float))
 			{
-				amountValue = amount.GetValue<float>();
+				amountValue = Convert.ToDouble(amount.GetValue<float>());
 			}
 			else
 			{
