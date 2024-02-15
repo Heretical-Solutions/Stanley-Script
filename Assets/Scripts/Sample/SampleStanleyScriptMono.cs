@@ -96,12 +96,21 @@ namespace HereticalSolutions.StanleyScript.Sample
 			environment.LoadOperation(
 				new PauseGame());
 
+			environment.LoadOperation(
+				new UnpauseGame());
+
+			environment.LoadOperation(
+				new AccelerateGame());
+
 			#endregion
 
 			#region Player controls
 
 			environment.LoadOperation(
 				new FaceDirection());
+
+			environment.LoadOperation(
+				new AcceleratePC());
 
 			#endregion
 

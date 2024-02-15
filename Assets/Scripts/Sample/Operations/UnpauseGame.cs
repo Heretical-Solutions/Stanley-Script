@@ -3,14 +3,14 @@ using System.Threading.Tasks;
 
 namespace HereticalSolutions.StanleyScript.Sample
 {
-	public class PauseGame
+	public class UnpauseGame
 		: AStanleyOperation
 	{
 		#region IStanleyOperation
 
-		public override string Opcode => "pause";
+		public override string Opcode => "unpause";
 
-		public override string[] Aliases => new string[] { "paused" };
+		public override string[] Aliases => new string[] { "unpaused" };
 
 		public override bool WillHandle(
 			string[] instructionTokens,
@@ -50,7 +50,7 @@ namespace HereticalSolutions.StanleyScript.Sample
 			if (!AssertVariable(gameVariable, reportable))
 				return false;
 
-			gameVariable.GetValue<Game>().PauseGame();
+			gameVariable.GetValue<Game>().UnpauseGame();
 
 			return true;
 		}

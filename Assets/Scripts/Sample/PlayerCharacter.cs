@@ -14,6 +14,8 @@ namespace HereticalSolutions.StanleyScript.Sample
 
 		public IEnumerable<Perk> SelectedPassivePerks => selectedPassivePerks;
 
+		private float speed = 1.0f;
+
 		public void Immortalize()
 		{
 			GetComponent<MeshRenderer>().material.color = Color.blue;
@@ -45,6 +47,13 @@ namespace HereticalSolutions.StanleyScript.Sample
 				? selectedPassivePerks
 				: selectedActivePerks)
 				.Any((element) => { return element.Name == perk.Name; });
+		}
+
+		public void Accelerate(float amount)
+		{
+			speed = amount;
+
+			Debug.Log($"Player character {name} was accelerated to {amount}");
 		}
 	}
 }
