@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 using HereticalSolutions.StanleyScript.Grammars;
 
 using Antlr4.Runtime;
@@ -11,36 +9,11 @@ namespace HereticalSolutions.StanleyScript
     {
         private readonly StanleyASTWalker walker;
 
-        //private readonly IRuntimeEnvironment environment;
-
         public StanleyInterpreter(
-            StanleyASTWalker walker)//,
-            //IRuntimeEnvironment environment)
+            StanleyASTWalker walker)
         {
             this.walker = walker;
-
-            //this.environment = environment;
         }
-
-        /*
-        public IRuntimeEnvironment Environment
-        {
-            get
-            {
-                return environment;
-            }
-        }
-        */
-
-        /*
-        public IExecutable Executable
-        {
-            get
-            {
-                return environment as IExecutable;
-            }
-        }
-        */
 
         public string[] InterpretToOpcode(string script)
         {
@@ -64,31 +37,5 @@ namespace HereticalSolutions.StanleyScript
 
             return instructions;
         }
-
-        /*
-        public void Execute(string script)
-        {
-            var instructions = InterpretToOpcode(script);
-
-            UnityEngine.Debug.Log("--------");
-
-            UnityEngine.Debug.Log("INSTRUCTIONS:");
-
-            UnityEngine.Debug.Log("--------");
-
-            for (int i = 0; i < instructions.Length; i++)
-            {
-                UnityEngine.Debug.Log($"{i}: {instructions[i]}");
-            }
-
-            UnityEngine.Debug.Log("--------");
-
-            var executable = environment as IExecutable;
-
-            executable.LoadProgram(instructions);
-
-            executable.Start();
-        }
-        */
     }
 }

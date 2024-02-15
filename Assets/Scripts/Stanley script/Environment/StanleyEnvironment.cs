@@ -250,7 +250,6 @@ namespace HereticalSolutions.StanleyScript
 						//}
 						//catch (Exception e)
 						//{
-						//	UnityEngine.Debug.LogError(e);
 						//}
 
 						//Task.Run(async () =>
@@ -569,8 +568,6 @@ namespace HereticalSolutions.StanleyScript
 
 		private async Task<bool> ExecuteInternal(CancellationToken cancellationToken)
 		{
-			UnityEngine.Debug.Log("Executing line " + programCounter);
-
 			string instruction = instructions[programCounter];
 
 			bool result = await Execute(
