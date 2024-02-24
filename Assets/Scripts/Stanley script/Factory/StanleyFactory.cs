@@ -28,11 +28,12 @@ namespace HereticalSolutions.StanleyScript
 
 			var result = new StanleyEnvironment(
 				new Dictionary<string, IStanleyVariable>(),
-					new Dictionary<string, List<IStanleyOperation>>(),
-					new Dictionary<string, IStanleyVariable>(),
-					defaultContext,
-					new List<IStanleyContext>(),
-					new List<string>());
+				new Dictionary<string, IStanleyVariable>(),
+				new Dictionary<string, List<IStanleyOperation>>(),
+				new Dictionary<string, IStanleyVariable>(),
+				defaultContext,
+				new List<IStanleyContext>(),
+				new List<string>());
 
 			IRuntimeEnvironment environment = result;
 
@@ -47,6 +48,12 @@ namespace HereticalSolutions.StanleyScript
 			environment.LoadOperation(
 				new PushFloat());
 
+			environment.LoadOperation(
+				new ClearRuntimeVariables());
+
+			environment.LoadOperation(
+				new ClearAllEvents());
+
 			#endregion
 
 			#region One arg
@@ -56,6 +63,9 @@ namespace HereticalSolutions.StanleyScript
 
 			environment.LoadOperation(
 				new PushImportVariable());
+
+			environment.LoadOperation(
+				new PushEventVariable());
 
 			environment.LoadOperation(
 				new PushRuntimeVariable());
@@ -68,6 +78,9 @@ namespace HereticalSolutions.StanleyScript
 
 			environment.LoadOperation(
 				new TryCastToRuntimeVariable());
+
+			environment.LoadOperation(
+				new UnsubscribeAll());
 
 			environment.LoadOperation(
 				new ReadStory());
@@ -86,9 +99,27 @@ namespace HereticalSolutions.StanleyScript
 				new ConcatenateVariables());
 
 			environment.LoadOperation(
+				new Subscribe());
+
+			environment.LoadOperation(
+				new Unsubscribe());
+
+			environment.LoadOperation(
 				new InvokeCommand());
 
 			#endregion
+
+			//To unwrap concatenated subscriber variables
+			environment.LoadOperation(
+				new CrossJoinConcatenationVariables(
+					"OP_SUB",
+					new string [0]));
+
+			//To unwrap subscriber arrays
+			environment.LoadOperation(
+				new CrossJoinArrayValues(
+					"OP_SUB",
+					new string[0]));
 
 			return result;
 		}

@@ -1,39 +1,43 @@
 //Name the test
-STORY ABOUT "autotest"                                                              //storyHeader
+STORY ABOUT "autotest"
 
 //Name things
-REFER TO $game AS Game                                                              //defineStatement, relatableSingleSubjectExpression
-REFER TO $pc AS Squad                                                               //defineStatement, relatableSingleSubjectExpression
-REFER TO $user AS Player                                                            //defineStatement, relatableSingleSubjectExpression
-REFER TO $all_active_perks AS "All active perks"                                    //defineStatement, relatableSingleSubjectExpression
-REFER TO $all_passive_perks AS "All passive perks"                                  //defineStatement, relatableSingleSubjectExpression
+REFER TO $game AS Game
+REFER TO $pc AS Squad
+REFER TO $user AS Player
+REFER TO $all_active_perks AS "All active perks"
+REFER TO $all_passive_perks AS "All passive perks"
 
 //Start scenario
-Game WAS started                                                                    //commandStatement, actionWithSubject, subjectExpression
+Game WAS started
 
 //Pause immediately
-Game WAS paused                                                                     //commandStatement, actionWithSubject, subjectExpression
+Game WAS paused
 
 //Give squad immortality
-Squad WAS given immortality                                                         //commandStatement, actionWithSubject, objectArgument
+Squad WAS given immortality
 
 //Give squad random perks at max level
-Squad WAS given A random unpicked OF "All active perks"                             //commandStatement, actionWithSubject, objectArgument, selectedObject, selectionAdjective, assertAdjective
-Squad WAS given A random unpicked OF "All active perks"                             //commandStatement, actionWithSubject, objectArgument, selectedObject, selectionAdjective, assertAdjective
-Squad WAS given A random unpicked OF "All active perks"                             //commandStatement, actionWithSubject, objectArgument, selectedObject, selectionAdjective, assertAdjective
-Squad WAS given A random unpicked OF "All active perks"                             //commandStatement, actionWithSubject, objectArgument, selectedObject, selectionAdjective, assertAdjective
+Squad WAS given A random unpicked OF "All active perks"
+Squad WAS given A random unpicked OF "All active perks"
+Squad WAS given A random unpicked OF "All active perks"
+Squad WAS given A random unpicked OF "All active perks"
 
-Squad WAS given A random unpicked OF "All passive perks"                            //commandStatement, actionWithSubject, objectArgument, selectedObject, selectionAdjective, assertAdjective
-Squad WAS given A random unpicked OF "All passive perks"                            //commandStatement, actionWithSubject, objectArgument, selectedObject, selectionAdjective, assertAdjective
-Squad WAS given A random unpicked OF "All passive perks"                            //commandStatement, actionWithSubject, objectArgument, selectedObject, selectionAdjective, assertAdjective
-Squad WAS given A random unpicked OF "All passive perks"                            //commandStatement, actionWithSubject, objectArgument, selectedObject, selectionAdjective, assertAdjective
+Squad WAS given A random unpicked OF "All passive perks"
+Squad WAS given A random unpicked OF "All passive perks"
+Squad WAS given A random unpicked OF "All passive perks"
+Squad WAS given A random unpicked OF "All passive perks"
 
-REFER TO $selected_active_perks AND $selected_passive_perks AS "All selected perks" //defineStatement, relatablePluralSubjectsExpression
-"All selected perks" WERE maxed                                                     //commandStatement, actionWithSubject, pluralSubjectsExpression
+REFER TO $selected_active_perks AND $selected_passive_perks AS "All selected perks"
+"All selected perks" WERE maxed
 
 //Start moving
 Squad HAS faced A random OF directions
 Squad HAS accelerated TO 1.0 speed
+
+//Events
+FROM THIS MOMENT
+ONCE #"wall hit" Squad WOULD face A random OF directions
 
 //Set game at 5x speed
 Game WAS accelerated TO 5.0 speed
@@ -41,5 +45,8 @@ Game WAS accelerated TO 5.0 speed
 //Resume the game
 Game WAS unpaused
 
-//Wait for 15 minutes
-15 MINUTES PASSED
+//Wait for 15 seconds
+15 SECONDS PASSED
+
+FROM THIS MOMENT
+ONCE #"wall hit" NOTHING WOULD HAPPEN ANYMORE

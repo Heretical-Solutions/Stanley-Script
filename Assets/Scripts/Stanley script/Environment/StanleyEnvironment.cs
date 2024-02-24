@@ -19,6 +19,8 @@ namespace HereticalSolutions.StanleyScript
 
 		private readonly Dictionary<string, IStanleyVariable> inputVariables;
 
+		private readonly Dictionary<string, IStanleyVariable> eventVariables;
+
 		private readonly Dictionary<string, List<IStanleyOperation>> operationsChainOfResponsibility;
 
 		private readonly Dictionary<string, IStanleyVariable> runtimeVariables;
@@ -37,6 +39,7 @@ namespace HereticalSolutions.StanleyScript
 
 		public StanleyEnvironment(
 			Dictionary<string, IStanleyVariable> inputVariables,
+			Dictionary<string, IStanleyVariable> eventVariables,
 			Dictionary<string, List<IStanleyOperation>> operationsChainOfResponsibility,
 			Dictionary<string, IStanleyVariable> runtimeVariables,
 
@@ -46,6 +49,8 @@ namespace HereticalSolutions.StanleyScript
 			List<string> report)
 		{
 			this.inputVariables = inputVariables;
+
+			this.eventVariables = eventVariables;
 
 			this.operationsChainOfResponsibility = operationsChainOfResponsibility;
 
@@ -86,6 +91,28 @@ namespace HereticalSolutions.StanleyScript
 				variable);
 
 			return true;
+		}
+
+		public bool LoadEventVariable(
+			IStanleyVariable variable)
+		{
+			string name = variable.Name;
+
+			if (eventVariables.ContainsKey(name))
+			{
+				return false;
+			}
+
+			eventVariables.Add(
+				name,
+				variable);
+
+			return true;
+		}
+
+		public void UnsubscribeAllEvents()
+		{
+
 		}
 
 		public bool LoadOperation(
@@ -170,6 +197,15 @@ namespace HereticalSolutions.StanleyScript
 			out IStanleyVariable variable)
 		{
 			return inputVariables.TryGetValue(
+				name,
+				out variable);
+		}
+
+		public bool GetEventVariable(
+			string name,
+			out IStanleyVariable variable)
+		{
+			return eventVariables.TryGetValue(
 				name,
 				out variable);
 		}

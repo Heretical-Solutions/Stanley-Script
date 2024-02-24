@@ -3,13 +3,9 @@ using System.Threading.Tasks;
 
 namespace HereticalSolutions.StanleyScript.Sample
 {
-	//The signature should look like this:
-	//give WHOM WHAT
 	public class AccelerateGame
-		: AStanleyOperation
+		: ATwoArgOperation
 	{
-		#region IStanleyOperation
-
 		public override string Opcode => "accelerate";
 
 		public override string[] Aliases => new string[] { "accelerated" };
@@ -37,52 +33,26 @@ namespace HereticalSolutions.StanleyScript.Sample
 			return true;
 		}
 
-		public override async Task<bool> Handle(
+		protected override async Task<bool> HandleInternal(
+			IStanleyVariable whom,
+			IStanleyVariable what,
+
+			IStackMachine stack,
+			IReportable reportable,
+
 			string[] instructionTokens,
 			IStanleyContext context,
 			IRuntimeEnvironment environment,
 			CancellationToken token)
 		{
-			var stack = context as IStackMachine;
-
-			var reportable = environment as IReportable;
-
-			//Get game
-			if (!stack.Pop(
-				out var game))
-			{
-				reportable.Log(
-					context.ContextID,
-					"STACK VARIABLE NOT FOUND");
-
-				return false;
-			}
-
-			if (!AssertVariable(
-				game,
-				context,
-				reportable))
-				return false;
-
-			//Get amount
-			if (!stack.Pop(
-				out var amountVariable))
-			{
-				reportable.Log(
-					context.ContextID,
-					"STACK VARIABLE NOT FOUND");
-
-				return false;
-			}
-
 			if (!AssertVariable<StanleyScalarPropertyObject>(
-				amountVariable,
+				what,
 				context,
 				reportable))
 				return false;
 
 			//Get the values
-			var scalar = amountVariable.GetValue<StanleyScalarPropertyObject>();
+			var scalar = what.GetValue<StanleyScalarPropertyObject>();
 
 			var property = scalar.Property;
 
@@ -92,7 +62,7 @@ namespace HereticalSolutions.StanleyScript.Sample
 			{
 				case "speed":
 
-					game.GetValue<Game>().SetSpeed((float)amount);
+					whom.GetValue<Game>().SetSpeed((float)amount);
 
 					break;
 
@@ -107,7 +77,5 @@ namespace HereticalSolutions.StanleyScript.Sample
 
 			return true;
 		}
-
-		#endregion
 	}
 }

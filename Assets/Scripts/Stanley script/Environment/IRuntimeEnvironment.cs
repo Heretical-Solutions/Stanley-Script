@@ -7,19 +7,32 @@ namespace HereticalSolutions.StanleyScript
 		bool LoadInputVariable(
 			IStanleyVariable variable);
 
+
+		bool LoadEventVariable(
+				IStanleyVariable variable);
+
+		void UnsubscribeAllEvents();
+
+
 		bool LoadOperation(
 			IStanleyOperation operation);
+
 
 		bool AddRuntimeVariable(
 			IStanleyVariable variable);
 
 		void RemoveAllRuntimeVariables();
 
+
 		bool GetRuntimeVariable(
 			string name,
 			out IStanleyVariable variable);
 
 		bool GetImportVariable(
+			string name,
+			out IStanleyVariable variable);
+
+		bool GetEventVariable(
 			string name,
 			out IStanleyVariable variable);
 

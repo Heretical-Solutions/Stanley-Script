@@ -3,13 +3,9 @@ using System.Threading.Tasks;
 
 namespace HereticalSolutions.StanleyScript.Sample
 {
-	//The signature should look like this:
-	//give WHOM WHAT
 	public class GivePCPerk
-		: AStanleyOperation
+		: ATwoArgOperation
 	{
-		#region IStanleyOperation
-
 		public override string Opcode => "give";
 
 		public override string[] Aliases => new string[] { "given" };
@@ -37,56 +33,28 @@ namespace HereticalSolutions.StanleyScript.Sample
 			return true;
 		}
 
-		public override async Task<bool> Handle(
+		protected override async Task<bool> HandleInternal(
+			IStanleyVariable whom,
+			IStanleyVariable what,
+
+			IStackMachine stack,
+			IReportable reportable,
+
 			string[] instructionTokens,
 			IStanleyContext context,
 			IRuntimeEnvironment environment,
 			CancellationToken token)
 		{
-			var stack = context as IStackMachine;
-
-			var reportable = environment as IReportable;
-
-			//Get pc
-			if (!stack.Pop(
-				out var pc))
-			{
-				reportable.Log(
-					context.ContextID,
-					"STACK VARIABLE NOT FOUND");
-
-				return false;
-			}
-
-			if (!AssertVariable(
-				pc,
-				context,
-				reportable))
-				return false;
-
-			//Get perk
-			if (!stack.Pop(
-				out var perk))
-			{
-				reportable.Log(
-					context.ContextID,
-					"STACK VARIABLE NOT FOUND");
-
-				return false;
-			}
-
 			if (!AssertVariable<Perk>(
-				perk,
+				what,
 				context,
 				reportable))
 				return false;
 
-			pc.GetValue<PlayerCharacter>().Receive(
-				perk.GetValue<Perk>());
+			whom.GetValue<PlayerCharacter>().Receive(
+				what.GetValue<Perk>());
 
 			return true;
 		}
-
-		#endregion
 	}
 }

@@ -9,7 +9,7 @@ namespace HereticalSolutions.StanleyScript
 	{
 		#region IStanleyOperation
 
-		public override string Opcode => "OP_SCAL";
+		public override string Opcode => "OP_PUSH_SCLR";
 
 		public override bool WillHandle(
 			string[] instructionTokens,

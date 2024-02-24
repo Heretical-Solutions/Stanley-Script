@@ -18,8 +18,8 @@ storyHeader
 statement
 	: defineStatement 
 	| commandStatement
+	| eventStatement
 	;
-	//| eventStatement
 	//| assertStatement;
 
 // Define statements
@@ -44,6 +44,24 @@ timeStatement
 	;
 
 // Event statements
+
+eventStatement
+	: subscriptionStatement
+	| unsubscriptionStatement
+	| unsubscriptionStatementWithSubject
+	;
+
+subscriptionStatement
+	: FROM_THIS_MOMENT ONCE eventVariableLiteral subjectExpression WOULD actionExpression
+	;
+
+unsubscriptionStatement
+	: FROM_THIS_MOMENT ONCE eventVariableLiteral NOTHING_WOULD_HAPPEN ANYMORE?
+	;
+
+unsubscriptionStatementWithSubject
+	: FROM_THIS_MOMENT ONCE eventVariableLiteral subjectExpression WOULD NOT_REACT ANYMORE?
+	;
 
 // Assert statements
 
@@ -173,6 +191,10 @@ action
 
 importVariableLiteral
 	: DOLLAR_SYMB ID
+	;
+
+eventVariableLiteral
+	: HASH (ID | STRING_LITERAL)
 	;
 
 runtimeVariableLiteral

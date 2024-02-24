@@ -4,10 +4,8 @@ using System.Threading.Tasks;
 namespace HereticalSolutions.StanleyScript.Sample
 {
 	public class StartGame
-		: AStanleyOperation
+		: AOneArgOperation
 	{
-		#region IStanleyOperation
-
 		public override string Opcode => "start";
 
 		public override string[] Aliases => new string[] { "started" };
@@ -30,38 +28,20 @@ namespace HereticalSolutions.StanleyScript.Sample
 			return true;
 		}
 
-		public override async Task<bool> Handle(
+		protected override async Task<bool> HandleInternal(
+			IStanleyVariable whom,
+
+			IStackMachine stack,
+			IReportable reportable,
+
 			string[] instructionTokens,
 			IStanleyContext context,
 			IRuntimeEnvironment environment,
 			CancellationToken token)
 		{
-			var stack = context as IStackMachine;
-
-			var reportable = environment as IReportable;
-
-			//Get game
-			if (!stack.Pop(
-				out var gameVariable))
-			{
-				reportable.Log(
-					context.ContextID,
-					"STACK VARIABLE NOT FOUND");
-
-				return false;
-			}
-
-			if (!AssertVariable(
-				gameVariable,
-				context,
-				reportable))
-				return false;
-
-			gameVariable.GetValue<Game>().StartGame();
+			whom.GetValue<Game>().StartGame();
 
 			return true;
 		}
-
-		#endregion
 	}
 }

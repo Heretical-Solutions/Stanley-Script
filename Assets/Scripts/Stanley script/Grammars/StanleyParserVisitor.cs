@@ -75,6 +75,30 @@ public interface IStanleyParserVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitTimeStatement([NotNull] StanleyParser.TimeStatementContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="StanleyParser.eventStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitEventStatement([NotNull] StanleyParser.EventStatementContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="StanleyParser.subscriptionStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitSubscriptionStatement([NotNull] StanleyParser.SubscriptionStatementContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="StanleyParser.unsubscriptionStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitUnsubscriptionStatement([NotNull] StanleyParser.UnsubscriptionStatementContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="StanleyParser.unsubscriptionStatementWithSubject"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitUnsubscriptionStatementWithSubject([NotNull] StanleyParser.UnsubscriptionStatementWithSubjectContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="StanleyParser.actionStatement"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -212,6 +236,12 @@ public interface IStanleyParserVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitImportVariableLiteral([NotNull] StanleyParser.ImportVariableLiteralContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="StanleyParser.eventVariableLiteral"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitEventVariableLiteral([NotNull] StanleyParser.EventVariableLiteralContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="StanleyParser.runtimeVariableLiteral"/>.
 	/// </summary>

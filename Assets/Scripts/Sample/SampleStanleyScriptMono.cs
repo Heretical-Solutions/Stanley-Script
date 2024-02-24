@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,6 +34,11 @@ namespace HereticalSolutions.StanleyScript.Sample
 		public IStanleyInterpreter Interpreter => interpreter;
 
 		public IRuntimeEnvironment Environment => environment;
+
+
+		private StanleyEventDelegateVariable wallHitDelegateVariable;
+
+		//private StanleyScriptEvent wallHit;
 
 		void Awake()
 		{
@@ -85,6 +91,17 @@ namespace HereticalSolutions.StanleyScript.Sample
 					"selected_passive_perks",
 					typeof(Perk[]),
 					() => { return playerCharacter.SelectedPassivePerks.ToArray(); }));
+
+			#endregion
+
+			#region Events
+
+			wallHitDelegateVariable = new StanleyEventDelegateVariable(
+				"\"wall hit\"",
+				new List<StanleyEventSubscriptionDescriptor>());
+
+			environment.LoadEventVariable(
+				wallHitDelegateVariable);
 
 			#endregion
 

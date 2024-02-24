@@ -52,6 +52,13 @@ namespace HereticalSolutions.StanleyScript
 		{
 			base.VisitScript(context);
 
+			//Trailers
+			instructions.Add(
+				$"OP_CLR_EVNT");
+
+			instructions.Add(
+				$"OP_CLR_RTM");
+
 			return null;
 		}
 
@@ -151,9 +158,143 @@ namespace HereticalSolutions.StanleyScript
 			return null;
 		}
 
-/*
-        public override object VisitActionExpression([NotNull] StanleyParser.ActionExpressionContext context)
+		//The signature should look like this:
+		//OP_SUB eventVariable target instructions_amount
+		public override object VisitSubscriptionStatement([NotNull] StanleyParser.SubscriptionStatementContext context)
         {
+			int stackDepthAtContextStart = currentStackDepth;
+
+			actionTargetStackIndex = stackDepthAtContextStart;
+
+
+			//Add placeholder for instruction amount int
+			int instructionsAmountOpIndex = instructions.Count;
+
+			instructions.Add(string.Empty);
+
+			currentStackDepth = stackDepthAtContextStart + 1;
+
+
+			//Then visit the subject expression (first time) to determine the target
+
+			VisitSubjectExpression(context.subjectExpression());
+
+			currentStackDepth = stackDepthAtContextStart + 2;
+
+
+			//Now let's visit the event variable
+
+			VisitEventVariableLiteral(context.eventVariableLiteral());
+
+			currentStackDepth = stackDepthAtContextStart + 3;
+
+
+			//Now let's emit the opcode
+
+			currentStackDepth = stackDepthAtContextStart;
+
+			instructions.Add(
+				$"OP_SUB");
+
+
+			//Let's memorize instruction index for the new context
+
+			int subroutineStartIndex = instructions.Count;
+
+
+			//Now it's time to emit the subject expression (second time) and action expression
+
+			//base.VisitSubscriptionStatement(context);
+
+			VisitSubjectExpression(context.subjectExpression());
+
+			VisitActionExpression(context.actionExpression());
+			
+
+			currentStackDepth = stackDepthAtContextStart;
+
+			instructions.Add(
+				$"OP_INVOKE");
+
+			if (flush)
+			{
+				//Flushing because (plural)subjectExpression will put the target at the beginning of the stack so that it can be peeked later
+				instructions.Add(
+					$"OP_FLUSH");
+			}
+
+			flush = false;
+
+			actionTargetStackIndex = -1;
+
+
+			//Finally let's put the subroutine instruction count into the preallocated instruction
+
+			int subroutineInstructionCount = instructions.Count - subroutineStartIndex;
+
+			instructions[instructionsAmountOpIndex] =
+				$"OP_PUSH_INT {subroutineInstructionCount}";
+
+			return null;
+        }
+
+        public override object VisitUnsubscriptionStatementWithSubject([NotNull] StanleyParser.UnsubscriptionStatementWithSubjectContext context)
+        {
+			int stackDepthAtContextStart = currentStackDepth;
+
+
+			//Let's visit the subject expression to determine the target
+
+			VisitSubjectExpression(context.subjectExpression());
+
+			currentStackDepth = stackDepthAtContextStart + 1;
+
+
+			//Now let's visit the event variable
+
+			VisitEventVariableLiteral(context.eventVariableLiteral());
+
+			currentStackDepth = stackDepthAtContextStart + 2;
+
+
+			//Now let's emit the opcode
+
+			currentStackDepth = stackDepthAtContextStart;
+
+			instructions.Add(
+				$"OP_UNSUB");
+			
+			return null;
+		}
+
+        public override object VisitUnsubscriptionStatement([NotNull] StanleyParser.UnsubscriptionStatementContext context)
+        {
+			int stackDepthAtContextStart = currentStackDepth;
+
+
+			//base.VisitUnsubscriptionStatement(context);
+
+
+			//Let's visit the event variable
+
+			VisitEventVariableLiteral(context.eventVariableLiteral());
+
+			currentStackDepth = stackDepthAtContextStart + 1;
+
+
+			//Now let's emit the opcode
+
+			currentStackDepth = stackDepthAtContextStart;
+
+			instructions.Add(
+				$"OP_UNSUB_ALL");
+
+			return null;
+		}
+
+        /*
+		public override object VisitActionExpression([NotNull] StanleyParser.ActionExpressionContext context)
+		{
 			int stackDepthAtContextStart = currentStackDepth;
 
 			base.VisitActionExpression(context);
@@ -165,7 +306,7 @@ namespace HereticalSolutions.StanleyScript
 
 			return null;
 		}
-*/
+        */
 
         public override object VisitActionWithArguments([NotNull] StanleyParser.ActionWithArgumentsContext context)
 		{
@@ -226,7 +367,7 @@ namespace HereticalSolutions.StanleyScript
 			currentStackDepth = stackDepthAtContextStart;
 
 			instructions.Add(
-				$"OP_SCAL");
+				$"OP_PUSH_SCLR");
 
 			currentStackDepth++;
 
@@ -379,7 +520,7 @@ namespace HereticalSolutions.StanleyScript
 
 			if (objectCanBeRuntimeVariable)
 			{
-				instructions.Add($"OP_TRY_CAST_RTM");
+				instructions.Add($"OP_TRCAST_RTM");
 			}
 
 			currentStackDepth++;
@@ -401,7 +542,30 @@ namespace HereticalSolutions.StanleyScript
 			return null;
         }
 
-		public override object VisitImportVariableLiteral([NotNull] StanleyParser.ImportVariableLiteralContext context)
+        public override object VisitEventVariableLiteral([NotNull] StanleyParser.EventVariableLiteralContext context)
+        {
+			int stackDepthAtContextStart = currentStackDepth;
+
+			base.VisitEventVariableLiteral(context);
+
+			var text = context.GetText();
+
+			instructions.Add(
+				$"OP_PUSH_STR {text.Substring(1, text.Length - 1)}");
+
+			currentStackDepth++;
+
+			currentStackDepth = stackDepthAtContextStart;
+
+			instructions.Add(
+				$"OP_PUSH_EVNT");
+
+			currentStackDepth++;
+
+			return null;
+        }
+
+        public override object VisitImportVariableLiteral([NotNull] StanleyParser.ImportVariableLiteralContext context)
 		{
 			int stackDepthAtContextStart = currentStackDepth;
 

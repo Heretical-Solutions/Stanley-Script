@@ -74,7 +74,7 @@ namespace HereticalSolutions.StanleyScript
 
 		public int CurrentLine { get => currentLine; set => currentLine = value; }
 
-		public int ProgramCounter { get => programCounter; }
+		public int ProgramCounter { get => programCounter; set => programCounter = value; }
 
 		public string[] Instructions { get => instructions; }
 

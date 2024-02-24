@@ -1,14 +1,15 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace HereticalSolutions.StanleyScript
 {
-	public class TryCastToRuntimeVariable
+	public class UnsubscribeAll
 		: AStanleyOperation
 	{
 		#region IStanleyOperation
 
-		public override string Opcode => "OP_TRCAST_RTM";
+		public override string Opcode => "OP_UNSUB_ALL";
 
 		public override bool WillHandle(
 			string[] instructionTokens,
@@ -31,8 +32,11 @@ namespace HereticalSolutions.StanleyScript
 
 			var reportable = environment as IReportable;
 
+			//REMEMBER: when popping from the stack, the order is reversed
+
+			//Get event variable
 			if (!stack.Pop(
-				out var variableName))
+				out var eventDelegateVariable))
 			{
 				reportable.Log(
 					context.ContextID,
@@ -41,32 +45,16 @@ namespace HereticalSolutions.StanleyScript
 				return false;
 			}
 
-			if (!AssertVariable<string>(
-				variableName,
+			if (!AssertVariable<Delegate>(
+				eventDelegateVariable,
 				context,
 				reportable))
 				return false;
 
-			var variableNameString = variableName.GetValue<string>();
+			IStanleyEvent stanleyEvent = eventDelegateVariable as IStanleyEvent;
 
-			if (!AssertValueNotEmpty(
-				variableNameString,
-				context,
-				reportable))
-				return false;
-
-			if (environment.GetRuntimeVariable(
-				variableNameString,
-				out var runtimeVariable))
-			{
-				stack.Push(
-					runtimeVariable);
-
-				return true;
-			}
-
-			stack.Push(
-				variableName);
+			//Unsubscribe
+			stanleyEvent.UnsubscribeAll();
 
 			return true;
 		}

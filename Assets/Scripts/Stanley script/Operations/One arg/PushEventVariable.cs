@@ -3,12 +3,12 @@ using System.Threading.Tasks;
 
 namespace HereticalSolutions.StanleyScript
 {
-	public class TryCastToRuntimeVariable
+	public class PushEventVariable
 		: AStanleyOperation
 	{
 		#region IStanleyOperation
 
-		public override string Opcode => "OP_TRCAST_RTM";
+		public override string Opcode => "OP_PUSH_EVNT";
 
 		public override bool WillHandle(
 			string[] instructionTokens,
@@ -55,18 +55,19 @@ namespace HereticalSolutions.StanleyScript
 				reportable))
 				return false;
 
-			if (environment.GetRuntimeVariable(
+			if (!environment.GetEventVariable(
 				variableNameString,
-				out var runtimeVariable))
+				out var eventVariable))
 			{
-				stack.Push(
-					runtimeVariable);
+				reportable.Log(
+					context.ContextID,
+					$"EVENT VARIABLE NOT FOUND: {variableNameString}");
 
-				return true;
+				return false;
 			}
 
 			stack.Push(
-				variableName);
+				eventVariable);
 
 			return true;
 		}

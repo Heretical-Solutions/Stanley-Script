@@ -15,12 +15,15 @@ COMMENT: '/*!' .+? '*/' -> skip;
 COMMENT_INPUT: '/*' .*? '*/' -> skip;
 LINE_COMMENT:
 	(
-		('//' [ \t]* | '#') ~[\r\n]* ('\r'? '\n' | EOF)
+		('//' [ \t]*) ~[\r\n]* ('\r'? '\n' | EOF)
 		| '//' ('\r'? '\n' | EOF)
 	) -> skip;
 
-// Keywords: common keywords
+// Keywords: common nouns, keywords and phrases
 
+FROM_THIS_MOMENT: 'FROM THIS MOMENT';
+NOT_REACT: 'NOT REACT';
+NOTHING_WOULD_HAPPEN: 'NOTHING WOULD HAPPEN';
 REFER_TO: 'REFER TO';
 STORY: 'STORY ABOUT';
 SHOULD_BE: 'SHOULD BE';
@@ -34,12 +37,17 @@ THE: 'THE';
 
 AND: 'AND';
 AT: 'AT';
+ONCE: 'ONCE';
 
 // Keywords: prepositions
 
 AS: 'AS';
+//FROM: 'FROM';
 OF: 'OF';
 TO: 'TO';
+
+// Keyworkds: pronouns
+//THIS: 'THIS';
 
 // Keywords: verbs
 
@@ -49,15 +57,20 @@ HAVE: 'HAVE';
 PASSED: 'PASSED';
 WAS: 'WAS';
 WERE: 'WERE';
+WOULD: 'WOULD';
+
+// Keywords: adverbs
+
+ANYMORE: 'ANYMORE';
 
 // Keywords: adjectives
 
-CLOSIEST: 'CLOSIEST';
-FURTHEST: 'FURTHEST';
-RANDOM: 'RANDOM';
-STRONGEST: 'STRONGEST';
-UNIQUE: 'UNIQUE';
-WEAKEST: 'WEAKEST';
+//CLOSIEST: 'CLOSIEST';
+//FURTHEST: 'FURTHEST';
+//RANDOM: 'RANDOM';
+//STRONGEST: 'STRONGEST';
+//UNIQUE: 'UNIQUE';
+//WEAKEST: 'WEAKEST';
 
 // Keywords: time steps
 
@@ -93,6 +106,7 @@ RR_BRACKET: ')';
 COMMA: ',';
 SEMI: ';';
 AT_SIGN: '@';
+HASH: '#';
 ZERO_DECIMAL: '0';
 ONE_DECIMAL: '1';
 TWO_DECIMAL: '2';

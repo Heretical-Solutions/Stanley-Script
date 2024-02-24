@@ -10,7 +10,7 @@ namespace HereticalSolutions.StanleyScript
 
 		int CurrentLine { get; set; }
 
-		int ProgramCounter { get; }
+		int ProgramCounter { get; set; }
 
 		string[] Instructions { get; }
 
