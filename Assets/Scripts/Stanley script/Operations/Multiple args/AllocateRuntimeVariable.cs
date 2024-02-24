@@ -12,6 +12,7 @@ namespace HereticalSolutions.StanleyScript
 
 		public override bool WillHandle(
 			string[] instructionTokens,
+			IStanleyContext context,
 			IRuntimeEnvironment environment)
 		{
 			if (!AssertOpcode(instructionTokens))
@@ -22,10 +23,11 @@ namespace HereticalSolutions.StanleyScript
 
 		public override async Task<bool> Handle(
 			string[] instructionTokens,
+			IStanleyContext context,
 			IRuntimeEnvironment environment,
 			CancellationToken token)
 		{
-			var stack = environment as IStackMachine;
+			var stack = context as IStackMachine;
 
 			var reportable = environment as IReportable;
 
@@ -35,29 +37,42 @@ namespace HereticalSolutions.StanleyScript
 			if (!stack.Pop(
 				out var variableName))
 			{
-				reportable.Log("STACK VARIABLE NOT FOUND");
+				reportable.Log(
+					context.ContextID,
+					"STACK VARIABLE NOT FOUND");
 
 				return false;
 			}
 
-			if (!AssertVariable<string>(variableName, reportable))
+			if (!AssertVariable<string>(
+				variableName,
+				context,
+				reportable))
 				return false;
 
 			var variableNameString = variableName.GetValue<string>();
 
-			if (!AssertValueNotEmpty(variableNameString, reportable))
+			if (!AssertValueNotEmpty(
+				variableNameString,
+				context,
+				reportable))
 				return false;
 
 			//Get variable to clone
 			if (!stack.Pop(
 				out var variableToClone))
 			{
-				reportable.Log("STACK VARIABLE NOT FOUND");
+				reportable.Log(
+					context.ContextID,
+					"STACK VARIABLE NOT FOUND");
 
 				return false;
 			}
 
-			if (!AssertVariable(variableToClone, reportable))
+			if (!AssertVariable(
+				variableToClone,
+				context,
+				reportable))
 				return false;
 
 			//Add new runtime variable
@@ -67,7 +82,9 @@ namespace HereticalSolutions.StanleyScript
 					variableToClone.VariableType,
 					variableToClone.GetValue())))
 			{
-				reportable.Log($"COULD NOT ADD RUNTIME VARIABLE: {variableNameString}");
+				reportable.Log(
+					context.ContextID,
+					$"COULD NOT ADD RUNTIME VARIABLE: {variableNameString}");
 
 				return false;
 			}

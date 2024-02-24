@@ -12,6 +12,7 @@ namespace HereticalSolutions.StanleyScript
 
 		public override bool WillHandle(
 			string[] instructionTokens,
+			IStanleyContext context,
 			IRuntimeEnvironment environment)
 		{
 			if (!AssertOpcode(instructionTokens))
@@ -28,10 +29,11 @@ namespace HereticalSolutions.StanleyScript
 
 		public override async Task<bool> Handle(
 			string[] instructionTokens,
+			IStanleyContext context,
 			IRuntimeEnvironment environment,
 			CancellationToken token)
 		{
-			var stack = environment as IStackMachine;
+			var stack = context as IStackMachine;
 
 			stack.Push(
 				new StanleyCachedVariable(

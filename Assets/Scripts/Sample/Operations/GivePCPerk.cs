@@ -16,12 +16,13 @@ namespace HereticalSolutions.StanleyScript.Sample
 
 		public override bool WillHandle(
 			string[] instructionTokens,
+			IStanleyContext context,
 			IRuntimeEnvironment environment)
 		{
 			if (!AssertOpcodeOrAlias(instructionTokens))
 				return false;
 
-			IStackMachine stack = environment as IStackMachine;
+			IStackMachine stack = context as IStackMachine;
 
 			if (!AssertStackVariableType<PlayerCharacter>(
 				stack,
@@ -38,10 +39,11 @@ namespace HereticalSolutions.StanleyScript.Sample
 
 		public override async Task<bool> Handle(
 			string[] instructionTokens,
+			IStanleyContext context,
 			IRuntimeEnvironment environment,
 			CancellationToken token)
 		{
-			var stack = environment as IStackMachine;
+			var stack = context as IStackMachine;
 
 			var reportable = environment as IReportable;
 
@@ -49,24 +51,34 @@ namespace HereticalSolutions.StanleyScript.Sample
 			if (!stack.Pop(
 				out var pc))
 			{
-				reportable.Log("STACK VARIABLE NOT FOUND");
+				reportable.Log(
+					context.ContextID,
+					"STACK VARIABLE NOT FOUND");
 
 				return false;
 			}
 
-			if (!AssertVariable(pc, reportable))
+			if (!AssertVariable(
+				pc,
+				context,
+				reportable))
 				return false;
 
 			//Get perk
 			if (!stack.Pop(
 				out var perk))
 			{
-				reportable.Log("STACK VARIABLE NOT FOUND");
+				reportable.Log(
+					context.ContextID,
+					"STACK VARIABLE NOT FOUND");
 
 				return false;
 			}
 
-			if (!AssertVariable<Perk>(perk, reportable))
+			if (!AssertVariable<Perk>(
+				perk,
+				context,
+				reportable))
 				return false;
 
 			pc.GetValue<PlayerCharacter>().Receive(

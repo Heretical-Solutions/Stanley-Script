@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 
 using System.Text.RegularExpressions;
@@ -10,12 +9,13 @@ namespace HereticalSolutions.StanleyScript
 {
 	public class StanleyEnvironment
 		: IRuntimeEnvironment,
-		  IExecutable,
-		  IStackMachine,
+		  IContextManager,
 		  IREPL,
+		  IExecutable,
 		  IReportable
 	{
 		private const string REGEX_SPLIT_BY_WHITESPACE_UNLESS_WITHIN_QUOTES = "(?<=^[^\"]*(?:\"[^\"]*\"[^\"]*)*) (?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)";
+
 
 		private readonly Dictionary<string, IStanleyVariable> inputVariables;
 
@@ -23,20 +23,13 @@ namespace HereticalSolutions.StanleyScript
 
 		private readonly Dictionary<string, IStanleyVariable> runtimeVariables;
 
-		private readonly Stack<IStanleyVariable> stack;
+
+		private readonly IStanleyContext defaultContext;
+
+		private readonly List<IStanleyContext> genericContexts;
+
 
 		private readonly List<string> report;
-
-
-		private EExecutionStatus executionStatus;
-
-		private int programCounter = 0;
-
-		private string[] instructions;
-
-		private int currentLine = -1;
-
-		private bool stepMode = false;
 
 
 		private CancellationTokenSource cancellationTokenSource;
@@ -46,7 +39,10 @@ namespace HereticalSolutions.StanleyScript
 			Dictionary<string, IStanleyVariable> inputVariables,
 			Dictionary<string, List<IStanleyOperation>> operationsChainOfResponsibility,
 			Dictionary<string, IStanleyVariable> runtimeVariables,
-			Stack<IStanleyVariable> stack,
+
+			IStanleyContext defaultContext,
+			List<IStanleyContext> genericContexts,
+
 			List<string> report)
 		{
 			this.inputVariables = inputVariables;
@@ -55,21 +51,22 @@ namespace HereticalSolutions.StanleyScript
 
 			this.runtimeVariables = runtimeVariables;
 
-			this.stack = stack;
+
+			this.defaultContext = defaultContext;
+
+			this.genericContexts = genericContexts;
+
 
 			this.report = report;
 
-			executionStatus = EExecutionStatus.IDLE;
-
-			instructions = null;
-
-			currentLine = -1;
-
-			programCounter = 0;
-
-			stepMode = false;
 
 			cancellationTokenSource = new CancellationTokenSource();
+
+			defaultContext.Initialize(
+				StanleyConsts.DEFAULT_CONTEXT_ID,
+				this,
+				this,
+				cancellationTokenSource.Token);
 		}
 
 		#region IRuntimeEnvironment
@@ -154,10 +151,9 @@ namespace HereticalSolutions.StanleyScript
 			return true;
 		}
 
-		public void SetCurrentLine(
-			int line)
+		public void RemoveAllRuntimeVariables()
 		{
-			currentLine = line;
+			runtimeVariables.Clear();
 		}
 
 		public bool GetRuntimeVariable(
@@ -193,244 +189,33 @@ namespace HereticalSolutions.StanleyScript
 
 		#endregion
 
-		#region IExecutable
+		#region IContextManager
 
-		public EExecutionStatus Status { get => executionStatus; }
+		public IStanleyContext DefaultContext { get => defaultContext; }
 
-		public int CurrentLine { get => currentLine; }
-
-		public int ProgramCounter { get => programCounter; }
-
-		public string[] Instructions { get => instructions; }
-
-		public void LoadProgram(
-			string[] instructions)
+		public IStanleyContext AllocateContext()
 		{
-			Stop();
+			IStanleyContext context = StanleyFactory.BuildContext();
 
-			this.instructions = instructions;
+			int index = genericContexts.Count;
 
-			currentLine = -1;
+			context.Initialize(
+				$"{StanleyConsts.CONTEXT_PREFIX}{index}",
+				this,
+				this,
+				cancellationTokenSource.Token);
 
-			programCounter = 0;
+			genericContexts.Add(context);
 
-			stepMode = false;
-
-			report.Clear();
+			return context;
 		}
 
-		public void Start()
+		public void ReleaseContext(
+			IStanleyContext context)
 		{
-			switch (executionStatus)
-			{
-				case EExecutionStatus.IDLE:
-				case EExecutionStatus.PAUSED:
-				case EExecutionStatus.STOPPED:
-				{
-					if (instructions == null
-						|| instructions.Length == 0)
-						return;
+			genericContexts.Remove(context);
 
-					executionStatus = EExecutionStatus.RUNNING;
-
-					programCounter = 0;
-
-					stepMode = false;
-
-					report.Clear();
-
-					cancellationTokenSource = new CancellationTokenSource();
-
-						//RunInternal(cancellationTokenSource.Token)
-						//	.ThrowExceptions();
-
-						//try
-						//{
-						//	RunInternal(cancellationTokenSource.Token)
-						//}
-						//catch (Exception e)
-						//{
-						//}
-
-						//Task.Run(async () =>
-						//{
-						//	await RunInternal(cancellationTokenSource.Token)
-						//		.ThrowExceptions();
-						//});
-
-						TaskExtensions.RunSync<bool>(
-							() => RunInternal(cancellationTokenSource.Token));
-				}
-
-				break;
-			}
-		}
-
-		public void Step()
-		{
-			switch (executionStatus)
-			{
-				case EExecutionStatus.PAUSED:
-				{
-					stepMode = true;
-
-					executionStatus = EExecutionStatus.RUNNING;
-
-					//ExecuteInternal(cancellationTokenSource.Token);
-				}
-
-					break;
-
-				case EExecutionStatus.IDLE:
-				case EExecutionStatus.STOPPED:
-				{
-					if (instructions == null
-						|| instructions.Length == 0)
-						return;
-
-					executionStatus = EExecutionStatus.RUNNING;
-
-					programCounter = 0;
-
-					stepMode = true;
-
-					report.Clear();
-
-					cancellationTokenSource = new CancellationTokenSource();
-
-					RunInternal(cancellationTokenSource.Token);
-
-					//Task.Run(async () =>
-					//{
-					//	RunInternal(cancellationTokenSource.Token);
-					//});
-				}
-
-					break;
-			}
-		}
-
-		public void Pause()
-		{
-			switch (executionStatus)
-			{
-				case EExecutionStatus.RUNNING:
-					executionStatus = EExecutionStatus.PAUSED;
-
-					break;
-			}
-		}
-
-		public void Resume()
-		{
-			switch (executionStatus)
-			{
-				case EExecutionStatus.PAUSED:
-
-					stepMode = false;
-
-					executionStatus = EExecutionStatus.RUNNING;
-
-					break;
-			}
-		}
-
-		public void Stop()
-		{
-			executionStatus = EExecutionStatus.STOPPED;
-
-			stepMode = false;
-
-			StopInternal();
-		}
-
-		#endregion
-
-		#region IStackMachine
-
-		public int StackSize => stack.Count;
-
-		public void Push(
-			IStanleyVariable variable)
-		{
-			stack.Push(variable);
-		}
-
-		public bool Pop(
-			out IStanleyVariable variable)
-		{
-			if (stack.Count > 0)
-			{
-				variable = stack.Pop();
-
-				return true;
-			}
-
-			variable = null;
-
-			return false;
-		}
-
-		public bool Peek(
-			out IStanleyVariable variable)
-		{
-			if (stack.Count > 0)
-			{
-				variable = stack.Peek();
-
-				return true;
-			}
-
-			variable = null;
-
-			return false;
-		}
-
-		public bool PeekFromTop(
-			int relativeIndex,
-			out IStanleyVariable variable)
-		{
-			if (stack.Count > relativeIndex)
-			{
-				variable = stack.ToArray()[relativeIndex];
-
-				return true;
-			}
-
-			variable = null;
-
-			return false;
-		}
-
-		public bool PeekFromBottom(
-			int relativeIndex,
-			out IStanleyVariable variable)
-		{
-			if (stack.Count > relativeIndex)
-			{
-				variable = stack.ToArray()[stack.Count - relativeIndex - 1];
-
-				return true;
-			}
-
-			variable = null;
-
-			return false;
-		}
-
-		#endregion
-
-		#region IReportable
-
-		public void Log(
-			string message)
-		{
-			report.Add(message);
-		}
-
-		public string[] GetReport()
-		{
-			return report.ToArray();
+			context.Cleanup();
 		}
 
 		#endregion
@@ -439,7 +224,8 @@ namespace HereticalSolutions.StanleyScript
 
 		public async Task<bool> Execute(
 			string instruction,
-			CancellationToken cancellationToken)
+			IStanleyContext context = null,
+			CancellationToken cancellationToken = default)
 		{
 			bool result = false;
 
@@ -451,6 +237,11 @@ namespace HereticalSolutions.StanleyScript
 
 			string opcode = instructionTokens[0];
 
+			if (context == null)
+			{
+				context = defaultContext;
+			}
+
 			if (operationsChainOfResponsibility.ContainsKey(opcode))
 			{
 				bool handled = false;
@@ -459,13 +250,15 @@ namespace HereticalSolutions.StanleyScript
 				{
 					if (operation.WillHandle(
 						instructionTokens,
+						context,
 						this))
 					{
 						result = await operation.Handle(
 							instructionTokens,
+							context,
 							this,
 							cancellationToken);
-							//.ThrowExceptions();
+						//.ThrowExceptions();
 
 						handled = true;
 
@@ -475,14 +268,18 @@ namespace HereticalSolutions.StanleyScript
 
 				if (!handled)
 				{
-					Log("OPERATION NOT HANDLED: " + opcode);
+					Log(
+						StanleyConsts.ENVIRONMENT_CONDEXT_ID,
+						$"OPERATION NOT HANDLED: {opcode}");
 
 					return false;
 				}
 			}
 			else
 			{
-				Log("UNKNOWN OPERATION: " + opcode);
+				Log(
+					StanleyConsts.ENVIRONMENT_CONDEXT_ID,
+					$"UNKNOWN OPERATION: {opcode}");
 
 				return false;
 			}
@@ -492,106 +289,93 @@ namespace HereticalSolutions.StanleyScript
 
 		#endregion
 
-		private async Task<bool> RunInternal(CancellationToken cancellationToken)
+		#region IReportable
+
+		public void Log(
+			string contextID,
+			string message)
 		{
-			while (!cancellationToken.IsCancellationRequested)
-			{
-				switch (executionStatus)
-				{
-					case EExecutionStatus.RUNNING:
-					{
-						if (programCounter < instructions.Length)
-						{
-							var result = await ExecuteInternal(cancellationTokenSource.Token);
-								//.ThrowExceptions();
-
-							if (!result)
-							{
-								executionStatus = EExecutionStatus.STOPPED;
-
-								Log("SCRIPT FINISHED DUE TO INTERNAL ERROR. CHECK LOGS FOR DETAILS");
-
-								return false;
-							}
-
-							if (PauseBeforeNextLine())
-							{
-								executionStatus = EExecutionStatus.PAUSED;
-
-								continue;
-							}
-						}
-						else
-						{
-							stepMode = false;
-
-							executionStatus = EExecutionStatus.FINISHED;
-
-							Log("SCRIPT FINISHED WITH EXECUTION STATUS \"FINISHED\"");
-
-							return true;
-						}
-					}
-
-						break;
-
-					case EExecutionStatus.PAUSED:
-
-						await Task.Yield();
-
-						continue;
-
-					case EExecutionStatus.IDLE:
-					case EExecutionStatus.STOPPED:
-					case EExecutionStatus.FINISHED:
-						Log($"SCRIPT INTERRUPTED WITH EXECUTION STATUS \"{executionStatus}\"");
-
-						stepMode = false;
-
-						return false;
-				}
-			}
-
-			Log($"SCRIPT INTERRUPTED WITH EXECUTION STATUS \"{executionStatus}\"");
-
-			stepMode = false;
-
-			return false;
+			report.Add($"[{contextID}] {message}");
 		}
 
-		private void StopInternal()
+		public string[] GetReport()
+		{
+			return report.ToArray();
+		}
+
+		public void ClearReport()
+		{
+			report.Clear();
+		}
+
+		#endregion
+
+		#region IExecutable
+
+		public void Start()
+		{
+			switch (defaultContext.Status)
+			{
+				case EExecutionStatus.IDLE:
+				case EExecutionStatus.PAUSED:
+				case EExecutionStatus.STOPPED:
+					{
+						ClearReport();
+					}
+
+					break;
+			}
+
+			var defaultContextAsExecutable = defaultContext as IExecutable;
+
+			defaultContextAsExecutable.Start();
+		}
+
+		public void Step()
+		{
+			switch (defaultContext.Status)
+			{
+				case EExecutionStatus.IDLE:
+				case EExecutionStatus.STOPPED:
+					{
+						ClearReport();
+					}
+
+					break;
+			}
+
+
+			var defaultContextAsExecutable = defaultContext as IExecutable;
+
+			defaultContextAsExecutable.Step();
+		}
+
+		public void Pause()
+		{
+			var defaultContextAsExecutable = defaultContext as IExecutable;
+
+			defaultContextAsExecutable.Pause();
+		}
+
+		public void Resume()
+		{
+			var defaultContextAsExecutable = defaultContext as IExecutable;
+
+			defaultContextAsExecutable.Resume();
+		}
+
+		public void Stop()
 		{
 			//cancellationTokenSource?.Dispose();
 
 			cancellationTokenSource?.Cancel();
+
+
+			var defaultContextAsExecutable = defaultContext as IExecutable;
+
+			defaultContextAsExecutable.Stop();
 		}
 
-		private async Task<bool> ExecuteInternal(CancellationToken cancellationToken)
-		{
-			string instruction = instructions[programCounter];
-
-			bool result = await Execute(
-				instruction,
-				cancellationToken);
-				//.ThrowExceptions();
-
-			programCounter++;
-
-			return result;
-		}
-
-		private bool PauseBeforeNextLine()
-		{
-			if (!stepMode)
-				return false;
-
-			if ((programCounter + 1) >= instructions.Length)
-				return false;
-
-			if (instructions[programCounter + 1].StartsWith("OP_LINE"))
-				return true;
-
-			return false;
-		}
+		#endregion
 	}
 }

@@ -10,6 +10,8 @@ namespace HereticalSolutions.StanleyScript
 
 		private readonly IExecutable executable;
 
+		private readonly IContextManager contextManager;
+
 		private readonly IReportable reportable;
 
 		private readonly ScenarioNameScriptPair[] scenarioPlaylist;
@@ -29,6 +31,8 @@ namespace HereticalSolutions.StanleyScript
 			this.scenarioPlaylist = scenarioPlaylist;
 
 			this.executable = executable;
+
+			this.contextManager = executable as IContextManager;
 
 			this.reportable = executable as IReportable;
 
@@ -83,11 +87,11 @@ namespace HereticalSolutions.StanleyScript
 		{
 			ImGui.SeparatorText("Playback controls");
 
-			ImGui.Text($"Status: {executable.Status}");
+			ImGui.Text($"Status: {contextManager.DefaultContext.Status}");
 
 			ImGui.SameLine();
 
-			string pcText = $"Program counter: {executable.ProgramCounter}";
+			string pcText = $"Program counter: {contextManager.DefaultContext.ProgramCounter}";
 
 			ImGui.SetCursorPosX(
 				ImGui.GetCursorPosX()
@@ -95,7 +99,7 @@ namespace HereticalSolutions.StanleyScript
 				- ImGui.CalcTextSize(pcText).X);
 				//- ImGui.GetStyle().ItemSpacing.X);
 
-			ImGui.Text($"Program counter: {executable.ProgramCounter}");
+			ImGui.Text($"Program counter: {contextManager.DefaultContext.ProgramCounter}");
 
 			DrawStartButton();
 
@@ -171,7 +175,7 @@ namespace HereticalSolutions.StanleyScript
 
 				string[] lines = currentScenario.Split('\n'); //executable.Instructions;
 
-				int currentLine = executable.CurrentLine - 1; //-1 because ANTLR4's AST starts with line 1, not line 0
+				int currentLine = contextManager.DefaultContext.CurrentLine - 1; //-1 because ANTLR4's AST starts with line 1, not line 0
 
 				if (lines != null)
 				{
@@ -227,7 +231,7 @@ namespace HereticalSolutions.StanleyScript
 						ImGui.GetContentRegionAvail().X,
 						300));
 
-				string[] instructions = executable.Instructions;
+				string[] instructions = contextManager.DefaultContext.Instructions;
 
 				if (instructions != null)
 				{
@@ -255,8 +259,8 @@ namespace HereticalSolutions.StanleyScript
 					currentScenario = scenarioPlaylist[i].Script;
 
 					var instructions = interpreter.InterpretToOpcode(scenarioPlaylist[i].Script);
-					
-					executable.LoadProgram(instructions);
+
+					contextManager.DefaultContext.LoadProgram(instructions);
 				}
 			}
 		}

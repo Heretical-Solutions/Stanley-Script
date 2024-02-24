@@ -379,7 +379,7 @@ namespace HereticalSolutions.StanleyScript
 
 			if (objectCanBeRuntimeVariable)
 			{
-				instructions.Add($"OP_TCAST_RTM");
+				instructions.Add($"OP_TRY_CAST_RTM");
 			}
 
 			currentStackDepth++;

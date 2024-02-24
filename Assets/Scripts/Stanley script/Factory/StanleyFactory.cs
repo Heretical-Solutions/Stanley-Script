@@ -4,32 +4,35 @@ namespace HereticalSolutions.StanleyScript
 {
 	public static class StanleyFactory
 	{
+		public static StanleyContext BuildContext()
+		{
+			return new StanleyContext(
+				new Stack<IStanleyVariable>());
+		}
+
 		public static StanleyInterpreter BuildInterpreter()
 		{
+			var defaultContext = BuildContext();
+
 			StanleyASTWalker walker = new StanleyASTWalker(
-				new StanleyEnvironment(
-					new Dictionary<string, IStanleyVariable>(),
-					new Dictionary<string, List<IStanleyOperation>>(),
-					new Dictionary<string, IStanleyVariable>(),
-					new Stack<IStanleyVariable>(),
-					new List<string>()),
+				BuildEnvironment(),
 				new List<string>());
 
-			//IRuntimeEnvironment environment = BuildEnvironment();
-
 			return new StanleyInterpreter(
-				walker); //,
-				//environment);
+				walker);
 		}
 
 		public static StanleyEnvironment BuildEnvironment()
 		{
+			var defaultContext = BuildContext();
+
 			var result = new StanleyEnvironment(
 				new Dictionary<string, IStanleyVariable>(),
-				new Dictionary<string, List<IStanleyOperation>>(),
-				new Dictionary<string, IStanleyVariable>(),
-				new Stack<IStanleyVariable>(),
-				new List<string>());
+					new Dictionary<string, List<IStanleyOperation>>(),
+					new Dictionary<string, IStanleyVariable>(),
+					defaultContext,
+					new List<IStanleyContext>(),
+					new List<string>());
 
 			IRuntimeEnvironment environment = result;
 

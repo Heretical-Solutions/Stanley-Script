@@ -15,12 +15,13 @@ namespace HereticalSolutions.StanleyScript.Sample
 
 		public override bool WillHandle(
 			string[] instructionTokens,
+			IStanleyContext context,
 			IRuntimeEnvironment environment)
 		{
 			if (!AssertOpcodeOrAlias(instructionTokens))
 				return false;
 
-			IStackMachine stack = environment as IStackMachine;
+			IStackMachine stack = context as IStackMachine;
 
 			if (!AssertStackVariable<string>(
 				stack,
@@ -39,10 +40,11 @@ namespace HereticalSolutions.StanleyScript.Sample
 
 		public override async Task<bool> Handle(
 			string[] instructionTokens,
+			IStanleyContext context,
 			IRuntimeEnvironment environment,
 			CancellationToken token)
 		{
-			var stack = environment as IStackMachine;
+			var stack = context as IStackMachine;
 
 			var reportable = environment as IReportable;
 
@@ -50,7 +52,9 @@ namespace HereticalSolutions.StanleyScript.Sample
 			if (!stack.Pop(
 				out var _))
 			{
-				reportable.Log("STACK VARIABLE NOT FOUND");
+				reportable.Log(
+					context.ContextID,
+					"STACK VARIABLE NOT FOUND");
 
 				return false;
 			}
@@ -59,7 +63,9 @@ namespace HereticalSolutions.StanleyScript.Sample
 			if (!stack.Pop(
 				out var __))
 			{
-				reportable.Log("STACK VARIABLE NOT FOUND");
+				reportable.Log(
+					context.ContextID,
+					"STACK VARIABLE NOT FOUND");
 
 				return false;
 			}
@@ -68,24 +74,34 @@ namespace HereticalSolutions.StanleyScript.Sample
 			if (!stack.Pop(
 				out var argument))
 			{
-				reportable.Log("STACK VARIABLE NOT FOUND");
+				reportable.Log(
+					context.ContextID,
+					"STACK VARIABLE NOT FOUND");
 
 				return false;
 			}
 
-			if (!AssertVariable(argument, reportable))
+			if (!AssertVariable(
+				argument,
+				context,
+				reportable))
 				return false;
 
 			//Get asserts amount (unused, still pop)
 			if (!stack.Pop(
 				out var assertsAmount))
 			{
-				reportable.Log("STACK VARIABLE NOT FOUND");
+				reportable.Log(
+					context.ContextID,
+					"STACK VARIABLE NOT FOUND");
 
 				return false;
 			}
 
-			if (!AssertVariable<int>(assertsAmount, reportable))
+			if (!AssertVariable<int>(
+				assertsAmount,
+				context,
+				reportable))
 				return false;
 
 			//Get asserts (unused, still pop)
@@ -96,12 +112,17 @@ namespace HereticalSolutions.StanleyScript.Sample
 				if (!stack.Pop(
 					out var assert))
 				{
-					reportable.Log("STACK VARIABLE NOT FOUND");
+					reportable.Log(
+						context.ContextID,
+						"STACK VARIABLE NOT FOUND");
 
 					return false;
 				}
 
-				if (!AssertVariable(assert, reportable))
+				if (!AssertVariable(
+					assert,
+					context,
+					reportable))
 					return false;
 
 				asserts[i] = assert.GetValue<string>();

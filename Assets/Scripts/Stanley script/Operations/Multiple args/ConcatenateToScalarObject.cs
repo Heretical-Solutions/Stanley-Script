@@ -13,6 +13,7 @@ namespace HereticalSolutions.StanleyScript
 
 		public override bool WillHandle(
 			string[] instructionTokens,
+			IStanleyContext context,
 			IRuntimeEnvironment environment)
 		{
 			if (!AssertOpcode(instructionTokens))
@@ -23,10 +24,11 @@ namespace HereticalSolutions.StanleyScript
 
 		public override async Task<bool> Handle(
 			string[] instructionTokens,
+			IStanleyContext context,
 			IRuntimeEnvironment environment,
 			CancellationToken token)
 		{
-			var stack = environment as IStackMachine;
+			var stack = context as IStackMachine;
 
 			var reportable = environment as IReportable;
 
@@ -36,24 +38,34 @@ namespace HereticalSolutions.StanleyScript
 			if (!stack.Pop(
 				out var variableToMultiply))
 			{
-				reportable.Log("STACK VARIABLE NOT FOUND");
+				reportable.Log(
+					context.ContextID,
+					"STACK VARIABLE NOT FOUND");
 
 				return false;
 			}
 
-			if (!AssertVariable(variableToMultiply, reportable))
+			if (!AssertVariable(
+				variableToMultiply,
+				context,
+				reportable))
 				return false;
 
 			//Get amount
 			if (!stack.Pop(
 				out var amount))
 			{
-				reportable.Log("STACK VARIABLE NOT FOUND");
+				reportable.Log(
+					context.ContextID,
+					"STACK VARIABLE NOT FOUND");
 
 				return false;
 			}
 
-			if (!AssertVariable(amount, reportable))
+			if (!AssertVariable(
+				amount,
+				context,
+				reportable))
 				return false;
 
 			double amountValue;
@@ -68,7 +80,9 @@ namespace HereticalSolutions.StanleyScript
 			}
 			else
 			{
-				reportable.Log("INVALID AMOUNT VARIABLE TYPE");
+				reportable.Log(
+					context.ContextID,
+					"INVALID AMOUNT VARIABLE TYPE");
 
 				return false;
 			}

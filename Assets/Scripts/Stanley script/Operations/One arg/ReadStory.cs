@@ -12,6 +12,7 @@ namespace HereticalSolutions.StanleyScript
 
 		public override bool WillHandle(
 			string[] instructionTokens,
+			IStanleyContext context,
 			IRuntimeEnvironment environment)
 		{
 			if (!AssertOpcode(instructionTokens))
@@ -22,30 +23,41 @@ namespace HereticalSolutions.StanleyScript
 
 		public override async Task<bool> Handle(
 			string[] instructionTokens,
+			IStanleyContext context,
 			IRuntimeEnvironment environment,
 			CancellationToken token)
 		{
-			var stack = environment as IStackMachine;
+			var stack = context as IStackMachine;
 
 			var reportable = environment as IReportable;
 
 			if (!stack.Pop(
 				out var storyName))
 			{
-				reportable.Log("STACK VARIABLE NOT FOUND");
+				reportable.Log(
+					context.ContextID,
+					"STACK VARIABLE NOT FOUND");
 
 				return false;
 			}
 
-			if (!AssertVariable<string>(storyName, reportable))
+			if (!AssertVariable<string>(
+				storyName,
+				context,
+				reportable))
 				return false;
 
 			var storyNameString = storyName.GetValue<string>();
 
-			if (!AssertValueNotEmpty(storyNameString, reportable))
+			if (!AssertValueNotEmpty(
+				storyNameString,
+				context,
+				reportable))
 				return false;
 
-			reportable.Log($"STARTING STORY: {storyNameString}");
+			reportable.Log(
+				context.ContextID,
+				$"STARTING STORY: {storyNameString}");
 
 			return true;
 		}

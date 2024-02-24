@@ -7,6 +7,7 @@ namespace HereticalSolutions.StanleyScript
 	{
 		Task<bool> Execute(
 			string instruction,
-			CancellationToken cancellationToken);
+			IStanleyContext context = null,
+			CancellationToken cancellationToken = default);
 	}
 }

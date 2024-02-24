@@ -11,10 +11,12 @@ namespace HereticalSolutions.StanleyScript
 
 		bool WillHandle(
 			string[] instructionTokens,
+			IStanleyContext context,
 			IRuntimeEnvironment environment);
 
 		Task<bool> Handle(
 			string[] instructionTokens,
+			IStanleyContext context,
 			IRuntimeEnvironment environment,
 			CancellationToken token);
 	}

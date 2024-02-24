@@ -13,8 +13,7 @@ namespace HereticalSolutions.StanleyScript
 		bool AddRuntimeVariable(
 			IStanleyVariable variable);
 
-		void SetCurrentLine(
-			int line);
+		void RemoveAllRuntimeVariables();
 
 		bool GetRuntimeVariable(
 			string name,

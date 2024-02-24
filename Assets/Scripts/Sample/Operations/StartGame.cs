@@ -14,12 +14,13 @@ namespace HereticalSolutions.StanleyScript.Sample
 
 		public override bool WillHandle(
 			string[] instructionTokens,
+			IStanleyContext context,
 			IRuntimeEnvironment environment)
 		{
 			if (!AssertOpcodeOrAlias(instructionTokens))
 				return false;
 
-			IStackMachine stack = environment as IStackMachine;
+			IStackMachine stack = context as IStackMachine;
 
 			if (!AssertStackVariableType<Game>(
 				stack,
@@ -31,10 +32,11 @@ namespace HereticalSolutions.StanleyScript.Sample
 
 		public override async Task<bool> Handle(
 			string[] instructionTokens,
+			IStanleyContext context,
 			IRuntimeEnvironment environment,
 			CancellationToken token)
 		{
-			var stack = environment as IStackMachine;
+			var stack = context as IStackMachine;
 
 			var reportable = environment as IReportable;
 
@@ -42,12 +44,17 @@ namespace HereticalSolutions.StanleyScript.Sample
 			if (!stack.Pop(
 				out var gameVariable))
 			{
-				reportable.Log("STACK VARIABLE NOT FOUND");
+				reportable.Log(
+					context.ContextID,
+					"STACK VARIABLE NOT FOUND");
 
 				return false;
 			}
 
-			if (!AssertVariable(gameVariable, reportable))
+			if (!AssertVariable(
+				gameVariable,
+				context,
+				reportable))
 				return false;
 
 			gameVariable.GetValue<Game>().StartGame();

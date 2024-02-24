@@ -17,12 +17,13 @@ namespace HereticalSolutions.StanleyScript.Sample
 
 		public override bool WillHandle(
 			string[] instructionTokens,
+			IStanleyContext context,
 			IRuntimeEnvironment environment)
 		{
 			if (!AssertOpcodeOrAlias(instructionTokens))
 				return false;
 
-			IStackMachine stack = environment as IStackMachine;
+			IStackMachine stack = context as IStackMachine;
 
 			if (!AssertStackVariableType<float>(
 				stack,
@@ -34,10 +35,11 @@ namespace HereticalSolutions.StanleyScript.Sample
 
 		public override async Task<bool> Handle(
 			string[] instructionTokens,
+			IStanleyContext context,
 			IRuntimeEnvironment environment,
 			CancellationToken token)
 		{
-			var stack = environment as IStackMachine;
+			var stack = context as IStackMachine;
 
 			var reportable = environment as IReportable;
 
@@ -45,24 +47,34 @@ namespace HereticalSolutions.StanleyScript.Sample
 			if (!stack.Pop(
 				out var targetVariable))
 			{
-				reportable.Log("STACK VARIABLE NOT FOUND");
+				reportable.Log(
+					context.ContextID,
+					"STACK VARIABLE NOT FOUND");
 
 				return false;
 			}
 
-			if (!AssertVariable(targetVariable, reportable))
+			if (!AssertVariable(
+				targetVariable,
+				context,
+				reportable))
 				return false;
 
 			//Get direction
 			if (!stack.Pop(
 				out var direction))
 			{
-				reportable.Log("STACK VARIABLE NOT FOUND");
+				reportable.Log(
+					context.ContextID,
+					"STACK VARIABLE NOT FOUND");
 
 				return false;
 			}
 
-			if (!AssertVariable<float>(direction, reportable))
+			if (!AssertVariable<float>(
+				direction,
+				context,
+				reportable))
 				return false;
 
 			var directionValue = direction.GetValue<float>();

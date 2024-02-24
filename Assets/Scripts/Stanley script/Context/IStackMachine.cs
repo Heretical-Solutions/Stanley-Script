@@ -1,6 +1,6 @@
 namespace HereticalSolutions.StanleyScript
 {
-	public interface IStackMachine
+	public interface IStackMachine //TODO: assign to the conext, create "DefaultConcext" in the runtime, on Stop() flush all non-default contexts
 	{
 		int StackSize { get; }
 

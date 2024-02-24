@@ -12,6 +12,7 @@ namespace HereticalSolutions.StanleyScript
 
 		public override bool WillHandle(
 			string[] instructionTokens,
+			IStanleyContext context,
 			IRuntimeEnvironment environment)
 		{
 			if (!AssertOpcode(instructionTokens))
@@ -22,34 +23,45 @@ namespace HereticalSolutions.StanleyScript
 
 		public override async Task<bool> Handle(
 			string[] instructionTokens,
+			IStanleyContext context,
 			IRuntimeEnvironment environment,
 			CancellationToken token)
 		{
-			var stack = environment as IStackMachine;
+			var stack = context as IStackMachine;
 
 			var reportable = environment as IReportable;
 
 			if (!stack.Pop(
 				out var variableName))
 			{
-				reportable.Log("STACK VARIABLE NOT FOUND");
+				reportable.Log(
+					context.ContextID,
+					"STACK VARIABLE NOT FOUND");
 
 				return false;
 			}
 
-			if (!AssertVariable<string>(variableName, reportable))
+			if (!AssertVariable<string>(
+				variableName,
+				context,
+				reportable))
 				return false;
 
 			var variableNameString = variableName.GetValue<string>();
 
-			if (!AssertValueNotEmpty(variableNameString, reportable))
+			if (!AssertValueNotEmpty(
+				variableNameString,
+				context,
+				reportable))
 				return false;
 
 			if (!environment.GetImportVariable(
 				variableNameString,
 				out var importVariable))
 			{
-				reportable.Log($"IMPORT VARIABLE NOT FOUND: {variableNameString}");
+				reportable.Log(
+					context.ContextID,
+					$"IMPORT VARIABLE NOT FOUND: {variableNameString}");
 
 				return false;
 			}

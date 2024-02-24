@@ -13,6 +13,7 @@ namespace HereticalSolutions.StanleyScript
 
 		public override bool WillHandle(
 			string[] instructionTokens,
+			IStanleyContext context,
 			IRuntimeEnvironment environment)
 		{
 			if (!AssertOpcode(instructionTokens))
@@ -29,14 +30,13 @@ namespace HereticalSolutions.StanleyScript
 
 		public override async Task<bool> Handle(
 			string[] instructionTokens,
+			IStanleyContext context,
 			IRuntimeEnvironment environment,
 			CancellationToken token)
 		{
-			var stack = environment as IStackMachine;
+			var stack = context as IStackMachine;
 
 			var reportable = environment as IReportable;
-
-			//int arrayLength = Convert.ToInt32(instructionTokens[1]);
 
 			//REMEMBER: when popping from the stack, the order is reversed
 
@@ -44,12 +44,17 @@ namespace HereticalSolutions.StanleyScript
 			if (!stack.Pop(
 				out var variablesAmount))
 			{
-				reportable.Log("STACK VARIABLE NOT FOUND");
+				reportable.Log(
+					context.ContextID,
+					"STACK VARIABLE NOT FOUND");
 
 				return false;
 			}
 
-			if (!AssertVariable<int>(variablesAmount, reportable))
+			if (!AssertVariable<int>(
+				variablesAmount,
+				context,
+				reportable))
 				return false;
 
 			int arrayLength = variablesAmount.GetValue<int>();
@@ -63,12 +68,17 @@ namespace HereticalSolutions.StanleyScript
 				if (!stack.Pop(
 					out var arrayElement))
 				{
-					reportable.Log("STACK VARIABLE NOT FOUND");
+					reportable.Log(
+						context.ContextID,
+						"STACK VARIABLE NOT FOUND");
 
 					return false;
 				}
 
-				if (!AssertVariable(arrayElement, reportable))
+				if (!AssertVariable(
+					arrayElement,
+					context,
+					reportable))
 					return false;
 
 				variables[i] = arrayElement;

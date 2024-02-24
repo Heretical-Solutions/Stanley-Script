@@ -16,6 +16,7 @@ namespace HereticalSolutions.StanleyScript
 
 		public override bool WillHandle(
 			string[] instructionTokens,
+			IStanleyContext context,
 			IRuntimeEnvironment environment)
 		{
 			if (!AssertOpcode(instructionTokens))
@@ -32,10 +33,11 @@ namespace HereticalSolutions.StanleyScript
 
 		public override async Task<bool> Handle(
 			string[] instructionTokens,
+			IStanleyContext context,
 			IRuntimeEnvironment environment,
 			CancellationToken token)
 		{
-			var stack = environment as IStackMachine;
+			var stack = context as IStackMachine;
 
 			var reportable = environment as IReportable;
 
@@ -43,30 +45,33 @@ namespace HereticalSolutions.StanleyScript
 
 			//REMEMBER: when popping from the stack, the order is reversed
 
-			//string opcode = instructionTokens[1];
-
-			//int argumentsAmount = Convert.ToInt32(instructionTokens[2]);
-
-			//string instruction = $"{opcode} {argumentsAmount}";
-
 			if (!stack.Pop(
 				out var opcode))
 			{
-				reportable.Log("STACK VARIABLE NOT FOUND");
+				reportable.Log(
+					context.ContextID,
+					"STACK VARIABLE NOT FOUND");
 
 				return false;
 			}
 
-			if (!AssertVariable<string>(opcode, reportable))
+			if (!AssertVariable<string>(
+				opcode,
+				context,
+				reportable))
 				return false;
 
 			var opcodeString = opcode.GetValue<string>();
 
-			if (!AssertValueNotEmpty(opcodeString, reportable))
+			if (!AssertValueNotEmpty(
+				opcodeString,
+				context,
+				reportable))
 				return false;
 
 			bool result = await REPL.Execute(
 				opcodeString,
+				context,
 				token);
 				//.ThrowExceptions();
 

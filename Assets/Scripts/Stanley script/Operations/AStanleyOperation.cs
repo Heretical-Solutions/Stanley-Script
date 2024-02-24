@@ -14,10 +14,12 @@ namespace HereticalSolutions.StanleyScript
 
 		public abstract bool WillHandle(
 			string[] instructionTokens,
+			IStanleyContext context,
 			IRuntimeEnvironment environment);
 
 		public abstract Task<bool> Handle(
 			string[] instructionTokens,
+			IStanleyContext context,
 			IRuntimeEnvironment environment,
 			CancellationToken token);
 
@@ -138,11 +140,14 @@ namespace HereticalSolutions.StanleyScript
 
 		protected bool AssertVariable(
 			IStanleyVariable variable,
+			IStanleyContext context,
 			IReportable reportable)
 		{
 			if (variable == null)
 			{
-				reportable.Log("INVALID STACK VARIABLE");
+				reportable.Log(
+					context.ContextID,
+					"INVALID STACK VARIABLE");
 
 				return false;
 			}
@@ -152,18 +157,23 @@ namespace HereticalSolutions.StanleyScript
 
 		protected bool AssertVariable<TVariable>(
 			IStanleyVariable variable,
+			IStanleyContext context,
 			IReportable reportable)
 		{
 			if (variable == null)
 			{
-				reportable.Log("INVALID STACK VARIABLE");
+				reportable.Log(
+					context.ContextID,
+					"INVALID STACK VARIABLE");
 
 				return false;
 			}
 
 			if (variable.VariableType != typeof(TVariable))
 			{
-				reportable.Log($"INVALID STACK VARIABLE TYPE. EXPECTED: {typeof(string).Name} ACTUAL: {variable.VariableType.Name}");
+				reportable.Log(
+					context.ContextID,
+					$"INVALID STACK VARIABLE TYPE. EXPECTED: {typeof(string).Name} ACTUAL: {variable.VariableType.Name}");
 
 				return false;
 			}
@@ -173,11 +183,14 @@ namespace HereticalSolutions.StanleyScript
 
 		protected bool AssertValueNotEmpty(
 			string value,
+			IStanleyContext context,
 			IReportable reportable)
 		{
 			if (string.IsNullOrEmpty(value))
 			{
-				reportable.Log("INVALID VARIABLE VALUE");
+				reportable.Log(
+					context.ContextID,
+					"INVALID VARIABLE VALUE");
 
 				return false;
 			}
