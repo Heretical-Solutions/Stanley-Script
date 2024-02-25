@@ -214,8 +214,10 @@ namespace HereticalSolutions.StanleyScript
 
 					stepMode = false;
 
-					TaskExtensions.RunSync<bool>(
-						() => RunContextInternal(CancellationToken));
+					RunContextInternal(CancellationToken);
+
+					//TaskExtensions.RunSync<bool>(
+					//	() => RunContextInternal(CancellationToken));
 				}
 
 					break;

@@ -158,9 +158,35 @@ namespace HereticalSolutions.StanleyScript
 			return null;
 		}
 
-		//The signature should look like this:
-		//OP_SUB eventVariable target instructions_amount
-		public override object VisitSubscriptionStatement([NotNull] StanleyParser.SubscriptionStatementContext context)
+        public override object VisitTimeStatement([NotNull] StanleyParser.TimeStatementContext context)
+        {
+			int stackDepthAtContextStart = currentStackDepth;
+
+			base.VisitTimeStatement(context);
+
+			int timeExpressionsAmount = context.timeExpression().Length;
+
+			instructions.Add(
+				$"OP_PUSH_INT {timeExpressionsAmount}");
+
+			currentStackDepth++;
+
+			currentStackDepth = stackDepthAtContextStart + 1;
+
+			instructions.Add(
+				$"OP_MERGE_SCLR");
+
+			currentStackDepth = stackDepthAtContextStart;
+
+			instructions.Add(
+				$"OP_WAIT");
+
+			return null;
+        }
+
+        //The signature should look like this:
+        //OP_SUB eventVariable target instructions_amount
+        public override object VisitSubscriptionStatement([NotNull] StanleyParser.SubscriptionStatementContext context)
         {
 			int stackDepthAtContextStart = currentStackDepth;
 
@@ -496,7 +522,37 @@ namespace HereticalSolutions.StanleyScript
 			return null;
 		}
 
-		public override object VisitAssertAdjective([NotNull] StanleyParser.AssertAdjectiveContext context)
+        public override object VisitTimeExpression([NotNull] StanleyParser.TimeExpressionContext context)
+        {
+			int stackDepthAtContextStart = currentStackDepth;
+
+			base.VisitTimeExpression(context);
+
+			currentStackDepth = stackDepthAtContextStart;
+
+			instructions.Add(
+				$"OP_PUSH_SCLR");
+
+			currentStackDepth++;
+
+			return null;
+		}
+
+        public override object VisitTimeStep([NotNull] StanleyParser.TimeStepContext context)
+        {
+            base.VisitTimeStep(context);
+
+			var text = context.GetText();
+
+			instructions.Add(
+				$"OP_PUSH_STR {text}");
+
+			currentStackDepth++;
+
+			return null;
+        }
+
+        public override object VisitAssertAdjective([NotNull] StanleyParser.AssertAdjectiveContext context)
 		{
 			base.VisitAssertAdjective(context);
 

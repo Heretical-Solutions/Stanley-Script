@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace HereticalSolutions.StanleyScript
@@ -82,6 +83,17 @@ namespace HereticalSolutions.StanleyScript
 			environment.LoadOperation(
 				new UnsubscribeAll());
 
+			//Adding this one with the intent for end user to add his own override
+			//We need the variable popped from the stack and unless there's any real, good operation to handle waiting,
+			//we're calling it a day immediately
+			environment.LoadOperation(
+				new Wait(
+					(duration) =>
+					{
+						return null;
+					},
+					(state) => { return false; }));
+
 			environment.LoadOperation(
 				new ReadStory());
 
@@ -97,6 +109,26 @@ namespace HereticalSolutions.StanleyScript
 
 			environment.LoadOperation(
 				new ConcatenateVariables());
+
+			environment.LoadOperation(
+				new MergeScalars(
+					(timeStep) =>
+					{ 
+						switch (timeStep)
+						{
+							case "SECONDS":
+								return 1.0;
+							case "MINUTES":
+								return 60.0;
+							//case "HOURS":
+							//	return 3600.0;
+							//case "DAYS":
+							//	return 86400.0;
+							default:
+								throw new Exception($"UNKNOWN TIME STEP: {timeStep}");
+						}
+					},
+					() => { return "SECONDS"; }));
 
 			environment.LoadOperation(
 				new Subscribe());

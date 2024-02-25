@@ -36,7 +36,7 @@ namespace HereticalSolutions.StanleyScript
 
 			//Get variable to concatenate
 			if (!stack.Pop(
-				out var variableToMultiply))
+				out var variableToMakeScalar))
 			{
 				reportable.Log(
 					context.ContextID,
@@ -46,7 +46,7 @@ namespace HereticalSolutions.StanleyScript
 			}
 
 			if (!AssertVariable(
-				variableToMultiply,
+				variableToMakeScalar,
 				context,
 				reportable))
 				return false;
@@ -87,7 +87,7 @@ namespace HereticalSolutions.StanleyScript
 				return false;
 			}
 
-			if (variableToMultiply.VariableType == typeof(string))
+			if (variableToMakeScalar.VariableType == typeof(string))
 			{
 				stack.Push(
 					new StanleyCachedVariable(
@@ -97,7 +97,7 @@ namespace HereticalSolutions.StanleyScript
 						{
 							Amount = amountValue,
 
-							Property = variableToMultiply.GetValue<string>()
+							Property = variableToMakeScalar.GetValue<string>()
 						}));
 			}
 			else
@@ -110,7 +110,7 @@ namespace HereticalSolutions.StanleyScript
 						{
 							Amount = amountValue,
 
-							Variable = variableToMultiply
+							Variable = variableToMakeScalar
 						}));
 			}
 

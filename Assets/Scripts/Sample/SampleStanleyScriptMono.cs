@@ -105,6 +105,28 @@ namespace HereticalSolutions.StanleyScript.Sample
 
 			#endregion
 
+			#region Wait
+
+			environment.LoadOperation(
+				new Wait(
+					(duration) =>
+					{
+						return new Timer
+						{
+							TimeStarted = Time.time,
+
+							Duration = (float)duration
+						};
+					},
+					(state) =>
+					{
+						Timer timer = (Timer)state;
+
+						return (Time.time - timer.TimeStarted) > timer.Duration;
+					}));
+
+			#endregion
+
 			#region Game controls
 
 			environment.LoadOperation(

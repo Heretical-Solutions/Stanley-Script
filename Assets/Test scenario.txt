@@ -45,8 +45,8 @@ Game WAS accelerated TO 5.0 speed
 //Resume the game
 Game WAS unpaused
 
-//Wait for 15 seconds
-15 SECONDS PASSED
+//Wait for 5 seconds
+5 SECONDS PASSED
 
 FROM THIS MOMENT
 ONCE #"wall hit" NOTHING WOULD HAPPEN ANYMORE

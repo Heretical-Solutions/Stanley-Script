@@ -179,7 +179,7 @@ subject
 	;
 
 object
-	: ID 				//runtimeVariableLiteral //Just to differentiate object values from variables
+	: ID
 	| STRING_LITERAL
 	;
 
