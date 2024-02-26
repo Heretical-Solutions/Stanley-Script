@@ -94,7 +94,7 @@ namespace HereticalSolutions.StanleyScript
 			//report.Clear();
 		}
 
-		public CancellationToken CancellationToken { get; private set; }
+		public CancellationToken CancellationToken { get; set; }
 
 		public void Cleanup()
 		{
@@ -200,9 +200,13 @@ namespace HereticalSolutions.StanleyScript
 		{
 			switch (executionStatus)
 			{
+				case EExecutionStatus.RUNNING:
+					break;
+
 				case EExecutionStatus.IDLE:
 				case EExecutionStatus.PAUSED:
 				case EExecutionStatus.STOPPED:
+				case EExecutionStatus.FINISHED:
 				{
 					if (instructions == null
 						|| instructions.Length == 0)
@@ -211,6 +215,8 @@ namespace HereticalSolutions.StanleyScript
 					executionStatus = EExecutionStatus.RUNNING;
 
 					programCounter = 0;
+
+					currentLine = -1;
 
 					stepMode = false;
 
@@ -228,6 +234,9 @@ namespace HereticalSolutions.StanleyScript
 		{
 			switch (executionStatus)
 			{
+				case EExecutionStatus.RUNNING:
+					break;
+
 				case EExecutionStatus.PAUSED:
 				{
 					stepMode = true;
@@ -239,6 +248,7 @@ namespace HereticalSolutions.StanleyScript
 
 				case EExecutionStatus.IDLE:
 				case EExecutionStatus.STOPPED:
+				case EExecutionStatus.FINISHED:
 				{
 					if (instructions == null
 						|| instructions.Length == 0)
@@ -248,11 +258,10 @@ namespace HereticalSolutions.StanleyScript
 
 					programCounter = 0;
 
+					currentLine = -1;
+
 					stepMode = true;
 
-					//THIS IS ONLY BECAUSE await Task.Yield IS NOT GIVING UNITY BACK THE CONTROL AND WHILE METHOD IS LOOPING THE YIELDS
-					//THE GAME ITSELF IS STUCK
-					//TODO: THINK OF WAYS TO WORK THIS AROUND
 					RunContextInternal(CancellationToken);
 
 					//TaskExtensions.RunSync<bool>(
@@ -267,6 +276,12 @@ namespace HereticalSolutions.StanleyScript
 		{
 			switch (executionStatus)
 			{
+				case EExecutionStatus.IDLE:
+				case EExecutionStatus.STOPPED:
+				case EExecutionStatus.FINISHED:
+				case EExecutionStatus.PAUSED:
+					break;
+
 				case EExecutionStatus.RUNNING:
 					executionStatus = EExecutionStatus.PAUSED;
 
@@ -278,6 +293,12 @@ namespace HereticalSolutions.StanleyScript
 		{
 			switch (executionStatus)
 			{
+				case EExecutionStatus.IDLE:
+				case EExecutionStatus.STOPPED:
+				case EExecutionStatus.FINISHED:
+				case EExecutionStatus.RUNNING:
+					break;
+
 				case EExecutionStatus.PAUSED:
 
 					stepMode = false;

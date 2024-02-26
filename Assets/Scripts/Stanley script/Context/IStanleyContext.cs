@@ -17,7 +17,7 @@ namespace HereticalSolutions.StanleyScript
 		void LoadProgram(
 			string[] instructions);
 
-		CancellationToken CancellationToken { get; }
+		CancellationToken CancellationToken { get; set; }
 
 		void Initialize(
 			string contextID,

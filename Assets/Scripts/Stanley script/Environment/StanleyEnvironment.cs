@@ -352,12 +352,24 @@ namespace HereticalSolutions.StanleyScript
 		{
 			switch (defaultContext.Status)
 			{
+				case EExecutionStatus.RUNNING:
+					break;
+
 				case EExecutionStatus.IDLE:
 				case EExecutionStatus.PAUSED:
 				case EExecutionStatus.STOPPED:
-					{
-						ClearReport();
-					}
+				case EExecutionStatus.FINISHED:
+				{
+					cancellationTokenSource?.Cancel();
+
+					cancellationTokenSource?.Dispose();
+
+					cancellationTokenSource = new CancellationTokenSource();
+
+					defaultContext.CancellationToken = cancellationTokenSource.Token;
+
+					ClearReport();
+				}
 
 					break;
 			}
@@ -371,15 +383,27 @@ namespace HereticalSolutions.StanleyScript
 		{
 			switch (defaultContext.Status)
 			{
+				case EExecutionStatus.RUNNING:
+				case EExecutionStatus.PAUSED:
+					break;
+
 				case EExecutionStatus.IDLE:
 				case EExecutionStatus.STOPPED:
-					{
-						ClearReport();
-					}
+				case EExecutionStatus.FINISHED:
+				{
+					cancellationTokenSource?.Cancel();
+
+					cancellationTokenSource?.Dispose();
+
+					cancellationTokenSource = new CancellationTokenSource();
+
+					defaultContext.CancellationToken = cancellationTokenSource.Token;
+
+					ClearReport();
+				}
 
 					break;
 			}
-
 
 			var defaultContextAsExecutable = defaultContext as IExecutable;
 
@@ -402,9 +426,13 @@ namespace HereticalSolutions.StanleyScript
 
 		public void Stop()
 		{
-			//cancellationTokenSource?.Dispose();
-
 			cancellationTokenSource?.Cancel();
+
+			cancellationTokenSource?.Dispose();
+
+			cancellationTokenSource = new CancellationTokenSource();
+
+			defaultContext.CancellationToken = cancellationTokenSource.Token;
 
 
 			var defaultContextAsExecutable = defaultContext as IExecutable;
