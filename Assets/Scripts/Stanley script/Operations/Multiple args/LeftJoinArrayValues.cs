@@ -108,7 +108,6 @@ namespace HereticalSolutions.StanleyScript
 					opcode,
 					context,
 					token);
-					//.ThrowExceptions();
 
 				if (!result)
 					return false;

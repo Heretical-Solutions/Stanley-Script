@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -328,8 +329,28 @@ namespace HereticalSolutions.StanleyScript
 						{
 							if (programCounter < instructions.Length)
 							{
-								var result = await ExecuteInstructionInternal(cancellationToken);
-								//.ThrowExceptions();
+								bool result;
+
+								try
+								{
+									result = await ExecuteInstructionInternal(cancellationToken);
+								}
+								catch (Exception e)
+								{
+									executionStatus = EExecutionStatus.STOPPED;
+
+									string stackTrace = Environment.StackTrace;
+
+									reportable.Log(
+										contextID,
+										$"CAUGHT AN EXCEPTION:\n{e.Message}\n\nSTACK TRACE:\n{stackTrace}");
+
+									reportable.Log(
+										contextID,
+										$"SCRIPT FINISHED DUE TO INTERNAL EXCEPTION. CHECK LOGS FOR DETAILS");
+
+									return false;
+								}
 
 								if (!result)
 								{
@@ -401,7 +422,6 @@ namespace HereticalSolutions.StanleyScript
 				instruction,
 				this,
 				cancellationToken);
-			//.ThrowExceptions();
 
 			programCounter++;
 

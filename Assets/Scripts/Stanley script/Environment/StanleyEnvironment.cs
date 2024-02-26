@@ -294,7 +294,6 @@ namespace HereticalSolutions.StanleyScript
 							context,
 							this,
 							cancellationToken);
-						//.ThrowExceptions();
 
 						handled = true;
 

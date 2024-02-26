@@ -73,7 +73,6 @@ namespace HereticalSolutions.StanleyScript
 				opcodeString,
 				context,
 				token);
-				//.ThrowExceptions();
 
 			return result;
 		}
